@@ -1,0 +1,75 @@
+{
+  "name": "TokenTransaction",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "participant_id": {
+      "type": "string"
+    },
+    "token_id": {
+      "type": "string",
+      "description": "Reference to LoyaltyToken"
+    },
+    "transaction_type": {
+      "type": "string",
+      "enum": [
+        "earn",
+        "redeem",
+        "transfer",
+        "mint",
+        "burn",
+        "bonus"
+      ],
+      "description": "Type of transaction"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Token amount (positive for earn, negative for redeem)"
+    },
+    "balance_after": {
+      "type": "number",
+      "description": "Balance after transaction"
+    },
+    "reference_id": {
+      "type": "string",
+      "description": "Reference to activity, redemption, or challenge ID"
+    },
+    "reference_type": {
+      "type": "string",
+      "enum": [
+        "activity",
+        "redemption",
+        "challenge",
+        "manual",
+        "bonus"
+      ],
+      "description": "Type of reference"
+    },
+    "description": {
+      "type": "string",
+      "description": "Transaction description"
+    },
+    "blockchain_tx_hash": {
+      "type": "string",
+      "description": "On-chain transaction hash if applicable"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "default": "completed"
+    }
+  },
+  "required": [
+    "program_id",
+    "participant_id",
+    "token_id",
+    "transaction_type",
+    "amount"
+  ]
+}

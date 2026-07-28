@@ -1,0 +1,121 @@
+{
+  "name": "Payout",
+  "type": "object",
+  "properties": {
+    "payout_id": {
+      "type": "string",
+      "description": "Unique payout reference"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "mid_id": {
+      "type": "string",
+      "description": "Optional MID reference"
+    },
+    "mid": {
+      "type": "string"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "gross_amount": {
+      "type": "number",
+      "description": "Total transaction volume"
+    },
+    "mdr_fees": {
+      "type": "number",
+      "description": "MDR fees deducted"
+    },
+    "fixed_fees": {
+      "type": "number",
+      "description": "Fixed transaction fees"
+    },
+    "monthly_fees": {
+      "type": "number",
+      "default": 0
+    },
+    "chargebacks": {
+      "type": "number",
+      "default": 0
+    },
+    "refunds": {
+      "type": "number",
+      "default": 0
+    },
+    "adjustments": {
+      "type": "number",
+      "default": 0
+    },
+    "net_amount": {
+      "type": "number",
+      "description": "Final payout amount"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "transaction_count": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "processing",
+        "completed",
+        "failed",
+        "on_hold"
+      ],
+      "default": "pending"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "bank_transfer",
+        "wire",
+        "ach",
+        "sepa",
+        "manual"
+      ],
+      "default": "bank_transfer"
+    },
+    "bank_account": {
+      "type": "string",
+      "description": "Last 4 digits of bank account"
+    },
+    "bank_reference": {
+      "type": "string"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "executed_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "merchant_name",
+    "gross_amount",
+    "net_amount"
+  ]
+}

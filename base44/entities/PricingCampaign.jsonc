@@ -1,0 +1,134 @@
+{
+  "name": "PricingCampaign",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string",
+      "description": "Unique campaign identifier"
+    },
+    "campaign_name": {
+      "type": "string",
+      "description": "Campaign name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Campaign description and objectives"
+    },
+    "campaign_type": {
+      "type": "string",
+      "enum": [
+        "discount",
+        "free_trial",
+        "bundle_promotion",
+        "seasonal",
+        "limited_time"
+      ],
+      "description": "Type of campaign"
+    },
+    "discount_type": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "fixed_amount",
+        "tiered"
+      ],
+      "description": "How discount is applied"
+    },
+    "discount_value": {
+      "type": "number",
+      "description": "Discount percentage or fixed amount"
+    },
+    "applies_to": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Master pricing IDs this applies to"
+    },
+    "target_segment": {
+      "type": "string",
+      "enum": [
+        "all_psps",
+        "new_psps",
+        "existing_psps",
+        "specific_psps",
+        "high_volume"
+      ],
+      "description": "Target audience"
+    },
+    "eligible_psps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specific PSP IDs if targeted"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "active",
+        "paused",
+        "expired",
+        "cancelled"
+      ],
+      "default": "scheduled"
+    },
+    "usage_limit": {
+      "type": "number",
+      "description": "Maximum number of PSPs that can use this"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of PSPs currently using"
+    },
+    "total_discount_given": {
+      "type": "number",
+      "default": 0,
+      "description": "Total discount amount provided"
+    },
+    "revenue_impact": {
+      "type": "number",
+      "description": "Estimated revenue impact"
+    },
+    "performance_metrics": {
+      "type": "object",
+      "properties": {
+        "signup_rate": {
+          "type": "number"
+        },
+        "conversion_rate": {
+          "type": "number"
+        },
+        "retention_rate": {
+          "type": "number"
+        },
+        "average_volume": {
+          "type": "number"
+        }
+      },
+      "description": "Campaign performance"
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign_name",
+    "campaign_type",
+    "start_date",
+    "end_date"
+  ]
+}

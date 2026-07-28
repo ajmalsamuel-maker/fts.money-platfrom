@@ -1,0 +1,48 @@
+{
+  "name": "CompanyParticipantLink",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "participant_id": {
+      "type": "string",
+      "description": "Reference to LoyaltyParticipant"
+    },
+    "company_id": {
+      "type": "string",
+      "description": "Reference to CompanyAccount"
+    },
+    "employee_id": {
+      "type": "string",
+      "description": "Company employee ID"
+    },
+    "department": {
+      "type": "string",
+      "description": "Employee department"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "member",
+        "manager",
+        "admin"
+      ],
+      "default": "member",
+      "description": "Role within company account"
+    },
+    "joined_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "program_id",
+    "participant_id",
+    "company_id"
+  ]
+}

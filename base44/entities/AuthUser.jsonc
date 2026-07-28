@@ -1,0 +1,50 @@
+{
+  "name": "AuthUser",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Reference to Tenant (for multi-tenancy isolation)"
+    },
+    "email": {
+      "type": "string",
+      "description": "User email address"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "User's full name"
+    },
+    "password_hash": {
+      "type": "string",
+      "description": "Hashed password for authentication"
+    },
+    "platform_role": {
+      "type": "string",
+      "description": "Role in FTS Control Plane (super_admin, platform_admin, operations, finance, support, viewer)"
+    },
+    "community_role": {
+      "type": "string",
+      "description": "Role in Community Portal (psp_owner, psp_admin, viewer)"
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "platform_admin",
+        "community",
+        "merchant",
+        "staff"
+      ],
+      "description": "Type of account"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last login timestamp"
+    }
+  },
+  "required": [
+    "email",
+    "password_hash",
+    "account_type"
+  ]
+}

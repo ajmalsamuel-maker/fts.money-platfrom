@@ -1,0 +1,69 @@
+{
+  "name": "BillingCycle",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "cycle_period": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "annual"
+      ],
+      "default": "monthly"
+    },
+    "cycle_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "cycle_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "cycle_number": {
+      "type": "number",
+      "description": "Sequential cycle number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "closed",
+        "invoiced",
+        "paid"
+      ],
+      "default": "open"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Generated invoice ID when closed"
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0
+    },
+    "total_fees": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "cycle_start_date",
+    "cycle_end_date"
+  ]
+}

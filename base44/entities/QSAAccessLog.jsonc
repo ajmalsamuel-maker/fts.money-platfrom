@@ -1,0 +1,62 @@
+{
+  "name": "QSAAccessLog",
+  "type": "object",
+  "properties": {
+    "qsa_email": {
+      "type": "string",
+      "description": "QSA email who performed action"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "login",
+        "logout",
+        "view_evidence",
+        "view_requirement",
+        "download_evidence",
+        "export_package",
+        "upload_report",
+        "send_message",
+        "create_task"
+      ],
+      "description": "Type of action performed"
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "ID of resource accessed (optional)"
+    },
+    "resource_type": {
+      "type": "string",
+      "description": "Type of resource (e.g., evidence, requirement)"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of QSA"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser/device info"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Session identifier"
+    },
+    "details": {
+      "type": "string",
+      "description": "Additional action details"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed",
+        "unauthorized"
+      ],
+      "default": "success"
+    }
+  },
+  "required": [
+    "qsa_email",
+    "action_type"
+  ]
+}

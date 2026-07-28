@@ -1,0 +1,90 @@
+{
+  "name": "ESGReport",
+  "type": "object",
+  "properties": {
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "merchant",
+        "psp",
+        "platform"
+      ],
+      "description": "Type of entity the report is for"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of merchant, PSP, or platform"
+    },
+    "entity_name": {
+      "type": "string",
+      "description": "Name of the entity"
+    },
+    "report_period": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "quarterly",
+        "annual"
+      ],
+      "description": "Reporting period"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "total_transactions": {
+      "type": "number",
+      "description": "Total transactions in period"
+    },
+    "green_transactions": {
+      "type": "number",
+      "description": "Eco-friendly transactions"
+    },
+    "carbon_footprint": {
+      "type": "number",
+      "description": "Total CO2 emissions (kg)"
+    },
+    "carbon_offset": {
+      "type": "number",
+      "description": "Total CO2 offset (kg)"
+    },
+    "nano_tasks_completed": {
+      "type": "number",
+      "description": "Number of tasks completed"
+    },
+    "nano_rewards_issued": {
+      "type": "number",
+      "description": "NANO tokens issued"
+    },
+    "crbn_tokens_issued": {
+      "type": "number",
+      "description": "CRBN tokens issued"
+    },
+    "sustainability_score": {
+      "type": "number",
+      "description": "Overall ESG score (0-100)"
+    },
+    "csrd_compliant": {
+      "type": "boolean",
+      "description": "EU CSRD compliance status",
+      "default": false
+    },
+    "report_url": {
+      "type": "string",
+      "description": "Generated PDF report URL"
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Detailed metrics and KPIs"
+    }
+  },
+  "required": [
+    "report_type",
+    "entity_id",
+    "report_period"
+  ]
+}

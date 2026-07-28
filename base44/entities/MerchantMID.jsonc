@@ -1,0 +1,209 @@
+{
+  "name": "MerchantMID",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name for quick reference"
+    },
+    "mid": {
+      "type": "string",
+      "description": "Merchant Identifier (MID)"
+    },
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to PaymentProvider entity"
+    },
+    "provider_name": {
+      "type": "string",
+      "description": "Provider name for quick reference"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of this MID"
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "ecommerce",
+        "moto",
+        "pos",
+        "soft_pos",
+        "virtual_terminal",
+        "recurring"
+      ],
+      "description": "Type of merchant account"
+    },
+    "transaction_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "card_present",
+          "card_not_present",
+          "ecommerce",
+          "moto",
+          "recurring",
+          "crypto",
+          "crypto_on_ramp",
+          "crypto_off_ramp"
+        ]
+      },
+      "description": "Supported transaction types for this MID"
+    },
+    "supported_card_brands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "visa",
+          "mastercard",
+          "amex",
+          "discover",
+          "jcb",
+          "unionpay",
+          "diners",
+          "maestro"
+        ]
+      },
+      "description": "Card brands accepted by this MID"
+    },
+    "supported_apms": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "alipay",
+          "wechat_pay",
+          "paypal",
+          "apple_pay",
+          "google_pay",
+          "klarna",
+          "afterpay",
+          "sofort",
+          "ideal",
+          "giropay",
+          "bancontact",
+          "eps",
+          "multibanco",
+          "p24",
+          "blik",
+          "trustly",
+          "swish",
+          "vipps",
+          "mbway",
+          "gcash",
+          "paytm",
+          "upi"
+        ]
+      },
+      "description": "Alternative payment methods supported"
+    },
+    "supports_bank_transfer": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether bank transfer/ACH/SEPA is supported"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "Primary currency"
+    },
+    "mcc_code": {
+      "type": "string",
+      "description": "Merchant Category Code"
+    },
+    "daily_limit": {
+      "type": "number",
+      "description": "Daily transaction limit"
+    },
+    "monthly_limit": {
+      "type": "number",
+      "description": "Monthly transaction limit"
+    },
+    "per_transaction_limit": {
+      "type": "number",
+      "description": "Maximum amount per transaction"
+    },
+    "min_transaction_amount": {
+      "type": "number",
+      "description": "Minimum transaction amount"
+    },
+    "fee_percentage": {
+      "type": "number",
+      "description": "Fee percentage charged to merchant"
+    },
+    "fee_fixed": {
+      "type": "number",
+      "description": "Fixed fee per transaction"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium",
+      "description": "Risk level for this MID"
+    },
+    "risk_settings": {
+      "type": "object",
+      "description": "Risk management settings",
+      "properties": {
+        "velocity_checks": {
+          "type": "boolean"
+        },
+        "fraud_score_threshold": {
+          "type": "number"
+        },
+        "require_3ds": {
+          "type": "boolean"
+        },
+        "max_attempts_per_card": {
+          "type": "number"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending",
+        "suspended",
+        "inactive"
+      ],
+      "default": "pending",
+      "description": "MID status"
+    },
+    "activation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date MID was activated"
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0,
+      "description": "Total transaction volume"
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0,
+      "description": "Total number of transactions"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "merchant_name",
+    "mid",
+    "account_type"
+  ]
+}

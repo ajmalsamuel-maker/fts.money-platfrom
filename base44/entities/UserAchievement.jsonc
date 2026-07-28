@@ -1,0 +1,49 @@
+{
+  "name": "UserAchievement",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User who earned the achievement"
+    },
+    "badge_type": {
+      "type": "string",
+      "enum": [
+        "tree_planter",
+        "plastic_reducer",
+        "transport_hero",
+        "energy_saver",
+        "green_champion",
+        "eco_warrior",
+        "carbon_crusher",
+        "streak_master",
+        "community_leader",
+        "task_creator"
+      ],
+      "description": "Type of badge earned"
+    },
+    "badge_level": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ],
+      "default": "bronze"
+    },
+    "earned_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "progress": {
+      "type": "number",
+      "description": "Progress towards next level (0-100)",
+      "default": 0
+    }
+  },
+  "required": [
+    "user_email",
+    "badge_type"
+  ]
+}

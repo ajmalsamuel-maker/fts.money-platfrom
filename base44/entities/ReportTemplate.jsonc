@@ -1,0 +1,72 @@
+{
+  "name": "ReportTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "pnl",
+        "volume",
+        "fees",
+        "chargebacks",
+        "success_rate",
+        "custom"
+      ],
+      "default": "custom"
+    },
+    "group_by": {
+      "type": "string",
+      "enum": [
+        "merchant",
+        "provider",
+        "day",
+        "week",
+        "month",
+        "transaction_type"
+      ],
+      "default": "merchant"
+    },
+    "filters": {
+      "type": "object",
+      "description": "Saved filter configuration"
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_scheduled": {
+      "type": "boolean",
+      "default": false
+    },
+    "schedule_frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly"
+      ]
+    },
+    "recipients": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "name",
+    "report_type"
+  ]
+}

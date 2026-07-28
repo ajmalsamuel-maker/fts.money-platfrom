@@ -1,0 +1,88 @@
+{
+  "name": "CloudConnector",
+  "type": "object",
+  "properties": {
+    "connector_id": {
+      "type": "string",
+      "description": "Unique connector identifier"
+    },
+    "provider_name": {
+      "type": "string",
+      "description": "Cloud provider name"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Display name for UI"
+    },
+    "provider_type": {
+      "type": "string",
+      "enum": [
+        "global",
+        "regional",
+        "local"
+      ],
+      "description": "Provider scope"
+    },
+    "region": {
+      "type": "string",
+      "description": "Primary region/geography"
+    },
+    "supported_regions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of supported regions"
+    },
+    "connector_function": {
+      "type": "string",
+      "description": "Backend function name"
+    },
+    "required_secrets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Required secret keys"
+    },
+    "supported_operations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported operations"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "testing"
+      ],
+      "default": "inactive"
+    },
+    "is_configured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether secrets are set"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Selection priority for region"
+    },
+    "cost_multiplier": {
+      "type": "number",
+      "default": 1.0,
+      "description": "Relative cost vs baseline"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": [
+    "provider_name",
+    "connector_function"
+  ]
+}

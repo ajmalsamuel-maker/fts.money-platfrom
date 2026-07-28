@@ -1,0 +1,53 @@
+{
+  "name": "CarbonOffset",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User who purchased the offset"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Related payment transaction"
+    },
+    "co2_kg": {
+      "type": "number",
+      "description": "CO2 offset in kilograms"
+    },
+    "cost_usd": {
+      "type": "number",
+      "description": "Cost of offset in USD"
+    },
+    "stripe_order_id": {
+      "type": "string",
+      "description": "Stripe Climate order ID"
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Carbon removal projects supported"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "confirmed",
+        "delivered",
+        "canceled"
+      ],
+      "default": "open",
+      "description": "Offset order status"
+    },
+    "certificate_url": {
+      "type": "string",
+      "description": "Certificate download URL"
+    }
+  },
+  "required": [
+    "user_email",
+    "co2_kg",
+    "cost_usd"
+  ]
+}

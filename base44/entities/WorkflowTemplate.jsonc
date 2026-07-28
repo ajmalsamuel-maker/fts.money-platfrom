@@ -1,0 +1,112 @@
+{
+  "name": "WorkflowTemplate",
+  "type": "object",
+  "properties": {
+    "template_id": {
+      "type": "string",
+      "description": "Unique template identifier"
+    },
+    "template_name": {
+      "type": "string",
+      "description": "Name of the workflow template"
+    },
+    "description": {
+      "type": "string",
+      "description": "Template description"
+    },
+    "workflow_type": {
+      "type": "string",
+      "enum": [
+        "psp_provisioning",
+        "merchant_onboarding",
+        "transaction_processing",
+        "compliance_verification",
+        "payout_processing",
+        "service_provisioning",
+        "dispute_resolution",
+        "risk_assessment",
+        "custom"
+      ]
+    },
+    "iso_19510_compliant": {
+      "type": "boolean",
+      "default": true
+    },
+    "iso_23005_7_compliant": {
+      "type": "boolean",
+      "default": false
+    },
+    "iso_10746_compliant": {
+      "type": "boolean",
+      "default": true
+    },
+    "iso_9001_compliant": {
+      "type": "boolean",
+      "default": true
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_name": {
+            "type": "string"
+          },
+          "step_order": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "estimated_duration": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "quality_thresholds": {
+      "type": "object",
+      "properties": {
+        "min_success_rate": {
+          "type": "number",
+          "default": 95
+        },
+        "max_completion_time": {
+          "type": "number",
+          "default": 3600
+        },
+        "sla_target": {
+          "type": "number",
+          "default": 99
+        }
+      }
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "template_name",
+    "workflow_type"
+  ]
+}

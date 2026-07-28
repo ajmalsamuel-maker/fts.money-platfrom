@@ -1,0 +1,56 @@
+{
+  "name": "FAQ",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string",
+      "description": "Reference to loyalty program"
+    },
+    "question": {
+      "type": "string",
+      "description": "FAQ question"
+    },
+    "answer": {
+      "type": "string",
+      "description": "FAQ answer"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "getting_started",
+        "earning_points",
+        "redeeming_rewards",
+        "account",
+        "technical",
+        "general"
+      ],
+      "default": "general",
+      "description": "FAQ category"
+    },
+    "target_audience": {
+      "type": "string",
+      "enum": [
+        "participant",
+        "partner",
+        "both"
+      ],
+      "default": "both",
+      "description": "Who can see this FAQ"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether FAQ is visible to users"
+    },
+    "display_order": {
+      "type": "number",
+      "default": 0,
+      "description": "Sort order for display"
+    }
+  },
+  "required": [
+    "program_id",
+    "question",
+    "answer"
+  ]
+}

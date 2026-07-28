@@ -1,0 +1,121 @@
+{
+  "name": "AccessControlLog",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User who performed action"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email for quick reference"
+    },
+    "user_role": {
+      "type": "string",
+      "description": "Role at time of access"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "login",
+        "logout",
+        "failed_login",
+        "password_change",
+        "role_change",
+        "permission_grant",
+        "permission_revoke",
+        "mfa_enabled",
+        "mfa_disabled",
+        "api_key_created",
+        "api_key_revoked"
+      ],
+      "description": "Type of access control action"
+    },
+    "resource_accessed": {
+      "type": "string",
+      "description": "What was accessed (entity, page, API endpoint)"
+    },
+    "resource_type": {
+      "type": "string",
+      "enum": [
+        "entity",
+        "page",
+        "api",
+        "file",
+        "admin_panel"
+      ],
+      "description": "Type of resource"
+    },
+    "access_granted": {
+      "type": "boolean",
+      "description": "Whether access was granted"
+    },
+    "denial_reason": {
+      "type": "string",
+      "description": "Reason if access denied"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of request"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser/device info"
+    },
+    "geolocation": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": "number"
+        },
+        "longitude": {
+          "type": "number"
+        }
+      },
+      "description": "Geographic location of access"
+    },
+    "mfa_used": {
+      "type": "boolean",
+      "description": "Whether MFA was used"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Session identifier"
+    },
+    "risk_score": {
+      "type": "number",
+      "description": "Calculated risk score (0-100)"
+    },
+    "anomaly_detected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether behavior was anomalous"
+    },
+    "anomaly_reason": {
+      "type": "string",
+      "description": "Why flagged as anomalous"
+    },
+    "pci_dss_relevant": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether access was to cardholder data environment"
+    },
+    "retention_period_days": {
+      "type": "number",
+      "default": 365,
+      "description": "How long to retain (PCI DSS: 1 year minimum)"
+    }
+  },
+  "required": [
+    "user_id",
+    "action",
+    "access_granted",
+    "ip_address"
+  ]
+}

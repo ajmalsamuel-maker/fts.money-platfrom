@@ -1,0 +1,110 @@
+{
+  "name": "WebhookEndpoint",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "description": "Webhook endpoint URL"
+    },
+    "description": {
+      "type": "string",
+      "description": "Endpoint description"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "payment.succeeded",
+          "payment.failed",
+          "refund.created",
+          "refund.succeeded",
+          "chargeback.created",
+          "chargeback.updated",
+          "dispute.created",
+          "dispute.resolved",
+          "payout.created",
+          "payout.succeeded",
+          "payout.failed",
+          "customer.created",
+          "customer.updated",
+          "subscription.created",
+          "subscription.updated",
+          "subscription.cancelled",
+          "invoice.created",
+          "invoice.paid"
+        ]
+      },
+      "description": "Event types to subscribe to"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "failed"
+      ],
+      "default": "active"
+    },
+    "secret": {
+      "type": "string",
+      "description": "Webhook signing secret"
+    },
+    "version": {
+      "type": "string",
+      "default": "2024-01-01",
+      "description": "API version"
+    },
+    "delivery_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total deliveries attempted"
+    },
+    "success_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Successful deliveries"
+    },
+    "failure_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Failed deliveries"
+    },
+    "last_success": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last successful delivery"
+    },
+    "last_failure": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last failed delivery"
+    },
+    "last_failure_reason": {
+      "type": "string",
+      "description": "Reason for last failure"
+    },
+    "retry_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable automatic retries"
+    },
+    "max_retries": {
+      "type": "number",
+      "default": 3,
+      "description": "Maximum retry attempts"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "url",
+    "events"
+  ]
+}

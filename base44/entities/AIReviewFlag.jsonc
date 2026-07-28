@@ -1,0 +1,77 @@
+{
+  "name": "AIReviewFlag",
+  "type": "object",
+  "properties": {
+    "flag_id": {
+      "type": "string"
+    },
+    "decision_id": {
+      "type": "string"
+    },
+    "transaction_id": {
+      "type": "string"
+    },
+    "flag_reason": {
+      "type": "string",
+      "enum": [
+        "low_confidence",
+        "high_amount",
+        "high_risk",
+        "suspicious_pattern",
+        "policy_violation",
+        "customer_flag"
+      ],
+      "description": "Why this was flagged for review"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "under_review",
+        "resolved"
+      ],
+      "default": "pending"
+    },
+    "reviewed_by": {
+      "type": "string"
+    },
+    "review_decision": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "rejected",
+        "modified"
+      ]
+    },
+    "override_reason": {
+      "type": "string"
+    },
+    "original_ai_decision": {
+      "type": "object"
+    },
+    "modified_decision": {
+      "type": "object"
+    },
+    "review_duration_seconds": {
+      "type": "number"
+    },
+    "review_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "flag_id",
+    "decision_id",
+    "flag_reason"
+  ]
+}

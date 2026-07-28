@@ -1,0 +1,103 @@
+{
+  "name": "TaxJurisdiction",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for multi-tenancy (optional for global rates)"
+    },
+    "jurisdiction_code": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code or US state code"
+    },
+    "jurisdiction_name": {
+      "type": "string",
+      "description": "Full name of jurisdiction"
+    },
+    "jurisdiction_type": {
+      "type": "string",
+      "enum": [
+        "country",
+        "state",
+        "province",
+        "territory"
+      ],
+      "default": "country"
+    },
+    "tax_type": {
+      "type": "string",
+      "enum": [
+        "vat",
+        "gst",
+        "sales_tax",
+        "hst",
+        "pst"
+      ],
+      "description": "Type of tax in this jurisdiction"
+    },
+    "standard_rate": {
+      "type": "number",
+      "description": "Standard tax rate percentage (e.g., 20 for 20%)"
+    },
+    "reduced_rate": {
+      "type": "number",
+      "description": "Reduced tax rate percentage"
+    },
+    "super_reduced_rate": {
+      "type": "number",
+      "description": "Super reduced rate (some EU countries)"
+    },
+    "zero_rate": {
+      "type": "number",
+      "default": 0,
+      "description": "Zero rate (0%)"
+    },
+    "threshold_amount": {
+      "type": "number",
+      "description": "Registration threshold for this jurisdiction"
+    },
+    "threshold_currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_to": {
+      "type": "string",
+      "format": "date"
+    },
+    "reverse_charge_b2b": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether B2B reverse charge applies (EU)"
+    },
+    "tax_id_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether tax ID validation required"
+    },
+    "tax_id_format": {
+      "type": "string",
+      "description": "Regex pattern for tax ID validation"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "jurisdiction_code",
+    "tax_type",
+    "standard_rate"
+  ]
+}

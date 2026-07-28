@@ -1,0 +1,87 @@
+{
+  "name": "APIKey",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name for reference"
+    },
+    "key_name": {
+      "type": "string",
+      "description": "Friendly name for the API key"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "The actual API key (hashed)"
+    },
+    "api_secret": {
+      "type": "string",
+      "description": "The API secret (encrypted)"
+    },
+    "key_prefix": {
+      "type": "string",
+      "description": "First 8 characters for identification"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "sandbox",
+        "production"
+      ],
+      "default": "sandbox",
+      "description": "Environment for this key"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Allowed operations: payments, refunds, tokenize, transactions, webhooks"
+    },
+    "allowed_ips": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IP whitelist for this key"
+    },
+    "rate_limit": {
+      "type": "number",
+      "default": 100,
+      "description": "Requests per minute"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "revoked"
+      ],
+      "default": "active"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time this key was used"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total number of requests made with this key"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Expiration date for the key"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "key_name",
+    "api_key"
+  ]
+}

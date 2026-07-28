@@ -1,0 +1,105 @@
+{
+  "name": "PCIAuditLog",
+  "type": "object",
+  "properties": {
+    "audit_type": {
+      "type": "string",
+      "enum": [
+        "internal_audit",
+        "external_audit",
+        "qsa_assessment",
+        "asv_scan",
+        "penetration_test",
+        "gap_analysis",
+        "interim_review"
+      ],
+      "description": "Type of audit"
+    },
+    "audit_name": {
+      "type": "string",
+      "description": "Name/title of the audit"
+    },
+    "audit_scope": {
+      "type": "string",
+      "description": "Scope of the audit"
+    },
+    "auditor_name": {
+      "type": "string",
+      "description": "Lead auditor name"
+    },
+    "auditor_company": {
+      "type": "string",
+      "description": "QSA company if external"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "in_progress",
+        "completed",
+        "report_pending",
+        "closed"
+      ],
+      "default": "scheduled"
+    },
+    "overall_result": {
+      "type": "string",
+      "enum": [
+        "compliant",
+        "compliant_with_exceptions",
+        "non_compliant",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "compliance_score": {
+      "type": "number",
+      "description": "Overall compliance score percentage"
+    },
+    "findings_count": {
+      "type": "number",
+      "default": 0
+    },
+    "critical_findings": {
+      "type": "number",
+      "default": 0
+    },
+    "high_findings": {
+      "type": "number",
+      "default": 0
+    },
+    "report_url": {
+      "type": "string",
+      "description": "Link to audit report"
+    },
+    "aoc_url": {
+      "type": "string",
+      "description": "Attestation of Compliance document"
+    },
+    "certificate_url": {
+      "type": "string",
+      "description": "PCI DSS compliance certificate"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date",
+      "description": "Compliance validity date"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "audit_type",
+    "audit_name",
+    "auditor_name"
+  ]
+}

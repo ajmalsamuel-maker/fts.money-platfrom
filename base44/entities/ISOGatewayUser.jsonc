@@ -1,0 +1,50 @@
+{
+  "name": "ISOGatewayUser",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to ISOGatewayCustomer"
+    },
+    "email": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "administrator",
+        "developer",
+        "operations",
+        "analyst",
+        "viewer"
+      ],
+      "default": "viewer"
+    },
+    "password_hash": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "customer_id",
+    "email",
+    "full_name",
+    "role"
+  ]
+}

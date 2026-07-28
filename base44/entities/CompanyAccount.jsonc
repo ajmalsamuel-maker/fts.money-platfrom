@@ -1,0 +1,74 @@
+{
+  "name": "CompanyAccount",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string",
+      "description": "Reference to loyalty program"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Legal company name"
+    },
+    "company_email": {
+      "type": "string",
+      "description": "Company email for account"
+    },
+    "industry": {
+      "type": "string",
+      "description": "Industry sector"
+    },
+    "employee_count": {
+      "type": "number",
+      "description": "Number of employees"
+    },
+    "registration_number": {
+      "type": "string",
+      "description": "Company registration number"
+    },
+    "website": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "total_points": {
+      "type": "number",
+      "default": 0,
+      "description": "Aggregated points from all company participants"
+    },
+    "participant_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of employees linked to company"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "suspended"
+      ],
+      "default": "pending"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Featured in leaderboards"
+    },
+    "admin_email": {
+      "type": "string",
+      "description": "Company account administrator email"
+    },
+    "csr_goals": {
+      "type": "string",
+      "description": "Corporate social responsibility goals"
+    }
+  },
+  "required": [
+    "program_id",
+    "company_name",
+    "company_email",
+    "admin_email"
+  ]
+}

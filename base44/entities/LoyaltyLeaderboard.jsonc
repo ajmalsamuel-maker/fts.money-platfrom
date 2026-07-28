@@ -1,0 +1,126 @@
+{
+  "name": "LoyaltyLeaderboard",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "leaderboard_name": {
+      "type": "string",
+      "description": "Name of leaderboard/challenge"
+    },
+    "leaderboard_type": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "all_time",
+        "challenge",
+        "team",
+        "regional",
+        "global",
+        "seasonal",
+        "custom_period"
+      ],
+      "description": "Timeframe or type"
+    },
+    "activity_type": {
+      "type": "string",
+      "description": "What activity is being ranked"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "points",
+        "activities",
+        "distance",
+        "time",
+        "impact_score",
+        "custom"
+      ],
+      "default": "points"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "rankings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number"
+          },
+          "participant_id": {
+            "type": "string"
+          },
+          "participant_name": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "units": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Current rankings"
+    },
+    "prizes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number"
+          },
+          "reward": {
+            "type": "string"
+          },
+          "bonus_points": {
+            "type": "number"
+          },
+          "nft_badge": {
+            "type": "boolean"
+          }
+        }
+      },
+      "description": "Prizes for top performers"
+    },
+    "is_team_based": {
+      "type": "boolean",
+      "default": false
+    },
+    "region_filter": {
+      "type": "string",
+      "description": "Geographic region for regional leaderboards"
+    },
+    "min_activities_required": {
+      "type": "number",
+      "description": "Min activities to qualify for leaderboard",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "upcoming",
+        "active",
+        "completed",
+        "archived"
+      ],
+      "default": "upcoming"
+    }
+  },
+  "required": [
+    "program_id",
+    "leaderboard_name",
+    "leaderboard_type"
+  ]
+}

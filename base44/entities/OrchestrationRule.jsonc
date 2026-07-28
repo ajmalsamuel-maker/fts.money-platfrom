@@ -1,0 +1,162 @@
+{
+  "name": "OrchestrationRule",
+  "type": "object",
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "description": "Unique rule identifier"
+    },
+    "owner_type": {
+      "type": "string",
+      "enum": [
+        "psp",
+        "iso_gateway",
+        "platform"
+      ],
+      "description": "Who owns this rule"
+    },
+    "owner_id": {
+      "type": "string",
+      "description": "PSP code, ISO customer ID, or platform"
+    },
+    "rule_name": {
+      "type": "string",
+      "description": "Friendly rule name"
+    },
+    "rule_type": {
+      "type": "string",
+      "enum": [
+        "payment",
+        "payout",
+        "iso_translation"
+      ],
+      "description": "Type of routing"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Execution order (lower = higher priority)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "testing"
+      ],
+      "default": "active"
+    },
+    "conditions": {
+      "type": "object",
+      "properties": {
+        "amount_min": {
+          "type": "number"
+        },
+        "amount_max": {
+          "type": "number"
+        },
+        "currencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "payment_methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "time_rules": {
+          "type": "object",
+          "properties": {
+            "days_of_week": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "hours_start": {
+              "type": "string"
+            },
+            "hours_end": {
+              "type": "string"
+            }
+          }
+        },
+        "custom_fields": {
+          "type": "object"
+        }
+      },
+      "description": "Conditions to match for this rule"
+    },
+    "routing_strategy": {
+      "type": "string",
+      "enum": [
+        "single",
+        "failover",
+        "load_balance",
+        "cost_optimize"
+      ],
+      "default": "single",
+      "description": "How to select providers"
+    },
+    "target_routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "route_id": {
+            "type": "string"
+          },
+          "route_name": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "priority": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Ordered list of routes to try"
+    },
+    "fallback_rule_id": {
+      "type": "string",
+      "description": "Rule to use if this fails"
+    },
+    "max_retries": {
+      "type": "number",
+      "default": 3
+    },
+    "retry_delay_ms": {
+      "type": "number",
+      "default": 1000
+    },
+    "success_count": {
+      "type": "number",
+      "default": 0
+    },
+    "failure_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_executed": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "owner_type",
+    "owner_id",
+    "rule_name",
+    "rule_type"
+  ]
+}

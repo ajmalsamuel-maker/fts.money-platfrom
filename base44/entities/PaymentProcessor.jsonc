@@ -1,0 +1,91 @@
+{
+  "name": "PaymentProcessor",
+  "type": "object",
+  "properties": {
+    "processor_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "acquirer",
+        "gateway",
+        "psp",
+        "network"
+      ],
+      "default": "acquirer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance",
+        "degraded"
+      ],
+      "default": "active"
+    },
+    "supported_networks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "supported_countries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "base_fee_percentage": {
+      "type": "number"
+    },
+    "fixed_fee": {
+      "type": "number"
+    },
+    "success_rate": {
+      "type": "number"
+    },
+    "avg_response_time_ms": {
+      "type": "number"
+    },
+    "daily_volume_limit": {
+      "type": "number"
+    },
+    "current_daily_volume": {
+      "type": "number"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "api_endpoint": {
+      "type": "string"
+    },
+    "supports_3ds": {
+      "type": "boolean",
+      "default": true
+    },
+    "supports_recurring": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "processor_id",
+    "name",
+    "type"
+  ]
+}

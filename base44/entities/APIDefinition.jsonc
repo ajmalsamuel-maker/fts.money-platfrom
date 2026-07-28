@@ -1,0 +1,131 @@
+{
+  "name": "APIDefinition",
+  "type": "object",
+  "properties": {
+    "api_id": {
+      "type": "string",
+      "description": "Unique API identifier"
+    },
+    "api_name": {
+      "type": "string",
+      "description": "API name (e.g., 'Payment Processing API')"
+    },
+    "api_path": {
+      "type": "string",
+      "description": "Base API path (e.g., '/v1/payments')"
+    },
+    "api_description": {
+      "type": "string",
+      "description": "API description"
+    },
+    "current_version": {
+      "type": "string",
+      "description": "Current active version (e.g., 'v1', 'v2')"
+    },
+    "schema": {
+      "type": "object",
+      "description": "OpenAPI/Swagger schema definition"
+    },
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "DELETE",
+              "PATCH"
+            ]
+          },
+          "path": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "monetized": {
+            "type": "boolean",
+            "default": false
+          },
+          "price_per_call": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "API endpoints"
+    },
+    "authentication_required": {
+      "type": "boolean",
+      "default": true
+    },
+    "authentication_methods": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "jwt",
+          "api_key",
+          "oauth2",
+          "basic"
+        ]
+      }
+    },
+    "default_rate_limit_per_minute": {
+      "type": "number",
+      "default": 1000
+    },
+    "default_rate_limit_per_hour": {
+      "type": "number",
+      "default": 50000
+    },
+    "monetization_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "base_price_per_call": {
+      "type": "number",
+      "description": "Default price per API call"
+    },
+    "graphql_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "graphql_schema": {
+      "type": "string",
+      "description": "GraphQL schema definition"
+    },
+    "federation_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "GraphQL federation support"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated"
+      ],
+      "default": "draft"
+    },
+    "total_calls": {
+      "type": "number",
+      "default": 0,
+      "description": "Total API calls made"
+    },
+    "total_revenue": {
+      "type": "number",
+      "default": 0,
+      "description": "Total revenue generated"
+    }
+  },
+  "required": [
+    "api_name",
+    "api_path",
+    "current_version"
+  ]
+}

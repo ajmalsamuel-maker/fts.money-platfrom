@@ -1,0 +1,165 @@
+{
+  "name": "MIDPricing",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "mid": {
+      "type": "string",
+      "description": "Merchant Identifier"
+    },
+    "mid_pricing_name": {
+      "type": "string",
+      "description": "Name of this MID pricing model"
+    },
+    "inherits_merchant_pricing": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to use merchant default or override"
+    },
+    "merchant_pricing_id": {
+      "type": "string",
+      "description": "Reference to parent merchant pricing"
+    },
+    "effective_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "fee_configuration": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fee_code": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "fixed_amount": {
+            "type": "number"
+          },
+          "percentage": {
+            "type": "number"
+          },
+          "offset_from_settlement": {
+            "type": "boolean"
+          },
+          "payment_method_rates": {
+            "type": "object",
+            "description": "Payment method-specific pricing (e.g., visa_fixed, amex_percentage, alipay_fixed)",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "volume_tiers": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "transaction_fees": {
+      "type": "object",
+      "description": "Quick access transaction fee structure",
+      "properties": {
+        "sale": {
+          "type": "object"
+        },
+        "refund": {
+          "type": "object"
+        },
+        "authorization": {
+          "type": "object"
+        },
+        "capture": {
+          "type": "object"
+        },
+        "void": {
+          "type": "object"
+        },
+        "chargeback": {
+          "type": "object"
+        }
+      }
+    },
+    "monthly_fees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit_charge": {
+            "type": "number"
+          },
+          "charge_date": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "description": "Up to 5 monthly fees"
+    },
+    "annual_fee": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "amount": {
+          "type": "number"
+        },
+        "charge_date": {
+          "type": "string"
+        }
+      }
+    },
+    "setup_fee": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "amount": {
+          "type": "number"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "mid"
+  ]
+}

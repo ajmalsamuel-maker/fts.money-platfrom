@@ -1,0 +1,39 @@
+{
+  "name": "ActivityLog",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "participant_id": {
+      "type": "string"
+    },
+    "activity_type": {
+      "type": "string"
+    },
+    "activity_description": {
+      "type": "string"
+    },
+    "units_completed": {
+      "type": "number"
+    },
+    "points_earned": {
+      "type": "number"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "rejected"
+      ],
+      "default": "verified"
+    }
+  },
+  "required": [
+    "program_id",
+    "participant_id",
+    "activity_type",
+    "points_earned"
+  ]
+}

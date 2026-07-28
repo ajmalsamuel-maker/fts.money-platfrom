@@ -1,0 +1,128 @@
+{
+  "name": "BlockchainConfig",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to LoyaltyCustomer"
+    },
+    "program_id": {
+      "type": "string",
+      "description": "Reference to LoyaltyProgram"
+    },
+    "chain_type": {
+      "type": "string",
+      "enum": [
+        "polygon_edge",
+        "hyperledger_fabric",
+        "shared"
+      ],
+      "default": "polygon_edge",
+      "description": "Type of blockchain infrastructure"
+    },
+    "chain_id": {
+      "type": "string",
+      "description": "Unique chain ID for this customer"
+    },
+    "rpc_url": {
+      "type": "string",
+      "description": "Private RPC endpoint for this customer's chain"
+    },
+    "ws_url": {
+      "type": "string",
+      "description": "WebSocket endpoint"
+    },
+    "explorer_url": {
+      "type": "string",
+      "description": "Block explorer URL"
+    },
+    "deployer_address": {
+      "type": "string",
+      "description": "Address with deployment rights"
+    },
+    "deployer_private_key": {
+      "type": "string",
+      "description": "Encrypted private key for deployment"
+    },
+    "gas_relay_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether meta-transactions are enabled"
+    },
+    "relay_address": {
+      "type": "string",
+      "description": "Gas relay contract address"
+    },
+    "validator_nodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of validator node URLs"
+    },
+    "consortium_members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "admin",
+              "validator",
+              "auditor"
+            ]
+          }
+        }
+      },
+      "description": "Consortium governance members"
+    },
+    "provisioning_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "provisioning",
+        "active",
+        "suspended",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "provisioned_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "monthly_cost": {
+      "type": "number",
+      "description": "Predictable monthly infrastructure cost in USD",
+      "default": 0
+    },
+    "resources_allocated": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": {
+          "type": "number"
+        },
+        "ram_gb": {
+          "type": "number"
+        },
+        "storage_gb": {
+          "type": "number"
+        },
+        "transactions_per_month": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "required": [
+    "customer_id",
+    "chain_type"
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "name": "ServiceProvider",
+  "type": "object",
+  "properties": {
+    "provider_id": {
+      "type": "string",
+      "description": "Unique provider identifier"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Trading name"
+    },
+    "legal_name": {
+      "type": "string",
+      "description": "Legal entity name"
+    },
+    "website": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Company description"
+    },
+    "founding_year": {
+      "type": "number"
+    },
+    "funding_stage": {
+      "type": "string",
+      "enum": [
+        "pre_seed",
+        "seed",
+        "series_a",
+        "series_b",
+        "series_c",
+        "public",
+        "profitable",
+        "established"
+      ],
+      "description": "Company maturity"
+    },
+    "headquarters_country": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "support_email": {
+      "type": "string"
+    },
+    "support_phone": {
+      "type": "string"
+    },
+    "technical_contact_email": {
+      "type": "string"
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "SOC2_Type1",
+          "SOC2_Type2",
+          "ISO27001",
+          "PCI_DSS",
+          "GDPR",
+          "HIPAA",
+          "FedRAMP"
+        ]
+      },
+      "description": "Security and compliance certifications"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "under_review",
+        "approved",
+        "active",
+        "suspended",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "FTS admin who approved"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "commission_rate": {
+      "type": "number",
+      "description": "FTS commission percentage (e.g., 0.20 for 20%)"
+    },
+    "payment_schedule": {
+      "type": "string",
+      "enum": [
+        "weekly",
+        "monthly"
+      ],
+      "default": "monthly"
+    },
+    "bank_account": {
+      "type": "object",
+      "properties": {
+        "account_holder_name": {
+          "type": "string"
+        },
+        "account_number": {
+          "type": "string"
+        },
+        "routing_number": {
+          "type": "string"
+        },
+        "bank_name": {
+          "type": "string"
+        },
+        "swift_code": {
+          "type": "string"
+        }
+      }
+    },
+    "total_revenue_earned": {
+      "type": "number",
+      "default": 0,
+      "description": "Lifetime revenue from marketplace"
+    },
+    "monthly_revenue": {
+      "type": "number",
+      "default": 0,
+      "description": "Current month revenue"
+    },
+    "total_services": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of services offered"
+    },
+    "active_subscribers": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of PSPs using their services"
+    },
+    "average_rating": {
+      "type": "number",
+      "description": "Average rating across all services"
+    }
+  },
+  "required": [
+    "company_name",
+    "legal_name",
+    "contact_email"
+  ]
+}

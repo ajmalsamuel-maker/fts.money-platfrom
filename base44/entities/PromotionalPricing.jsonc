@@ -1,0 +1,118 @@
+{
+  "name": "PromotionalPricing",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "string",
+      "description": "Unique campaign identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "campaign_name": {
+      "type": "string",
+      "description": "Campaign name (e.g., 'Q1 2025 Launch Promo')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Campaign description"
+    },
+    "campaign_type": {
+      "type": "string",
+      "enum": [
+        "percentage_discount",
+        "fixed_discount",
+        "free_trial",
+        "custom"
+      ],
+      "description": "Type of promotional campaign"
+    },
+    "discount_percentage": {
+      "type": "number",
+      "description": "Discount percentage (e.g., 20 for 20% off)"
+    },
+    "discount_fixed": {
+      "type": "number",
+      "description": "Fixed discount amount"
+    },
+    "free_trial_days": {
+      "type": "number",
+      "description": "Number of free trial days"
+    },
+    "applies_to": {
+      "type": "string",
+      "enum": [
+        "all_merchants",
+        "new_merchants",
+        "specific_merchants"
+      ],
+      "default": "all_merchants",
+      "description": "Who can use this promotion"
+    },
+    "merchant_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specific merchant IDs"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Campaign start date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Campaign end date"
+    },
+    "max_uses": {
+      "type": "number",
+      "description": "Maximum number of merchants that can use this"
+    },
+    "current_uses": {
+      "type": "number",
+      "default": 0,
+      "description": "Current usage count"
+    },
+    "promo_code": {
+      "type": "string",
+      "description": "Optional promo code merchants must enter"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "active",
+        "paused",
+        "expired",
+        "cancelled"
+      ],
+      "default": "scheduled",
+      "description": "Campaign status"
+    },
+    "total_discount_given": {
+      "type": "number",
+      "default": 0,
+      "description": "Total discount amount given to merchants"
+    },
+    "total_revenue_impact": {
+      "type": "number",
+      "default": 0,
+      "description": "Revenue impact (negative)"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "campaign_name",
+    "campaign_type",
+    "start_date",
+    "end_date"
+  ]
+}

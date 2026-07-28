@@ -1,0 +1,128 @@
+{
+  "name": "DataSubjectRequest",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "description": "Unique DSAR identifier"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "Reference to User/Customer"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of data subject"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "access",
+        "rectification",
+        "erasure",
+        "portability",
+        "restriction",
+        "objection",
+        "automated_decision"
+      ],
+      "description": "Type of GDPR request"
+    },
+    "request_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When request was submitted"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "rejected",
+        "partially_completed"
+      ],
+      "default": "pending",
+      "description": "Request processing status"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Legal deadline (30 days from request)"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When request was fulfilled"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "DPO or staff member handling request"
+    },
+    "verification_method": {
+      "type": "string",
+      "enum": [
+        "email",
+        "identity_document",
+        "two_factor",
+        "in_person"
+      ],
+      "description": "How identity was verified"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "data_export_url": {
+      "type": "string",
+      "description": "Secure link to exported data (for access/portability)"
+    },
+    "data_export_expires": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When export link expires"
+    },
+    "rejection_reason": {
+      "type": "string",
+      "description": "Reason if request rejected"
+    },
+    "processing_notes": {
+      "type": "string",
+      "description": "Internal notes on processing"
+    },
+    "data_categories_affected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Types of data affected (transactions, personal, etc.)"
+    },
+    "communication_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "sent_by": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Communication history with data subject"
+    }
+  },
+  "required": [
+    "user_email",
+    "request_type",
+    "request_date"
+  ]
+}

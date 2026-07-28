@@ -1,0 +1,153 @@
+{
+  "name": "CapacityPlan",
+  "type": "object",
+  "properties": {
+    "plan_id": {
+      "type": "string",
+      "description": "Unique plan identifier"
+    },
+    "plan_name": {
+      "type": "string",
+      "description": "Plan name (e.g., 'Q1 2025 Expansion')"
+    },
+    "forecast_period": {
+      "type": "object",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "description": "Planning period"
+    },
+    "current_capacity": {
+      "type": "object",
+      "properties": {
+        "total_psps": {
+          "type": "number"
+        },
+        "cpu_cores": {
+          "type": "number"
+        },
+        "memory_gb": {
+          "type": "number"
+        },
+        "storage_gb": {
+          "type": "number"
+        }
+      },
+      "description": "Current capacity snapshot"
+    },
+    "projected_demand": {
+      "type": "object",
+      "properties": {
+        "new_psps": {
+          "type": "number"
+        },
+        "growth_rate_percentage": {
+          "type": "number"
+        },
+        "required_cpu_cores": {
+          "type": "number"
+        },
+        "required_memory_gb": {
+          "type": "number"
+        },
+        "required_storage_gb": {
+          "type": "number"
+        }
+      },
+      "description": "Projected resource demand"
+    },
+    "capacity_gap": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": {
+          "type": "number"
+        },
+        "memory_gb": {
+          "type": "number"
+        },
+        "storage_gb": {
+          "type": "number"
+        }
+      },
+      "description": "Gap between demand and current capacity"
+    },
+    "recommended_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "estimated_cost": {
+            "type": "number"
+          },
+          "implementation_date": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Recommended capacity expansion actions"
+    },
+    "monthly_forecast": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string"
+          },
+          "projected_psps": {
+            "type": "number"
+          },
+          "cpu_required": {
+            "type": "number"
+          },
+          "memory_required": {
+            "type": "number"
+          },
+          "storage_required": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Month-by-month forecast"
+    },
+    "budget_estimate": {
+      "type": "number",
+      "description": "Total budget required"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "approved",
+        "in_progress",
+        "completed"
+      ],
+      "default": "draft"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "plan_name",
+    "forecast_period"
+  ]
+}

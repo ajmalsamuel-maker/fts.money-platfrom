@@ -1,0 +1,65 @@
+{
+  "name": "ServiceRequest",
+  "type": "object",
+  "properties": {
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string"
+    },
+    "psp_name": {
+      "type": "string"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "payment_provider",
+        "payout_route"
+      ],
+      "description": "Type of service being requested"
+    },
+    "service_id": {
+      "type": "string",
+      "description": "ID of PaymentProvider or PayoutRoute"
+    },
+    "service_name": {
+      "type": "string"
+    },
+    "business_justification": {
+      "type": "string",
+      "description": "Why PSP needs this service"
+    },
+    "expected_volume": {
+      "type": "number",
+      "description": "Expected monthly transaction volume"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "under_review",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "description": "FTS admin who reviewed"
+    },
+    "review_notes": {
+      "type": "string"
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "psp_id",
+    "request_type",
+    "service_id"
+  ]
+}

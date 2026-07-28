@@ -1,0 +1,110 @@
+{
+  "name": "PaymentLink",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "link_id": {
+      "type": "string",
+      "description": "Unique link identifier"
+    },
+    "title": {
+      "type": "string",
+      "description": "Payment link title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Payment link description"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Payment amount"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "allow_custom_amount": {
+      "type": "boolean",
+      "default": false,
+      "description": "Allow customer to enter amount"
+    },
+    "min_amount": {
+      "type": "number",
+      "description": "Minimum amount if custom allowed"
+    },
+    "max_amount": {
+      "type": "number",
+      "description": "Maximum amount if custom allowed"
+    },
+    "link_url": {
+      "type": "string",
+      "description": "Generated payment link URL"
+    },
+    "qr_code_url": {
+      "type": "string",
+      "description": "QR code image URL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "completed",
+        "cancelled"
+      ],
+      "default": "active"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Link expiration date"
+    },
+    "max_uses": {
+      "type": "number",
+      "description": "Maximum number of uses (null = unlimited)"
+    },
+    "uses_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times used"
+    },
+    "views_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times viewed"
+    },
+    "success_url": {
+      "type": "string",
+      "description": "Redirect URL after successful payment"
+    },
+    "cancel_url": {
+      "type": "string",
+      "description": "Redirect URL if payment cancelled"
+    },
+    "collect_shipping": {
+      "type": "boolean",
+      "default": false,
+      "description": "Collect shipping address"
+    },
+    "collect_billing": {
+      "type": "boolean",
+      "default": true,
+      "description": "Collect billing address"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Custom metadata"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "title",
+    "amount"
+  ]
+}

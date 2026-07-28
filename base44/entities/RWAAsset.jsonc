@@ -1,0 +1,220 @@
+{
+  "name": "RWAAsset",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "description": "Unique blockchain asset identifier"
+    },
+    "asset_type": {
+      "type": "string",
+      "enum": [
+        "real_estate",
+        "treasury_bill",
+        "private_credit",
+        "commodity",
+        "equity",
+        "corporate_bond",
+        "municipal_bond",
+        "abs",
+        "fund_share",
+        "carbon_credit"
+      ],
+      "description": "Type of real-world asset"
+    },
+    "asset_class": {
+      "type": "string",
+      "description": "Specific asset class (e.g., 'gold', 'commercial_real_estate', 'senior_secured_loan')"
+    },
+    "name": {
+      "type": "string",
+      "description": "Token name"
+    },
+    "symbol": {
+      "type": "string",
+      "description": "Token symbol (e.g., XAUGOLD, REALTY1)"
+    },
+    "total_value": {
+      "type": "number",
+      "description": "Total asset value in USD"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "Legal jurisdiction (ISO 3166-1 alpha-2)"
+    },
+    "issuer_lei": {
+      "type": "string",
+      "description": "Legal Entity Identifier of issuer"
+    },
+    "issuer_email": {
+      "type": "string",
+      "description": "Email of issuer"
+    },
+    "contract_address": {
+      "type": "string",
+      "description": "Deployed smart contract address"
+    },
+    "network": {
+      "type": "string",
+      "enum": [
+        "ethereum",
+        "polygon",
+        "avalanche",
+        "base"
+      ],
+      "description": "Blockchain network"
+    },
+    "chain_id": {
+      "type": "number",
+      "description": "Blockchain chain ID"
+    },
+    "deployment_tx_hash": {
+      "type": "string",
+      "description": "Deployment transaction hash"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "deployed",
+        "active",
+        "matured",
+        "defaulted",
+        "redeemed"
+      ],
+      "default": "pending",
+      "description": "Asset status"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "pending_tokenization",
+        "active",
+        "matured",
+        "defaulted",
+        "redeemed",
+        "liquidated",
+        "suspended"
+      ],
+      "default": "pending_tokenization",
+      "description": "On-chain asset state"
+    },
+    "extension_module_address": {
+      "type": "string",
+      "description": "Address of asset-specific extension contract"
+    },
+    "valuation_adapter_address": {
+      "type": "string",
+      "description": "Address of valuation adapter contract"
+    },
+    "custody_type": {
+      "type": "string",
+      "enum": [
+        "smart_contract",
+        "fireblocks_mpc",
+        "bank_custodian",
+        "title_company",
+        "warehouse_receipt",
+        "legal_trust"
+      ],
+      "description": "Type of custody arrangement"
+    },
+    "custodian_name": {
+      "type": "string",
+      "description": "Name of custodian"
+    },
+    "custody_reference": {
+      "type": "string",
+      "description": "Off-chain custody reference (deed number, vault ID, etc.)"
+    },
+    "current_value": {
+      "type": "number",
+      "description": "Current valuation"
+    },
+    "last_valuation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last valuation timestamp"
+    },
+    "maturity_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Asset maturity date (if applicable)"
+    },
+    "is_redeemable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether tokens can be redeemed"
+    },
+    "redemption_type": {
+      "type": "string",
+      "enum": [
+        "fixed_maturity",
+        "on_demand",
+        "asset_sale_triggered",
+        "pro_rata_amortizing",
+        "callable"
+      ],
+      "description": "Type of redemption"
+    },
+    "total_supply": {
+      "type": "number",
+      "description": "Total token supply"
+    },
+    "min_investment": {
+      "type": "number",
+      "description": "Minimum investment amount in USD"
+    },
+    "accredited_only": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether restricted to accredited investors"
+    },
+    "max_investors": {
+      "type": "number",
+      "description": "Maximum number of investors (Reg D limit)"
+    },
+    "risk_rating": {
+      "type": "number",
+      "description": "Risk rating 1-10"
+    },
+    "expected_return": {
+      "type": "number",
+      "description": "Expected annual return (basis points)"
+    },
+    "asset_metadata": {
+      "type": "object",
+      "description": "Asset-specific metadata (property details, loan terms, etc.)"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "document_type": {
+            "type": "string"
+          },
+          "document_name": {
+            "type": "string"
+          },
+          "ipfs_hash": {
+            "type": "string"
+          },
+          "upload_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Legal documents, appraisals, certificates"
+    }
+  },
+  "required": [
+    "asset_type",
+    "name",
+    "symbol",
+    "total_value",
+    "jurisdiction",
+    "issuer_lei"
+  ]
+}

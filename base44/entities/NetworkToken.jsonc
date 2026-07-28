@@ -1,0 +1,91 @@
+{
+  "name": "NetworkToken",
+  "type": "object",
+  "properties": {
+    "token_id": {
+      "type": "string",
+      "description": "Unique network token identifier"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to Customer"
+    },
+    "saved_card_id": {
+      "type": "string",
+      "description": "Reference to original SavedCard"
+    },
+    "network": {
+      "type": "string",
+      "enum": [
+        "visa",
+        "mastercard",
+        "amex",
+        "discover"
+      ],
+      "description": "Card network"
+    },
+    "token_value": {
+      "type": "string",
+      "description": "Network token PAN replacement"
+    },
+    "token_cryptogram": {
+      "type": "string",
+      "description": "Dynamic cryptogram for authorization"
+    },
+    "token_expiry_month": {
+      "type": "string"
+    },
+    "token_expiry_year": {
+      "type": "string"
+    },
+    "token_requestor_id": {
+      "type": "string",
+      "description": "Token Service Provider ID"
+    },
+    "tokenization_method": {
+      "type": "string",
+      "enum": [
+        "visa_token_service",
+        "mastercard_digital_enablement",
+        "amex_token_service"
+      ],
+      "description": "Tokenization provider"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "deactivated",
+        "expired"
+      ],
+      "default": "active"
+    },
+    "authorization_rate_improvement": {
+      "type": "number",
+      "description": "Percentage improvement in auth rate"
+    },
+    "activation_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "merchant_id",
+    "customer_id",
+    "network",
+    "token_value"
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "name": "PSPWholesaleOffering",
+  "type": "object",
+  "properties": {
+    "offering_id": {
+      "type": "string",
+      "description": "Unique offering identifier"
+    },
+    "provider_psp_id": {
+      "type": "string",
+      "description": "PSP providing the service"
+    },
+    "provider_psp_code": {
+      "type": "string"
+    },
+    "provider_psp_name": {
+      "type": "string"
+    },
+    "offering_name": {
+      "type": "string",
+      "description": "Service/product name"
+    },
+    "offering_category": {
+      "type": "string",
+      "enum": [
+        "payment_rail",
+        "payout_route",
+        "compliance",
+        "fraud_detection",
+        "analytics",
+        "crypto",
+        "api_service",
+        "terminal_rental",
+        "other"
+      ],
+      "description": "Type of offering"
+    },
+    "description": {
+      "type": "string"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Key features"
+    },
+    "wholesale_pricing": {
+      "type": "object",
+      "properties": {
+        "pricing_model": {
+          "type": "string",
+          "enum": [
+            "fixed_monthly",
+            "per_transaction",
+            "tiered",
+            "revenue_share"
+          ]
+        },
+        "base_price": {
+          "type": "number"
+        },
+        "per_transaction_fee": {
+          "type": "number"
+        },
+        "revenue_share_percentage": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD"
+        }
+      }
+    },
+    "platform_commission_percentage": {
+      "type": "number",
+      "description": "FTS.Money's commission from this wholesale deal",
+      "default": 15
+    },
+    "min_commitment_months": {
+      "type": "number",
+      "description": "Minimum subscription period"
+    },
+    "max_resellers": {
+      "type": "number",
+      "description": "Maximum number of PSPs that can subscribe"
+    },
+    "current_resellers": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_approval",
+        "approved",
+        "active",
+        "suspended",
+        "rejected"
+      ],
+      "default": "draft"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "private",
+        "public"
+      ],
+      "default": "public",
+      "description": "Who can see this offering"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "Platform admin who approved"
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "documentation_url": {
+      "type": "string"
+    },
+    "api_endpoint": {
+      "type": "string"
+    },
+    "sla_uptime": {
+      "type": "number",
+      "description": "Guaranteed uptime percentage"
+    },
+    "support_level": {
+      "type": "string",
+      "enum": [
+        "community",
+        "email",
+        "priority",
+        "dedicated"
+      ]
+    },
+    "total_revenue": {
+      "type": "number",
+      "default": 0,
+      "description": "Total revenue generated"
+    },
+    "platform_earnings": {
+      "type": "number",
+      "default": 0,
+      "description": "FTS.Money earnings from this offering"
+    }
+  },
+  "required": [
+    "provider_psp_id",
+    "offering_name",
+    "offering_category",
+    "wholesale_pricing"
+  ]
+}

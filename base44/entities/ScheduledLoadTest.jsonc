@@ -1,0 +1,90 @@
+{
+  "name": "ScheduledLoadTest",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation"
+    },
+    "test_name": {
+      "type": "string",
+      "description": "Name of the scheduled test"
+    },
+    "merchant_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Merchants to test against"
+    },
+    "target_tps": {
+      "type": "number",
+      "default": 10
+    },
+    "duration_seconds": {
+      "type": "number",
+      "default": 60
+    },
+    "test_scenarios": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Scenario types: successful_payment, declined_card, insufficient_funds, fraud_detected, timeout, network_error, 3ds_required, expired_card, invalid_cvv, velocity_limit"
+    },
+    "scenario_distribution": {
+      "type": "object",
+      "description": "Percentage distribution of scenarios"
+    },
+    "schedule_type": {
+      "type": "string",
+      "enum": [
+        "one_time",
+        "recurring"
+      ],
+      "default": "one_time"
+    },
+    "scheduled_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When to run (one-time)"
+    },
+    "recurrence_pattern": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "daily",
+        "weekly"
+      ],
+      "description": "How often to repeat"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "running",
+        "completed",
+        "failed",
+        "cancelled"
+      ],
+      "default": "scheduled"
+    },
+    "last_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "results_summary": {
+      "type": "object",
+      "description": "Last test run results"
+    }
+  },
+  "required": [
+    "psp_code",
+    "test_name",
+    "merchant_ids"
+  ]
+}

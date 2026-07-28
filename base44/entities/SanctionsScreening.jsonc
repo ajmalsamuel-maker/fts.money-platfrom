@@ -1,0 +1,121 @@
+{
+  "name": "SanctionsScreening",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to Transaction"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "screening_type": {
+      "type": "string",
+      "enum": [
+        "transaction",
+        "merchant_onboarding",
+        "customer",
+        "wallet_address"
+      ],
+      "description": "Type of screening performed"
+    },
+    "screened_entity": {
+      "type": "string",
+      "description": "Name/address being screened"
+    },
+    "screened_country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code"
+    },
+    "screening_lists": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lists checked (OFAC SDN, UN, EU, etc.)"
+    },
+    "match_found": {
+      "type": "boolean",
+      "default": false
+    },
+    "match_score": {
+      "type": "number",
+      "description": "0-100 match confidence score"
+    },
+    "match_details": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Details of any matches found"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "low"
+    },
+    "screening_result": {
+      "type": "string",
+      "enum": [
+        "clear",
+        "potential_match",
+        "confirmed_match",
+        "error"
+      ],
+      "default": "clear"
+    },
+    "screening_provider": {
+      "type": "string",
+      "description": "Provider used (Dow Jones, Refinitiv, ComplyAdvantage, etc.)"
+    },
+    "screening_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "manual_review_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "manual_review_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_review",
+        "cleared",
+        "escalated",
+        "blocked"
+      ]
+    },
+    "reviewed_by": {
+      "type": "string",
+      "description": "User who performed manual review"
+    },
+    "review_notes": {
+      "type": "string"
+    },
+    "action_taken": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "blocked",
+        "reported",
+        "escalated"
+      ],
+      "description": "Action taken after screening"
+    },
+    "blockchain_analysis": {
+      "type": "object",
+      "description": "Blockchain forensics data (Chainalysis, Elliptic, TRM Labs)"
+    }
+  },
+  "required": [
+    "screening_type",
+    "screened_entity"
+  ]
+}

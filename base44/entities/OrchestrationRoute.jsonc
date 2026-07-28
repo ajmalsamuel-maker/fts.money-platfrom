@@ -1,0 +1,102 @@
+{
+  "name": "OrchestrationRoute",
+  "type": "object",
+  "properties": {
+    "route_id": {
+      "type": "string",
+      "description": "Unique route identifier"
+    },
+    "route_name": {
+      "type": "string",
+      "description": "Display name"
+    },
+    "route_type": {
+      "type": "string",
+      "enum": [
+        "payment_provider",
+        "payout_method",
+        "iso_connector",
+        "custom"
+      ],
+      "description": "Type of destination"
+    },
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to payment provider, payout route, etc."
+    },
+    "provider_name": {
+      "type": "string"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What this route supports (currencies, payment methods, etc.)"
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "supported_countries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "cost_per_transaction": {
+      "type": "number",
+      "description": "Cost to use this route"
+    },
+    "cost_percentage": {
+      "type": "number",
+      "description": "Percentage fee"
+    },
+    "avg_success_rate": {
+      "type": "number",
+      "description": "Historical success rate %"
+    },
+    "avg_latency_ms": {
+      "type": "number",
+      "description": "Average processing time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance"
+      ],
+      "default": "active"
+    },
+    "health_status": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "degraded",
+        "down"
+      ],
+      "default": "healthy"
+    },
+    "last_health_check": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "route_name",
+    "route_type"
+  ]
+}

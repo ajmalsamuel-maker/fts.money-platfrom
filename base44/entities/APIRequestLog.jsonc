@@ -1,0 +1,80 @@
+{
+  "name": "APIRequestLog",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "api_key_id": {
+      "type": "string",
+      "description": "Reference to APIKey used"
+    },
+    "request_id": {
+      "type": "string",
+      "description": "Unique request identifier"
+    },
+    "endpoint": {
+      "type": "string",
+      "description": "API endpoint called"
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ],
+      "description": "HTTP method"
+    },
+    "request_body": {
+      "type": "string",
+      "description": "Request payload (sanitized)"
+    },
+    "response_body": {
+      "type": "string",
+      "description": "Response payload"
+    },
+    "status_code": {
+      "type": "number",
+      "description": "HTTP status code"
+    },
+    "gateway_used": {
+      "type": "string",
+      "description": "Payment gateway that processed the request"
+    },
+    "gateway_request_id": {
+      "type": "string",
+      "description": "Gateway's transaction/request ID"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "Client IP address"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Client user agent"
+    },
+    "response_time_ms": {
+      "type": "number",
+      "description": "Response time in milliseconds"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error message if request failed"
+    },
+    "rate_limited": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether request was rate limited"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "request_id",
+    "endpoint",
+    "method"
+  ]
+}

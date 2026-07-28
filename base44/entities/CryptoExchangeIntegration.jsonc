@@ -1,0 +1,183 @@
+{
+  "name": "CryptoExchangeIntegration",
+  "type": "object",
+  "properties": {
+    "integration_id": {
+      "type": "string",
+      "description": "Unique integration identifier"
+    },
+    "exchange_name": {
+      "type": "string",
+      "description": "Exchange name (Coinbase, Kraken, Bitstamp, etc.)"
+    },
+    "exchange_type": {
+      "type": "string",
+      "enum": [
+        "institutional",
+        "retail",
+        "otc",
+        "liquidity_provider"
+      ],
+      "description": "Type of exchange integration"
+    },
+    "license_jurisdiction": {
+      "type": "string",
+      "description": "ISO 3166-1 where exchange is licensed"
+    },
+    "vasp_registration": {
+      "type": "string",
+      "description": "VASP registration number"
+    },
+    "api_type": {
+      "type": "string",
+      "enum": [
+        "rest",
+        "websocket",
+        "fix",
+        "graphql"
+      ],
+      "description": "API protocol"
+    },
+    "api_endpoint": {
+      "type": "string",
+      "description": "Base API endpoint URL"
+    },
+    "api_key_reference": {
+      "type": "string",
+      "description": "Reference to stored API key"
+    },
+    "supports_travel_rule": {
+      "type": "boolean",
+      "default": false,
+      "description": "Exchange supports FATF Travel Rule"
+    },
+    "travel_rule_protocol": {
+      "type": "string",
+      "enum": [
+        "openvasp",
+        "trisa",
+        "trp",
+        "sygna",
+        "proprietary"
+      ],
+      "description": "Travel Rule protocol used"
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Services provided (on-ramp, off-ramp, custody, staking)"
+    },
+    "fiat_currencies_supported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 4217 fiat currencies"
+    },
+    "crypto_assets_supported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 23257 crypto assets"
+    },
+    "on_ramp_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "on_ramp_fee_percentage": {
+      "type": "number",
+      "description": "Fee for fiat to crypto conversion"
+    },
+    "off_ramp_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "off_ramp_fee_percentage": {
+      "type": "number",
+      "description": "Fee for crypto to fiat conversion"
+    },
+    "min_transaction_amount": {
+      "type": "number"
+    },
+    "max_transaction_amount": {
+      "type": "number"
+    },
+    "daily_limit": {
+      "type": "number"
+    },
+    "settlement_time": {
+      "type": "string",
+      "description": "Expected settlement time (e.g., instant, T+1)"
+    },
+    "kyc_required": {
+      "type": "boolean",
+      "default": true
+    },
+    "kyc_tier": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "intermediate",
+        "advanced",
+        "institutional"
+      ],
+      "description": "KYC tier for this integration"
+    },
+    "custody_type": {
+      "type": "string",
+      "enum": [
+        "self_custody",
+        "exchange_custody",
+        "third_party_custody"
+      ],
+      "description": "How crypto is held"
+    },
+    "insurance_coverage": {
+      "type": "number",
+      "description": "Insurance coverage amount in USD"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "testing",
+        "suspended"
+      ],
+      "default": "active"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Routing priority (lower = higher priority)"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Percentage of successful transactions"
+    },
+    "average_execution_time": {
+      "type": "number",
+      "description": "Average time to execute in seconds"
+    },
+    "rate_limits": {
+      "type": "object",
+      "description": "API rate limit configuration"
+    },
+    "webhook_url": {
+      "type": "string",
+      "description": "Webhook endpoint for exchange callbacks"
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "exchange_name",
+    "exchange_type",
+    "api_endpoint"
+  ]
+}

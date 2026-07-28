@@ -1,0 +1,123 @@
+{
+  "name": "PCICompliance",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "pci_level": {
+      "type": "string",
+      "enum": [
+        "level_1",
+        "level_2",
+        "level_3",
+        "level_4"
+      ],
+      "description": "PCI DSS compliance level based on transaction volume"
+    },
+    "certification_status": {
+      "type": "string",
+      "enum": [
+        "compliant",
+        "non_compliant",
+        "pending",
+        "not_applicable"
+      ],
+      "default": "pending"
+    },
+    "saq_type": {
+      "type": "string",
+      "enum": [
+        "SAQ_A",
+        "SAQ_A-EP",
+        "SAQ_B",
+        "SAQ_C",
+        "SAQ_D",
+        "SAQ_P2PE"
+      ],
+      "description": "Self-Assessment Questionnaire type"
+    },
+    "aoc_status": {
+      "type": "string",
+      "enum": [
+        "valid",
+        "expired",
+        "not_submitted"
+      ],
+      "description": "Attestation of Compliance status"
+    },
+    "aoc_expiry_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "qsa_company": {
+      "type": "string",
+      "description": "Qualified Security Assessor company name"
+    },
+    "last_assessment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_assessment_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "vulnerability_scan_status": {
+      "type": "string",
+      "enum": [
+        "passing",
+        "failing",
+        "not_completed"
+      ],
+      "default": "not_completed"
+    },
+    "last_scan_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "asv_company": {
+      "type": "string",
+      "description": "Approved Scanning Vendor"
+    },
+    "compliance_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "requirement_id": {
+            "type": "string"
+          },
+          "requirement_name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "compliant",
+              "non_compliant",
+              "in_progress",
+              "not_applicable"
+            ]
+          },
+          "evidence_url": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "annual_transaction_volume": {
+      "type": "number",
+      "description": "Annual card transaction volume"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "pci_level"
+  ]
+}

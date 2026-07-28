@@ -1,0 +1,108 @@
+{
+  "name": "TaxCategory",
+  "type": "object",
+  "properties": {
+    "category_code": {
+      "type": "string",
+      "description": "Unique identifier (e.g., DIGITAL_SERVICES, GOODS, FINANCIAL)"
+    },
+    "category_name": {
+      "type": "string",
+      "description": "Human-readable name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "unspsc_code": {
+      "type": "string",
+      "description": "UN Standard Products and Services Code (8-digit, e.g., 81111500 for Software)"
+    },
+    "un_cpc_code": {
+      "type": "string",
+      "description": "UN Central Product Classification code (e.g., 47 for Telecommunications)"
+    },
+    "uncl5305_code": {
+      "type": "string",
+      "enum": [
+        "S",
+        "Z",
+        "E",
+        "AE",
+        "K",
+        "G",
+        "O",
+        "L",
+        "M",
+        "B",
+        "AA"
+      ],
+      "description": "UN/CEFACT UNCL5305 tax category code (S=Standard, Z=Zero, E=Exempt, AE=Reverse Charge, K=Intra-EU, G=Export, O=Out of scope)"
+    },
+    "default_rate_type": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "reduced",
+        "super_reduced",
+        "zero",
+        "exempt"
+      ],
+      "default": "standard"
+    },
+    "jurisdiction_overrides": {
+      "type": "array",
+      "description": "Jurisdiction-specific rate overrides",
+      "items": {
+        "type": "object",
+        "properties": {
+          "jurisdiction_code": {
+            "type": "string"
+          },
+          "rate_type": {
+            "type": "string"
+          },
+          "custom_rate": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "industry_codes": {
+      "type": "array",
+      "description": "Related MCC/SIC/NAICS codes",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_digital_service": {
+      "type": "boolean",
+      "default": false,
+      "description": "Subject to digital services tax rules"
+    },
+    "is_financial_service": {
+      "type": "boolean",
+      "default": false,
+      "description": "Often exempt from VAT"
+    },
+    "iso_20022_code": {
+      "type": "string",
+      "description": "ISO 20022 tax type code (e.g., VATA for VAT, GSTX for GST)"
+    },
+    "eu_directive_article": {
+      "type": "string",
+      "description": "EU VAT Directive article reference (e.g., Article 44, Article 196)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "category_code",
+    "category_name"
+  ]
+}

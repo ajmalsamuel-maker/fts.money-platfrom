@@ -1,0 +1,119 @@
+{
+  "name": "ReconciliationBatch",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "batch_id": {
+      "type": "string",
+      "description": "Unique batch identifier"
+    },
+    "settlement_period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "settlement_period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "hold"
+      ],
+      "default": "pending"
+    },
+    "gross_amount": {
+      "type": "number",
+      "description": "Total transaction amount"
+    },
+    "fees": {
+      "type": "number",
+      "description": "Total fees deducted"
+    },
+    "chargebacks": {
+      "type": "number",
+      "default": 0
+    },
+    "refunds": {
+      "type": "number",
+      "default": 0
+    },
+    "net_amount": {
+      "type": "number",
+      "description": "Amount to be settled"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "transaction_count": {
+      "type": "integer"
+    },
+    "file_format": {
+      "type": "string",
+      "enum": [
+        "csv",
+        "camt053",
+        "iso20022"
+      ],
+      "description": "Bank file format"
+    },
+    "hold_period_days": {
+      "type": "integer",
+      "default": 0
+    },
+    "settlement_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payout_method": {
+      "type": "string",
+      "enum": [
+        "bank_transfer",
+        "wire",
+        "ach",
+        "manual"
+      ]
+    },
+    "bank_reference": {
+      "type": "string"
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reconciled",
+        "discrepancy",
+        "manual_review"
+      ],
+      "default": "pending"
+    },
+    "discrepancy_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "discrepancy_notes": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "psp_code",
+    "merchant_id",
+    "batch_id",
+    "settlement_period_start"
+  ]
+}

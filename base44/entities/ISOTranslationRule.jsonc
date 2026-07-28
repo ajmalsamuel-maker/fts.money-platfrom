@@ -1,0 +1,100 @@
+{
+  "name": "ISOTranslationRule",
+  "type": "object",
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "description": "Unique rule identifier"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to ISOGatewayCustomer"
+    },
+    "connection_id": {
+      "type": "string",
+      "description": "Specific connection or null for global"
+    },
+    "rule_name": {
+      "type": "string",
+      "description": "Friendly name"
+    },
+    "source_standard": {
+      "type": "string",
+      "enum": [
+        "ISO8583",
+        "ISO20022"
+      ]
+    },
+    "target_standard": {
+      "type": "string",
+      "enum": [
+        "ISO8583",
+        "ISO20022"
+      ]
+    },
+    "message_type_filter": {
+      "type": "string",
+      "description": "Apply only to specific MTI or ISO 20022 type"
+    },
+    "field_mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_field": {
+            "type": "string",
+            "description": "ISO 8583 field number or ISO 20022 XPath"
+          },
+          "target_field": {
+            "type": "string"
+          },
+          "transformation": {
+            "type": "string",
+            "enum": [
+              "direct",
+              "uppercase",
+              "lowercase",
+              "format_date",
+              "format_amount",
+              "custom"
+            ]
+          },
+          "custom_logic": {
+            "type": "string",
+            "description": "JavaScript function for custom transformation"
+          }
+        }
+      }
+    },
+    "default_values": {
+      "type": "object",
+      "description": "Default values for missing fields"
+    },
+    "validation_rules": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Custom validation rules"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Rule execution order"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "customer_id",
+    "rule_name",
+    "source_standard",
+    "target_standard"
+  ]
+}

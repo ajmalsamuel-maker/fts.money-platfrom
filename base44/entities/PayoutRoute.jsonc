@@ -1,0 +1,116 @@
+{
+  "name": "PayoutRoute",
+  "type": "object",
+  "properties": {
+    "route_name": {
+      "type": "string",
+      "description": "Name of the payout route"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Route priority (lower = higher priority)"
+    },
+    "channel_type": {
+      "type": "string",
+      "enum": [
+        "bank_transfer",
+        "instant_payment",
+        "card_payout",
+        "wallet",
+        "crypto",
+        "swift",
+        "sepa",
+        "ach",
+        "paypal",
+        "venmo",
+        "cashapp",
+        "alipay",
+        "wechat_pay",
+        "gcash",
+        "paytm",
+        "m_pesa",
+        "pix",
+        "upi",
+        "bitcoin",
+        "ethereum",
+        "usdt",
+        "usdc",
+        "lightning_network",
+        "stablecoin"
+      ],
+      "description": "Financial channel type"
+    },
+    "provider": {
+      "type": "string",
+      "description": "Provider name (e.g., Wise, PayPal, Stripe Connect, Coinbase)"
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported currencies for this route"
+    },
+    "countries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported countries (ISO 3166-1)"
+    },
+    "cost_percentage": {
+      "type": "number",
+      "description": "Fee percentage for this route"
+    },
+    "cost_fixed": {
+      "type": "number",
+      "description": "Fixed fee for this route"
+    },
+    "min_amount": {
+      "type": "number",
+      "description": "Minimum payout amount"
+    },
+    "max_amount": {
+      "type": "number",
+      "description": "Maximum payout amount"
+    },
+    "speed": {
+      "type": "string",
+      "enum": [
+        "instant",
+        "same_day",
+        "next_day",
+        "2_3_days",
+        "3_5_days"
+      ],
+      "description": "Payout speed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance"
+      ],
+      "default": "active"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Historical success rate percentage"
+    },
+    "avg_processing_time": {
+      "type": "number",
+      "description": "Average processing time in minutes"
+    },
+    "conditions": {
+      "type": "object",
+      "description": "Additional routing conditions"
+    }
+  },
+  "required": [
+    "route_name",
+    "channel_type",
+    "provider"
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "name": "UsageMeter",
+  "type": "object",
+  "properties": {
+    "customer_email": {
+      "type": "string",
+      "description": "Customer being metered"
+    },
+    "customer_type": {
+      "type": "string",
+      "enum": [
+        "psp",
+        "merchant",
+        "iso_customer",
+        "orchestration_customer",
+        "crypto_customer",
+        "rwa_provider"
+      ],
+      "description": "Type of customer"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "psp_payment_processing",
+        "iso_gateway",
+        "orchestration",
+        "crypto_vasp",
+        "rwa_tokenization",
+        "tax_management",
+        "einvoicing",
+        "pci_compliance",
+        "lei_compliance",
+        "digital_identity"
+      ],
+      "description": "Service being metered"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "transaction",
+        "iso_message",
+        "orchestration_route",
+        "wallet_creation",
+        "kyc_verification",
+        "token_deployment",
+        "tax_calculation",
+        "einvoice_submission",
+        "api_call"
+      ],
+      "description": "Type of usage metric"
+    },
+    "current_period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "current_period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "current_usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Usage count in current period"
+    },
+    "current_usage_volume": {
+      "type": "number",
+      "default": 0,
+      "description": "Transaction/message volume in current period"
+    },
+    "included_units": {
+      "type": "number",
+      "description": "Included units in subscription (before overage)"
+    },
+    "overage_units": {
+      "type": "number",
+      "default": 0,
+      "description": "Units exceeding included amount"
+    },
+    "unit_price": {
+      "type": "number",
+      "description": "Price per unit for overage"
+    },
+    "estimated_charge": {
+      "type": "number",
+      "default": 0,
+      "description": "Estimated charge for current period"
+    },
+    "last_reset_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_reset_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reset_frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly"
+      ],
+      "default": "monthly"
+    },
+    "usage_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "count": {
+            "type": "number"
+          },
+          "volume": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Daily usage history for current period"
+    }
+  },
+  "required": [
+    "customer_email",
+    "service_type",
+    "metric_type"
+  ]
+}

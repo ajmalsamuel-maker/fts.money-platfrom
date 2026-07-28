@@ -1,0 +1,275 @@
+{
+  "name": "RecurringPayment",
+  "type": "object",
+  "properties": {
+    "recurring_id": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "plan_type": {
+      "type": "string",
+      "enum": [
+        "subscription",
+        "installment",
+        "scheduled",
+        "usage_based"
+      ],
+      "default": "subscription"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "cancelled",
+        "completed",
+        "pending",
+        "dunning"
+      ],
+      "default": "pending"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly",
+        "yearly",
+        "custom"
+      ],
+      "default": "monthly"
+    },
+    "interval_count": {
+      "type": "number",
+      "default": 1,
+      "description": "e.g., every 2 months"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "total_cycles": {
+      "type": "number",
+      "description": "Total number of payments, null for indefinite"
+    },
+    "cycles_completed": {
+      "type": "number",
+      "default": 0
+    },
+    "next_payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "last_payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "payment_method": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "last_four": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "retry_policy": {
+      "type": "object",
+      "properties": {
+        "max_retries": {
+          "type": "number",
+          "default": 3
+        },
+        "retry_interval_days": {
+          "type": "number",
+          "default": 3
+        },
+        "retry_schedule": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Custom retry schedule in days [1, 3, 7]"
+        },
+        "dunning_enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "escalation_enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "failed_payment_count": {
+      "type": "number",
+      "default": 0
+    },
+    "total_amount_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "description": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "ai_managed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether AI agent manages this subscription"
+    },
+    "ai_agent_id": {
+      "type": "string"
+    },
+    "churn_risk_score": {
+      "type": "number",
+      "description": "AI-predicted churn probability (0-1)"
+    },
+    "churn_factors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Factors contributing to churn risk"
+    },
+    "retention_offer": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "discount",
+            "free_trial_extension",
+            "feature_upgrade",
+            "custom"
+          ]
+        },
+        "value": {
+          "type": "string"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "applied": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "billing_configuration": {
+      "type": "object",
+      "properties": {
+        "proration_enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "billing_day": {
+          "type": "number",
+          "description": "Day of month for billing (1-31)"
+        },
+        "billing_anchor_type": {
+          "type": "string",
+          "enum": [
+            "start_date",
+            "fixed_day",
+            "custom"
+          ],
+          "default": "start_date"
+        },
+        "usage_billing_trigger": {
+          "type": "object",
+          "properties": {
+            "metric": {
+              "type": "string"
+            },
+            "threshold": {
+              "type": "number"
+            },
+            "billing_method": {
+              "type": "string",
+              "enum": [
+                "tiered",
+                "volume",
+                "per_unit"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "dunning_state": {
+      "type": "object",
+      "properties": {
+        "current_attempt": {
+          "type": "number",
+          "default": 0
+        },
+        "next_retry_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "communications_sent": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "sent_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "template_id": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "escalated": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "iso20022_data": {
+      "type": "object",
+      "description": "ISO 20022 compliant recurring payment data"
+    }
+  },
+  "required": [
+    "recurring_id",
+    "merchant_id",
+    "customer_email",
+    "amount",
+    "frequency"
+  ]
+}

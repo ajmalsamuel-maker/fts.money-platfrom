@@ -1,0 +1,108 @@
+{
+  "name": "OrchestrationExecution",
+  "type": "object",
+  "properties": {
+    "execution_id": {
+      "type": "string",
+      "description": "Unique execution identifier"
+    },
+    "owner_type": {
+      "type": "string",
+      "enum": [
+        "psp",
+        "iso_gateway",
+        "platform"
+      ]
+    },
+    "owner_id": {
+      "type": "string"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to original transaction/message"
+    },
+    "rule_id": {
+      "type": "string",
+      "description": "Rule that was matched"
+    },
+    "rule_name": {
+      "type": "string"
+    },
+    "route_id": {
+      "type": "string",
+      "description": "Route that was selected"
+    },
+    "route_name": {
+      "type": "string"
+    },
+    "routing_strategy": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "matched",
+        "executed",
+        "failed",
+        "retrying"
+      ],
+      "default": "matched"
+    },
+    "execution_time_ms": {
+      "type": "number",
+      "description": "Time to select and execute route"
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "route_id": {
+            "type": "string"
+          },
+          "route_name": {
+            "type": "string"
+          },
+          "attempt_number": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "latency_ms": {
+            "type": "number"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
+    "final_route_id": {
+      "type": "string",
+      "description": "Route that successfully processed"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional execution context"
+    }
+  },
+  "required": [
+    "owner_type",
+    "owner_id",
+    "transaction_id"
+  ]
+}

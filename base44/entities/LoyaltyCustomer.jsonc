@@ -1,0 +1,60 @@
+{
+  "name": "LoyaltyCustomer",
+  "type": "object",
+  "properties": {
+    "customer_code": {
+      "type": "string",
+      "description": "Unique customer identifier"
+    },
+    "organization_name": {
+      "type": "string"
+    },
+    "organization_type": {
+      "type": "string",
+      "enum": [
+        "ngo",
+        "corporate",
+        "healthcare",
+        "education",
+        "government",
+        "retail"
+      ]
+    },
+    "admin_email": {
+      "type": "string"
+    },
+    "password_hash": {
+      "type": "string"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "monthly_fee": {
+      "type": "number"
+    },
+    "total_participants": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "suspended"
+      ],
+      "default": "trial"
+    }
+  },
+  "required": [
+    "customer_code",
+    "organization_name",
+    "admin_email"
+  ]
+}

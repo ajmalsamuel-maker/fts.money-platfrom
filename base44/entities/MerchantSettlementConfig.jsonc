@@ -1,0 +1,79 @@
+{
+  "name": "MerchantSettlementConfig",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation"
+    },
+    "settlement_frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "biweekly",
+        "monthly"
+      ],
+      "description": "How often to settle merchant payouts"
+    },
+    "settlement_day_of_week": {
+      "type": "integer",
+      "description": "0=Sun, 1=Mon, ... 6=Sat (for weekly/biweekly)"
+    },
+    "settlement_day_of_month": {
+      "type": "integer",
+      "description": "1-31 (for monthly)"
+    },
+    "settlement_time": {
+      "type": "string",
+      "description": "Time in HH:MM format (user's timezone)"
+    },
+    "settlement_timezone": {
+      "type": "string",
+      "description": "IANA timezone identifier"
+    },
+    "auto_payout_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Automatically execute payouts after settlement"
+    },
+    "payout_method": {
+      "type": "string",
+      "enum": [
+        "bank_transfer",
+        "wire",
+        "ach",
+        "manual"
+      ],
+      "description": "How to deliver settlement funds"
+    },
+    "minimum_settlement_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Only settle if balance exceeds this"
+    },
+    "hold_period_days": {
+      "type": "integer",
+      "default": 0,
+      "description": "Days to hold funds before settling"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "suspended"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "psp_code",
+    "settlement_frequency"
+  ]
+}

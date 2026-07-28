@@ -1,0 +1,117 @@
+{
+  "name": "BuyRate",
+  "type": "object",
+  "properties": {
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to PaymentProvider"
+    },
+    "provider_name": {
+      "type": "string",
+      "description": "Provider name for quick reference"
+    },
+    "transaction_type": {
+      "type": "string",
+      "enum": [
+        "card_present",
+        "card_not_present",
+        "ecommerce",
+        "virtual_terminal",
+        "soft_pos",
+        "recurring",
+        "moto"
+      ],
+      "description": "Type of transaction"
+    },
+    "card_type": {
+      "type": "string",
+      "enum": [
+        "all",
+        "debit",
+        "credit",
+        "prepaid",
+        "corporate",
+        "n/a"
+      ],
+      "default": "all",
+      "description": "Card type (if applicable)"
+    },
+    "card_brand": {
+      "type": "string",
+      "enum": [
+        "all",
+        "visa",
+        "mastercard",
+        "amex",
+        "discover",
+        "unionpay",
+        "jcb",
+        "n/a"
+      ],
+      "default": "all",
+      "description": "Card brand (if applicable)"
+    },
+    "region": {
+      "type": "string",
+      "enum": [
+        "domestic",
+        "intra_regional",
+        "international",
+        "all"
+      ],
+      "default": "all",
+      "description": "Transaction region type"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "Currency for this rate"
+    },
+    "percentage_rate": {
+      "type": "number",
+      "description": "Percentage rate (e.g., 1.5 for 1.5%)"
+    },
+    "fixed_fee": {
+      "type": "number",
+      "description": "Fixed fee per transaction"
+    },
+    "monthly_fee": {
+      "type": "number",
+      "default": 0,
+      "description": "Monthly fixed fee"
+    },
+    "minimum_fee": {
+      "type": "number",
+      "default": 0,
+      "description": "Minimum fee per transaction"
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date",
+      "description": "Rate effective from date"
+    },
+    "effective_to": {
+      "type": "string",
+      "format": "date",
+      "description": "Rate effective until date (optional)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "expired"
+      ],
+      "default": "active"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider_id",
+    "provider_name",
+    "transaction_type",
+    "percentage_rate"
+  ]
+}

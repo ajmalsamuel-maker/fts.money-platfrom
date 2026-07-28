@@ -1,0 +1,126 @@
+{
+  "name": "LoyaltyChallenge",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "challenge_name": {
+      "type": "string"
+    },
+    "challenge_description": {
+      "type": "string"
+    },
+    "challenge_type": {
+      "type": "string",
+      "enum": [
+        "activity_count",
+        "points_target",
+        "streak",
+        "specific_activity",
+        "distance_goal",
+        "time_goal",
+        "team_challenge",
+        "social_challenge",
+        "sustainability_goal",
+        "learning_path",
+        "habit_building",
+        "competition",
+        "collaborative",
+        "progressive"
+      ],
+      "description": "Type of challenge"
+    },
+    "activity_type_filter": {
+      "type": "string",
+      "description": "Optional: specific activity type required"
+    },
+    "target_value": {
+      "type": "number",
+      "description": "Target to achieve"
+    },
+    "bonus_points": {
+      "type": "number",
+      "description": "Bonus points awarded on completion"
+    },
+    "bonus_nft": {
+      "type": "string",
+      "description": "NFT contract address for completion badge"
+    },
+    "difficulty_level": {
+      "type": "string",
+      "enum": [
+        "easy",
+        "medium",
+        "hard",
+        "expert"
+      ],
+      "default": "medium"
+    },
+    "is_team_based": {
+      "type": "boolean",
+      "default": false
+    },
+    "team_size": {
+      "type": "number",
+      "description": "Required team size for team challenges"
+    },
+    "entry_fee_points": {
+      "type": "number",
+      "default": 0,
+      "description": "Points required to enter challenge"
+    },
+    "max_participants": {
+      "type": "number",
+      "description": "Maximum number of participants"
+    },
+    "prize_pool": {
+      "type": "object",
+      "description": "Prize distribution for top performers"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recurrence": {
+      "type": "string",
+      "enum": [
+        "none",
+        "daily",
+        "weekly",
+        "monthly"
+      ],
+      "default": "none"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "upcoming",
+        "active",
+        "completed",
+        "cancelled"
+      ],
+      "default": "upcoming"
+    },
+    "participants_count": {
+      "type": "number",
+      "default": 0
+    },
+    "completions_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "program_id",
+    "challenge_name",
+    "challenge_type",
+    "target_value",
+    "start_date",
+    "end_date"
+  ]
+}

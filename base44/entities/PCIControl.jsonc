@@ -1,0 +1,99 @@
+{
+  "name": "PCIControl",
+  "type": "object",
+  "properties": {
+    "requirement_number": {
+      "type": "string",
+      "description": "Related PCI requirement"
+    },
+    "control_name": {
+      "type": "string",
+      "description": "Name of the control"
+    },
+    "control_description": {
+      "type": "string"
+    },
+    "control_type": {
+      "type": "string",
+      "enum": [
+        "preventive",
+        "detective",
+        "corrective",
+        "compensating"
+      ],
+      "default": "preventive"
+    },
+    "test_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "test_type": {
+      "type": "string",
+      "enum": [
+        "asv_scan",
+        "penetration_test",
+        "internal_audit",
+        "vulnerability_scan",
+        "code_review",
+        "configuration_review",
+        "access_review",
+        "log_review"
+      ],
+      "description": "Type of test performed"
+    },
+    "test_result": {
+      "type": "string",
+      "enum": [
+        "passed",
+        "passed_with_exceptions",
+        "failed",
+        "not_tested"
+      ],
+      "default": "not_tested"
+    },
+    "tester_name": {
+      "type": "string",
+      "description": "Person who performed the test"
+    },
+    "findings_count": {
+      "type": "number",
+      "default": 0
+    },
+    "critical_findings": {
+      "type": "number",
+      "default": 0
+    },
+    "high_findings": {
+      "type": "number",
+      "default": 0
+    },
+    "medium_findings": {
+      "type": "number",
+      "default": 0
+    },
+    "low_findings": {
+      "type": "number",
+      "default": 0
+    },
+    "test_evidence_url": {
+      "type": "string",
+      "description": "Link to test report/evidence"
+    },
+    "next_test_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "remediation_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "requirement_number",
+    "control_name",
+    "test_type"
+  ]
+}

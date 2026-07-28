@@ -1,0 +1,107 @@
+{
+  "name": "BillingRule",
+  "type": "object",
+  "properties": {
+    "rule_name": {
+      "type": "string",
+      "description": "Name of billing rule"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "psp_payment_processing",
+        "iso_gateway",
+        "orchestration",
+        "crypto_vasp",
+        "rwa_tokenization",
+        "tax_management",
+        "einvoicing",
+        "pci_compliance",
+        "lei_compliance",
+        "digital_identity"
+      ],
+      "description": "Service this rule applies to"
+    },
+    "customer_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "professional",
+        "enterprise",
+        "custom"
+      ],
+      "description": "Tier this rule applies to"
+    },
+    "pricing_model": {
+      "type": "string",
+      "enum": [
+        "flat_rate",
+        "per_unit",
+        "tiered",
+        "volume",
+        "hybrid"
+      ],
+      "description": "Pricing model type"
+    },
+    "base_fee": {
+      "type": "number",
+      "description": "Monthly base/subscription fee"
+    },
+    "included_units": {
+      "type": "number",
+      "description": "Units included in base fee"
+    },
+    "overage_pricing": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from_units": {
+            "type": "number"
+          },
+          "to_units": {
+            "type": "number"
+          },
+          "price_per_unit": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Tiered overage pricing"
+    },
+    "minimum_commitment": {
+      "type": "number",
+      "description": "Minimum monthly charge"
+    },
+    "applicable_to": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Customer emails this rule applies to (empty = all in tier)"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "proration_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to prorate on mid-cycle changes"
+    }
+  },
+  "required": [
+    "rule_name",
+    "service_type",
+    "pricing_model"
+  ]
+}

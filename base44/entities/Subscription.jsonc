@@ -1,0 +1,129 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to Customer entity"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "subscription_id": {
+      "type": "string",
+      "description": "Unique subscription identifier"
+    },
+    "plan_name": {
+      "type": "string",
+      "description": "Subscription plan name"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Recurring amount"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "interval": {
+      "type": "string",
+      "enum": [
+        "day",
+        "week",
+        "month",
+        "year"
+      ],
+      "default": "month",
+      "description": "Billing interval"
+    },
+    "interval_count": {
+      "type": "number",
+      "default": 1,
+      "description": "Number of intervals between charges"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "past_due",
+        "cancelled",
+        "paused",
+        "trialing"
+      ],
+      "default": "active"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Subscription start date"
+    },
+    "trial_end_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Trial period end date"
+    },
+    "next_billing_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Next billing date"
+    },
+    "cancelled_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Cancellation date"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End date"
+    },
+    "payment_method_id": {
+      "type": "string",
+      "description": "Reference to SavedCard entity"
+    },
+    "billing_cycles_completed": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of successful billings"
+    },
+    "total_revenue": {
+      "type": "number",
+      "default": 0,
+      "description": "Total revenue generated"
+    },
+    "failed_payment_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of failed payment attempts"
+    },
+    "dunning_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "retry_1",
+        "retry_2",
+        "retry_3",
+        "failed"
+      ],
+      "default": "none",
+      "description": "Dunning retry status"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Custom metadata"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "customer_id",
+    "plan_name",
+    "amount"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "name": "QSAMessage",
+  "type": "object",
+  "properties": {
+    "requirement_number": {
+      "type": "string",
+      "description": "Related PCI requirement (optional)"
+    },
+    "evidence_id": {
+      "type": "string",
+      "description": "Related evidence ID (optional)"
+    },
+    "sender_email": {
+      "type": "string",
+      "description": "Email of sender (QSA or internal user)"
+    },
+    "sender_type": {
+      "type": "string",
+      "enum": [
+        "qsa",
+        "internal"
+      ],
+      "description": "Type of sender"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Message subject"
+    },
+    "message": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "resolved",
+        "pending_response"
+      ],
+      "default": "open"
+    },
+    "thread_id": {
+      "type": "string",
+      "description": "For threading responses"
+    }
+  },
+  "required": [
+    "sender_email",
+    "sender_type",
+    "subject",
+    "message"
+  ]
+}

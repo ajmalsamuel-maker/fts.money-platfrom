@@ -1,0 +1,102 @@
+{
+  "name": "FeeType",
+  "type": "object",
+  "properties": {
+    "fee_code": {
+      "type": "string",
+      "description": "Unique fee type code (e.g., SALE_TXN, REFUND_FEE, CHARGEBACK_FEE)"
+    },
+    "fee_name": {
+      "type": "string",
+      "description": "Display name for the fee"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "transaction",
+        "payment_method",
+        "service",
+        "operational",
+        "recurring",
+        "penalty",
+        "custom"
+      ],
+      "description": "Fee category"
+    },
+    "applies_to": {
+      "type": "string",
+      "enum": [
+        "sale",
+        "refund",
+        "authorization",
+        "capture",
+        "void",
+        "chargeback",
+        "payout",
+        "tokenization",
+        "fraud_check",
+        "3ds",
+        "settlement",
+        "api_call",
+        "recurring",
+        "other"
+      ],
+      "description": "Transaction or activity type this fee applies to"
+    },
+    "billing_frequency": {
+      "type": "string",
+      "enum": [
+        "per_transaction",
+        "daily",
+        "weekly",
+        "monthly",
+        "annual",
+        "one_time"
+      ],
+      "default": "per_transaction"
+    },
+    "supports_fixed": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this fee type supports fixed amount"
+    },
+    "supports_percentage": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this fee type supports percentage"
+    },
+    "supports_tiered": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this fee type supports volume tiers"
+    },
+    "offset_from_settlement": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether fee is deducted from settlement"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "deprecated"
+      ],
+      "default": "active"
+    },
+    "description": {
+      "type": "string",
+      "description": "Fee type description"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional configuration"
+    }
+  },
+  "required": [
+    "fee_code",
+    "fee_name",
+    "category",
+    "applies_to"
+  ]
+}

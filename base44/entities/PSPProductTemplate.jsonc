@@ -1,0 +1,209 @@
+{
+  "name": "PSPProductTemplate",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Unique product identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name (e.g., 'Basic Payment Gateway')"
+    },
+    "product_description": {
+      "type": "string",
+      "description": "Detailed product description"
+    },
+    "product_category": {
+      "type": "string",
+      "enum": [
+        "payment_processing",
+        "fraud_detection",
+        "analytics",
+        "compliance",
+        "api_services",
+        "merchant_tools",
+        "reporting",
+        "other"
+      ],
+      "description": "Product category"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0.0",
+      "description": "Product version (semantic versioning)"
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "beta",
+        "active",
+        "deprecated",
+        "sunset"
+      ],
+      "default": "draft",
+      "description": "Product lifecycle state"
+    },
+    "is_bundle": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a bundle of other products"
+    },
+    "bundle_products": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Product IDs included in bundle"
+    },
+    "bundle_discount_percentage": {
+      "type": "number",
+      "description": "Discount when purchasing as bundle"
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "component_id": {
+            "type": "string"
+          },
+          "component_name": {
+            "type": "string"
+          },
+          "component_type": {
+            "type": "string",
+            "enum": [
+              "feature",
+              "service",
+              "integration",
+              "api_endpoint",
+              "dashboard"
+            ]
+          },
+          "is_required": {
+            "type": "boolean",
+            "default": true
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Product components/features"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "is_required": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "description": "Required product dependencies"
+    },
+    "base_price": {
+      "type": "number",
+      "description": "Base monthly price"
+    },
+    "setup_fee": {
+      "type": "number",
+      "description": "One-time setup fee"
+    },
+    "pricing_model": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "usage_based",
+        "tiered",
+        "hybrid"
+      ],
+      "description": "Pricing model"
+    },
+    "trial_period_days": {
+      "type": "number",
+      "default": 0,
+      "description": "Free trial period in days"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of key features"
+    },
+    "documentation_url": {
+      "type": "string",
+      "description": "Product documentation URL"
+    },
+    "icon_url": {
+      "type": "string",
+      "description": "Product icon/logo URL"
+    },
+    "total_subscribers": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of merchants subscribed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "archived"
+      ],
+      "default": "active",
+      "description": "Product status"
+    },
+    "activation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When product became active"
+    },
+    "deprecation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When product will be deprecated"
+    },
+    "sunset_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When product will be removed"
+    },
+    "migration_guide": {
+      "type": "string",
+      "description": "Migration instructions for deprecated products"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Searchable tags"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "product_name",
+    "product_category"
+  ]
+}

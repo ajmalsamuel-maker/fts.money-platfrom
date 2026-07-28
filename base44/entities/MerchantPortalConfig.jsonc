@@ -1,0 +1,247 @@
+{
+  "name": "MerchantPortalConfig",
+  "type": "object",
+  "properties": {
+    "config_id": {
+      "type": "string",
+      "description": "Unique configuration identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "portal_name": {
+      "type": "string",
+      "description": "Portal name (e.g., 'Merchant Dashboard')"
+    },
+    "portal_domain": {
+      "type": "string",
+      "description": "Custom domain for merchant portal"
+    },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "primary_color": {
+          "type": "string",
+          "default": "#3b82f6"
+        },
+        "secondary_color": {
+          "type": "string",
+          "default": "#06b6d4"
+        },
+        "accent_color": {
+          "type": "string",
+          "default": "#8b5cf6"
+        },
+        "logo_url": {
+          "type": "string"
+        },
+        "favicon_url": {
+          "type": "string"
+        },
+        "font_family": {
+          "type": "string",
+          "default": "Inter"
+        },
+        "background_pattern": {
+          "type": "string",
+          "enum": [
+            "none",
+            "dots",
+            "grid",
+            "waves"
+          ]
+        }
+      },
+      "description": "Theme configuration"
+    },
+    "layout": {
+      "type": "object",
+      "properties": {
+        "sidebar_position": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right",
+            "top"
+          ],
+          "default": "left"
+        },
+        "sidebar_style": {
+          "type": "string",
+          "enum": [
+            "full",
+            "compact",
+            "icons_only"
+          ],
+          "default": "full"
+        },
+        "header_style": {
+          "type": "string",
+          "enum": [
+            "minimal",
+            "full",
+            "none"
+          ],
+          "default": "full"
+        }
+      },
+      "description": "Layout configuration"
+    },
+    "enabled_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of enabled features"
+    },
+    "dashboard_widgets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "widget_id": {
+            "type": "string"
+          },
+          "widget_type": {
+            "type": "string"
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "row": {
+                "type": "number"
+              },
+              "col": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              }
+            }
+          },
+          "config": {
+            "type": "object"
+          }
+        }
+      },
+      "description": "Dashboard widget configuration"
+    },
+    "navigation_menu": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "permission": {
+            "type": "string"
+          },
+          "children": {
+            "type": "array"
+          }
+        }
+      },
+      "description": "Custom navigation menu"
+    },
+    "custom_pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "page_id": {
+            "type": "string"
+          },
+          "page_name": {
+            "type": "string"
+          },
+          "page_path": {
+            "type": "string"
+          },
+          "components": {
+            "type": "array"
+          }
+        }
+      },
+      "description": "Custom pages configuration"
+    },
+    "branding": {
+      "type": "object",
+      "properties": {
+        "company_name": {
+          "type": "string"
+        },
+        "tagline": {
+          "type": "string"
+        },
+        "support_email": {
+          "type": "string"
+        },
+        "support_phone": {
+          "type": "string"
+        },
+        "social_links": {
+          "type": "object"
+        }
+      },
+      "description": "Branding information"
+    },
+    "notifications": {
+      "type": "object",
+      "properties": {
+        "email_enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "sms_enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "webhook_url": {
+          "type": "string"
+        }
+      },
+      "description": "Notification settings"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "inactive"
+      ],
+      "default": "draft"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0.0"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "portal_name"
+  ]
+}

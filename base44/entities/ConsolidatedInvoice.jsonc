@@ -1,0 +1,152 @@
+{
+  "name": "ConsolidatedInvoice",
+  "type": "object",
+  "properties": {
+    "invoice_number": {
+      "type": "string",
+      "description": "Unique invoice number (e.g., INV-2026-001)"
+    },
+    "customer_email": {
+      "type": "string",
+      "description": "Customer email (PSP, merchant, or community user)"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Customer business name"
+    },
+    "customer_type": {
+      "type": "string",
+      "enum": [
+        "psp",
+        "merchant",
+        "iso_customer",
+        "orchestration_customer",
+        "crypto_customer",
+        "rwa_provider",
+        "community_user"
+      ],
+      "description": "Type of customer being billed"
+    },
+    "billing_period_start": {
+      "type": "string",
+      "format": "date",
+      "description": "Billing period start date"
+    },
+    "billing_period_end": {
+      "type": "string",
+      "format": "date",
+      "description": "Billing period end date"
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "service_type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit_price": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "usage_details": {
+            "type": "object"
+          }
+        }
+      },
+      "description": "Invoice line items by service"
+    },
+    "subtotal": {
+      "type": "number",
+      "description": "Subtotal before tax"
+    },
+    "tax_amount": {
+      "type": "number",
+      "description": "Total tax amount"
+    },
+    "total_amount": {
+      "type": "number",
+      "description": "Total invoice amount"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending",
+        "sent",
+        "paid",
+        "overdue",
+        "cancelled"
+      ],
+      "default": "draft"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "paid_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "wire_transfer",
+        "xero",
+        "manual"
+      ]
+    },
+    "payment_reference": {
+      "type": "string",
+      "description": "Stripe charge ID, wire reference, etc."
+    },
+    "posted_to_community": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether invoice has been posted to customer's community portal"
+    },
+    "posted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "xero_invoice_id": {
+      "type": "string",
+      "description": "Xero invoice ID if synced"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "services_included": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of service types included in this invoice"
+    }
+  },
+  "required": [
+    "invoice_number",
+    "customer_email",
+    "customer_type",
+    "billing_period_start",
+    "billing_period_end",
+    "total_amount"
+  ]
+}

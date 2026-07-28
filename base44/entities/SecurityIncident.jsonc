@@ -1,0 +1,143 @@
+{
+  "name": "SecurityIncident",
+  "type": "object",
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "description": "Unique incident identifier"
+    },
+    "incident_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When incident occurred"
+    },
+    "reported_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When incident was reported"
+    },
+    "reported_by": {
+      "type": "string",
+      "description": "Who reported the incident"
+    },
+    "incident_category": {
+      "type": "string",
+      "enum": [
+        "access_violation",
+        "malware",
+        "ddos",
+        "sql_injection",
+        "xss",
+        "api_abuse",
+        "credential_stuffing",
+        "brute_force",
+        "data_exfiltration",
+        "privilege_escalation"
+      ],
+      "description": "Category of security incident"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "affected_systems": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Systems/services affected"
+    },
+    "affected_psp": {
+      "type": "string",
+      "description": "PSP instance affected (if applicable)"
+    },
+    "source_ip": {
+      "type": "string",
+      "description": "Source IP of attack"
+    },
+    "attack_vector": {
+      "type": "string",
+      "description": "How attack was performed"
+    },
+    "detection_method": {
+      "type": "string",
+      "enum": [
+        "automated",
+        "manual_review",
+        "customer_report",
+        "third_party_alert"
+      ],
+      "description": "How incident was detected"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "investigating",
+        "contained",
+        "resolved",
+        "closed"
+      ],
+      "default": "open"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Security team member assigned"
+    },
+    "resolution_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "mitigation_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Actions taken to mitigate"
+    },
+    "root_cause_analysis": {
+      "type": "string",
+      "description": "Detailed RCA"
+    },
+    "impact_assessment": {
+      "type": "string",
+      "description": "Assessment of impact"
+    },
+    "data_breach": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether incident resulted in data breach"
+    },
+    "data_breach_id": {
+      "type": "string",
+      "description": "Reference to DataBreachIncident if applicable"
+    },
+    "iso27001_compliant": {
+      "type": "boolean",
+      "description": "Whether incident response followed ISO 27001"
+    }
+  },
+  "required": [
+    "incident_date",
+    "incident_category",
+    "severity"
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "name": "PrivacyImpactAssessment",
+  "type": "object",
+  "properties": {
+    "pia_id": {
+      "type": "string",
+      "description": "Unique PIA identifier"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "Name of project/system being assessed"
+    },
+    "assessment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When assessment was conducted"
+    },
+    "conducted_by": {
+      "type": "string",
+      "description": "DPO or team member who conducted PIA"
+    },
+    "project_description": {
+      "type": "string",
+      "description": "Description of project/processing activity"
+    },
+    "data_types_processed": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "pii",
+          "payment_data",
+          "sensitive_data",
+          "children_data",
+          "health_data",
+          "biometric_data",
+          "location_data"
+        ]
+      },
+      "description": "Types of data involved"
+    },
+    "processing_purposes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Purposes of data processing"
+    },
+    "legal_basis": {
+      "type": "string",
+      "enum": [
+        "consent",
+        "contract",
+        "legal_obligation",
+        "vital_interests",
+        "public_task",
+        "legitimate_interests"
+      ],
+      "description": "GDPR legal basis"
+    },
+    "high_risk_processing": {
+      "type": "boolean",
+      "description": "Whether processing is high risk under GDPR"
+    },
+    "automated_decision_making": {
+      "type": "boolean",
+      "description": "Whether involves automated decisions/profiling"
+    },
+    "data_subjects": {
+      "type": "string",
+      "description": "Who the data subjects are"
+    },
+    "third_party_sharing": {
+      "type": "boolean",
+      "description": "Whether data shared with third parties"
+    },
+    "third_parties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "List of third parties"
+    },
+    "international_transfers": {
+      "type": "boolean",
+      "description": "Whether data transferred outside EEA"
+    },
+    "transfer_safeguards": {
+      "type": "string",
+      "description": "Safeguards for international transfers (SCCs, BCRs, etc.)"
+    },
+    "risks_identified": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "risk": {
+            "type": "string"
+          },
+          "likelihood": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "impact": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "mitigation": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Privacy risks and mitigations"
+    },
+    "dpo_consulted": {
+      "type": "boolean",
+      "description": "Whether DPO was consulted"
+    },
+    "supervisory_authority_consulted": {
+      "type": "boolean",
+      "description": "Whether authority was consulted (required for high risk)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "under_review",
+        "approved",
+        "requires_action"
+      ],
+      "default": "draft"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "Who approved the PIA"
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When PIA should be reviewed"
+    },
+    "recommendations": {
+      "type": "string",
+      "description": "Recommendations from assessment"
+    }
+  },
+  "required": [
+    "project_name",
+    "assessment_date",
+    "data_types_processed",
+    "legal_basis"
+  ]
+}

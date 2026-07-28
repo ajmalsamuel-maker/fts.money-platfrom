@@ -1,0 +1,108 @@
+{
+  "name": "PCIDocument",
+  "type": "object",
+  "properties": {
+    "batch_name": {
+      "type": "string",
+      "description": "Name of the batch upload"
+    },
+    "source_file_url": {
+      "type": "string",
+      "description": "URL of the original uploaded document"
+    },
+    "document_title": {
+      "type": "string",
+      "description": "Title of the PCI compliance document"
+    },
+    "version": {
+      "type": "string",
+      "description": "Document version"
+    },
+    "pci_requirement": {
+      "type": "string",
+      "description": "PCI DSS requirement number/name"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "security_policy",
+        "technical_control",
+        "audit_procedure",
+        "training",
+        "network_security",
+        "access_control",
+        "data_protection",
+        "monitoring",
+        "testing",
+        "other"
+      ],
+      "description": "Document category"
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of policies from the document"
+    },
+    "technical_controls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Technical controls required"
+    },
+    "audit_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Audit and validation steps"
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Roles and responsibilities"
+    },
+    "implementation_guide": {
+      "type": "string",
+      "description": "Implementation guidelines"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium",
+      "description": "Implementation priority"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "processed",
+        "under_review",
+        "approved",
+        "implemented",
+        "archived"
+      ],
+      "default": "processed"
+    },
+    "processed_by": {
+      "type": "string",
+      "description": "Email of user who processed the document"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "document_title",
+    "category"
+  ]
+}

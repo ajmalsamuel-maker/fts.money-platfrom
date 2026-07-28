@@ -1,0 +1,165 @@
+{
+  "name": "PlatformLEI",
+  "type": "object",
+  "properties": {
+    "lei": {
+      "type": "string",
+      "description": "FTS.Money Platform Legal Entity Identifier (20-character)"
+    },
+    "legal_name": {
+      "type": "string",
+      "description": "Legal entity name"
+    },
+    "lei_status": {
+      "type": "string",
+      "enum": [
+        "pending_verification",
+        "active",
+        "expired",
+        "lapsed"
+      ],
+      "default": "pending_verification"
+    },
+    "vlei_credential": {
+      "type": "string",
+      "description": "W3C Verifiable Credential (JWT format)"
+    },
+    "vlei_status": {
+      "type": "string",
+      "enum": [
+        "not_issued",
+        "pending",
+        "active",
+        "revoked",
+        "expired"
+      ],
+      "default": "not_issued"
+    },
+    "vlei_grace_period_end": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when vLEI must be obtained (6 months from LEI initialization)"
+    },
+    "oor_grace_period_end": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when OOR credentials must be configured (6 months from LEI initialization)"
+    },
+    "ecr_grace_period_end": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when ECR relationships must be established (6 months from LEI initialization)"
+    },
+    "public_key": {
+      "type": "string",
+      "description": "EdDSA/ECDSA public key for signature verification"
+    },
+    "issuer_lei": {
+      "type": "string",
+      "description": "GLEIF LEI (root authority)"
+    },
+    "issued_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_verified": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "gleif_data": {
+      "type": "object",
+      "description": "Full GLEIF API response",
+      "properties": {
+        "legal_name": {
+          "type": "string"
+        },
+        "legal_address": {
+          "type": "object"
+        },
+        "registration_authority": {
+          "type": "string"
+        },
+        "registration_number": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "organizational_roles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role_type": {
+            "type": "string",
+            "enum": [
+              "ceo",
+              "cfo",
+              "cto",
+              "compliance_officer",
+              "legal_counsel",
+              "operations_director"
+            ]
+          },
+          "person_name": {
+            "type": "string"
+          },
+          "person_email": {
+            "type": "string"
+          },
+          "oor_credential": {
+            "type": "string",
+            "description": "OOR vLEI credential"
+          },
+          "assigned_date": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "description": "Official Organizational Roles (OOR) for platform",
+      "default": []
+    },
+    "downstream_entities": {
+      "type": "object",
+      "properties": {
+        "total_psps": {
+          "type": "number",
+          "default": 0
+        },
+        "lei_compliant_psps": {
+          "type": "number",
+          "default": 0
+        },
+        "total_merchants": {
+          "type": "number",
+          "default": 0
+        },
+        "lei_compliant_merchants": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    },
+    "auto_renewal": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "lei",
+    "legal_name"
+  ]
+}

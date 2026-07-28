@@ -1,0 +1,154 @@
+{
+  "name": "ResourcePool",
+  "type": "object",
+  "properties": {
+    "pool_id": {
+      "type": "string",
+      "description": "Unique pool identifier"
+    },
+    "pool_name": {
+      "type": "string",
+      "description": "Pool name (e.g., 'Production US-East', 'Dev EU-West')"
+    },
+    "region": {
+      "type": "string",
+      "description": "Geographic region (us-east-1, eu-west-1, ap-southeast-1, etc.)"
+    },
+    "datacenter": {
+      "type": "string",
+      "description": "Datacenter/availability zone"
+    },
+    "resource_type": {
+      "type": "string",
+      "enum": [
+        "compute",
+        "storage",
+        "database",
+        "network",
+        "mixed"
+      ],
+      "description": "Type of resources in pool"
+    },
+    "total_capacity": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": {
+          "type": "number"
+        },
+        "memory_gb": {
+          "type": "number"
+        },
+        "storage_gb": {
+          "type": "number"
+        },
+        "network_gbps": {
+          "type": "number"
+        },
+        "database_connections": {
+          "type": "number"
+        }
+      },
+      "description": "Total available capacity"
+    },
+    "allocated_capacity": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": {
+          "type": "number",
+          "default": 0
+        },
+        "memory_gb": {
+          "type": "number",
+          "default": 0
+        },
+        "storage_gb": {
+          "type": "number",
+          "default": 0
+        },
+        "network_gbps": {
+          "type": "number",
+          "default": 0
+        },
+        "database_connections": {
+          "type": "number",
+          "default": 0
+        }
+      },
+      "description": "Currently allocated capacity"
+    },
+    "reserved_capacity": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": {
+          "type": "number",
+          "default": 0
+        },
+        "memory_gb": {
+          "type": "number",
+          "default": 0
+        },
+        "storage_gb": {
+          "type": "number",
+          "default": 0
+        },
+        "network_gbps": {
+          "type": "number",
+          "default": 0
+        },
+        "database_connections": {
+          "type": "number",
+          "default": 0
+        }
+      },
+      "description": "Reserved for upcoming deployments"
+    },
+    "utilization_percentage": {
+      "type": "number",
+      "description": "Current utilization percentage"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "high_utilization",
+        "capacity_full",
+        "maintenance"
+      ],
+      "default": "available"
+    },
+    "cost_per_unit": {
+      "type": "object",
+      "properties": {
+        "cpu_core_hourly": {
+          "type": "number"
+        },
+        "memory_gb_hourly": {
+          "type": "number"
+        },
+        "storage_gb_monthly": {
+          "type": "number"
+        }
+      },
+      "description": "Cost per resource unit"
+    },
+    "auto_scaling_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "auto_scaling_threshold": {
+      "type": "number",
+      "default": 80,
+      "description": "Utilization % to trigger scaling"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Priority for resource allocation"
+    }
+  },
+  "required": [
+    "pool_name",
+    "region",
+    "resource_type"
+  ]
+}

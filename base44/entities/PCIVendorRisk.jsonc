@@ -1,0 +1,91 @@
+{
+  "name": "PCIVendorRisk",
+  "type": "object",
+  "properties": {
+    "vendor_name": {
+      "type": "string",
+      "description": "Third-party vendor name"
+    },
+    "vendor_type": {
+      "type": "string",
+      "enum": [
+        "payment_processor",
+        "cloud_provider",
+        "saas_tool",
+        "security_service",
+        "data_center",
+        "software_vendor"
+      ],
+      "description": "Type of vendor"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "assessment_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "completed",
+        "expired"
+      ],
+      "default": "not_started"
+    },
+    "last_assessment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_assessment_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "pci_compliant": {
+      "type": "boolean",
+      "default": false
+    },
+    "aoc_expiry": {
+      "type": "string",
+      "format": "date",
+      "description": "AOC expiration date"
+    },
+    "questionnaire_type": {
+      "type": "string",
+      "enum": [
+        "SIG",
+        "CAIQ",
+        "custom"
+      ],
+      "description": "Type of questionnaire"
+    },
+    "questionnaire_url": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "findings_count": {
+      "type": "number",
+      "default": 0
+    },
+    "remediation_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "in_progress",
+        "completed"
+      ],
+      "default": "none"
+    }
+  },
+  "required": [
+    "vendor_name",
+    "vendor_type"
+  ]
+}

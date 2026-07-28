@@ -1,0 +1,139 @@
+{
+  "name": "EarningRule",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "rule_name": {
+      "type": "string"
+    },
+    "activity_type": {
+      "type": "string",
+      "enum": [
+        "distance",
+        "time",
+        "steps",
+        "calories",
+        "elevation",
+        "event_attendance",
+        "purchase",
+        "referral",
+        "volunteer",
+        "donation",
+        "sustainability",
+        "recycling",
+        "carbon_offset",
+        "health_checkup",
+        "meditation",
+        "sleep_quality",
+        "water_intake",
+        "education",
+        "course_completion",
+        "quiz_completion",
+        "social_share",
+        "review",
+        "survey",
+        "community_post",
+        "live_stream_attendance",
+        "nft_mint",
+        "token_stake",
+        "transaction",
+        "custom"
+      ]
+    },
+    "points_per_unit": {
+      "type": "number"
+    },
+    "unit_type": {
+      "type": "string"
+    },
+    "verification_method": {
+      "type": "string",
+      "enum": [
+        "gps",
+        "receipt_scan",
+        "photo",
+        "qr_code",
+        "nfc",
+        "beacon",
+        "api",
+        "manual",
+        "strava",
+        "garmin_connect",
+        "fitbit",
+        "apple_health",
+        "google_fit",
+        "samsung_health",
+        "whoop",
+        "oura_ring",
+        "peloton",
+        "zwift",
+        "myfitnesspal",
+        "headspace",
+        "calm",
+        "stripe_payment",
+        "paypal_payment",
+        "blockchain_transaction",
+        "smart_contract",
+        "chainlink_oracle",
+        "ethereum_attestation",
+        "zero_knowledge_proof",
+        "biometric",
+        "facial_recognition",
+        "fingerprint",
+        "oauth_integration",
+        "webhook",
+        "iot_sensor",
+        "smart_scale",
+        "smart_watch",
+        "email_verification",
+        "sms_verification",
+        "social_media_api",
+        "twitter_api",
+        "instagram_api",
+        "linkedin_api",
+        "youtube_api",
+        "github_api",
+        "notion_api",
+        "google_calendar",
+        "zoom_api",
+        "ecommerce_api",
+        "shopify",
+        "woocommerce",
+        "geofence",
+        "time_based",
+        "ai_verification",
+        "computer_vision"
+      ],
+      "default": "manual"
+    },
+    "integration_config": {
+      "type": "object",
+      "description": "API keys, endpoints, and configuration for third-party integrations"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "min_threshold": {
+      "type": "number",
+      "description": "Minimum units required to earn points"
+    },
+    "max_daily_points": {
+      "type": "number",
+      "description": "Maximum points earnable per day for this rule"
+    },
+    "bonus_multiplier": {
+      "type": "number",
+      "description": "Multiplier for bonus periods",
+      "default": 1
+    }
+  },
+  "required": [
+    "program_id",
+    "rule_name",
+    "activity_type",
+    "points_per_unit"
+  ]
+}

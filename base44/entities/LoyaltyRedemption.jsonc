@@ -1,0 +1,36 @@
+{
+  "name": "LoyaltyRedemption",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "participant_id": {
+      "type": "string"
+    },
+    "redemption_option_id": {
+      "type": "string"
+    },
+    "points_redeemed": {
+      "type": "number"
+    },
+    "monetary_value": {
+      "type": "number"
+    },
+    "redemption_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "fulfilled",
+        "cancelled"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "program_id",
+    "participant_id",
+    "points_redeemed"
+  ]
+}

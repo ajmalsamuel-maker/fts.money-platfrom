@@ -1,0 +1,105 @@
+{
+  "name": "BusinessEInvoicingOrganization",
+  "type": "object",
+  "properties": {
+    "org_name": {
+      "type": "string",
+      "description": "Organization legal name"
+    },
+    "business_email": {
+      "type": "string",
+      "description": "Organization business email"
+    },
+    "country": {
+      "type": "string",
+      "description": "ISO 3166-1 country code"
+    },
+    "tax_id": {
+      "type": "string",
+      "description": "Tax/VAT ID"
+    },
+    "tax_submission_standards": {
+      "type": "string",
+      "description": "E-invoicing standard code (e.g., PEPPOL, ZATCA, CFDI)"
+    },
+    "lei": {
+      "type": "string",
+      "description": "Legal Entity Identifier (20 characters)"
+    },
+    "lei_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "grace_period",
+        "verified",
+        "expired"
+      ],
+      "default": "pending",
+      "description": "LEI verification status"
+    },
+    "grace_period_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Grace period expiration date for LEI submission"
+    },
+    "kyb_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "aml_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "screening",
+        "approved",
+        "flagged"
+      ],
+      "default": "pending"
+    },
+    "admin_email": {
+      "type": "string",
+      "description": "Initial admin user email"
+    },
+    "admin_name": {
+      "type": "string",
+      "description": "Initial admin user name"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "onboarding",
+        "active",
+        "suspended",
+        "inactive"
+      ],
+      "default": "onboarding"
+    },
+    "onboarding_step": {
+      "type": "string",
+      "enum": [
+        "org_info",
+        "lei",
+        "aml_kyb",
+        "admin",
+        "completed"
+      ],
+      "default": "org_info"
+    },
+    "portal_url": {
+      "type": "string",
+      "description": "Portal URL for the organization"
+    }
+  },
+  "required": [
+    "org_name",
+    "business_email",
+    "country",
+    "admin_email"
+  ]
+}

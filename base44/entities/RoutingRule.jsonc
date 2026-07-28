@@ -1,0 +1,156 @@
+{
+  "name": "RoutingRule",
+  "type": "object",
+  "properties": {
+    "rule_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "testing"
+      ],
+      "default": "inactive"
+    },
+    "rule_type": {
+      "type": "string",
+      "enum": [
+        "routing",
+        "cascading",
+        "fallback",
+        "split"
+      ],
+      "default": "routing"
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "primary_processor": {
+      "type": "string"
+    },
+    "fallback_processors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "split_config": {
+      "type": "object"
+    },
+    "merchant_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "apply_to_all_merchants": {
+      "type": "boolean",
+      "default": false
+    },
+    "card_networks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported card networks"
+    },
+    "countries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 3166-1 alpha-2 country codes"
+    },
+    "currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 4217 currency codes"
+    },
+    "min_amount": {
+      "type": "number"
+    },
+    "max_amount": {
+      "type": "number"
+    },
+    "mcc_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Merchant Category Codes (ISO 18245)"
+    },
+    "time_based": {
+      "type": "boolean",
+      "default": false
+    },
+    "active_hours_start": {
+      "type": "string"
+    },
+    "active_hours_end": {
+      "type": "string"
+    },
+    "timezone": {
+      "type": "string",
+      "description": "IANA timezone for time-based routing"
+    },
+    "retry_attempts": {
+      "type": "number",
+      "default": 3
+    },
+    "retry_delay_ms": {
+      "type": "number",
+      "default": 1000
+    },
+    "success_rate_threshold": {
+      "type": "number"
+    },
+    "cost_optimization": {
+      "type": "boolean",
+      "default": false
+    },
+    "iso_8583_routing": {
+      "type": "boolean",
+      "default": false,
+      "description": "Use ISO 8583 message routing"
+    },
+    "iso_20022_routing": {
+      "type": "boolean",
+      "default": false,
+      "description": "Use ISO 20022 message routing"
+    },
+    "dlt_routing_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable ISO 23257 blockchain routing"
+    },
+    "supported_crypto_assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 23257 supported crypto assets"
+    }
+  },
+  "required": [
+    "name",
+    "rule_type",
+    "primary_processor"
+  ]
+}

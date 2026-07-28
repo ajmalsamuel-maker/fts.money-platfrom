@@ -1,0 +1,69 @@
+{
+  "name": "PartnerMerchant",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string",
+      "description": "Reference to LoyaltyProgram"
+    },
+    "business_name": {
+      "type": "string"
+    },
+    "business_type": {
+      "type": "string",
+      "enum": [
+        "restaurant",
+        "retail",
+        "service",
+        "entertainment",
+        "travel",
+        "wellness",
+        "education",
+        "other"
+      ]
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "password_hash": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "total_redemptions_fulfilled": {
+      "type": "number",
+      "default": 0
+    },
+    "total_value_provided": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "suspended"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "program_id",
+    "business_name",
+    "contact_email"
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "name": "PaymentStatus",
+  "type": "object",
+  "properties": {
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to ConsolidatedInvoice"
+    },
+    "invoice_number": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "total_amount": {
+      "type": "number"
+    },
+    "amount_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "amount_outstanding": {
+      "type": "number"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "unpaid",
+        "partial",
+        "paid",
+        "overdue",
+        "cancelled"
+      ],
+      "default": "unpaid"
+    },
+    "payment_attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attempt_date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "method": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          },
+          "failure_reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "days_overdue": {
+      "type": "number",
+      "default": 0
+    },
+    "dunning_level": {
+      "type": "number",
+      "default": 0,
+      "description": "Dunning reminder level (0 = no reminders sent)"
+    },
+    "last_reminder_sent": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_reminder_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "auto_charge_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "stripe_payment_intent_id": {
+      "type": "string"
+    },
+    "xero_payment_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "invoice_id",
+    "customer_email",
+    "total_amount"
+  ]
+}

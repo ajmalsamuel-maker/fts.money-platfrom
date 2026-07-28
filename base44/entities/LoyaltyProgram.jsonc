@@ -1,0 +1,93 @@
+{
+  "name": "LoyaltyProgram",
+  "type": "object",
+  "properties": {
+    "program_code": {
+      "type": "string",
+      "description": "Unique program identifier"
+    },
+    "organization_name": {
+      "type": "string",
+      "description": "Customer organization name"
+    },
+    "organization_type": {
+      "type": "string",
+      "enum": [
+        "ngo",
+        "corporate",
+        "healthcare",
+        "education",
+        "government",
+        "retail"
+      ],
+      "description": "Type of organization"
+    },
+    "admin_email": {
+      "type": "string",
+      "description": "Primary admin contact"
+    },
+    "program_name": {
+      "type": "string",
+      "description": "Public-facing program name"
+    },
+    "token_name": {
+      "type": "string",
+      "description": "Loyalty points name"
+    },
+    "token_symbol": {
+      "type": "string",
+      "description": "Token symbol"
+    },
+    "program_description": {
+      "type": "string"
+    },
+    "branding": {
+      "type": "object"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "enterprise",
+        "coalition"
+      ],
+      "default": "starter"
+    },
+    "blockchain_network": {
+      "type": "string",
+      "default": "polygon_edge"
+    },
+    "contract_address": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "provisioning",
+        "active",
+        "suspended"
+      ],
+      "default": "draft"
+    },
+    "total_participants": {
+      "type": "number",
+      "default": 0
+    },
+    "total_tokens_issued": {
+      "type": "number",
+      "default": 0
+    },
+    "total_tokens_redeemed": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "program_code",
+    "organization_name",
+    "program_name",
+    "token_name"
+  ]
+}

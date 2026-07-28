@@ -1,0 +1,85 @@
+{
+  "name": "APIUsageMetric",
+  "type": "object",
+  "properties": {
+    "metric_id": {
+      "type": "string",
+      "description": "Unique metric identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code"
+    },
+    "api_id": {
+      "type": "string",
+      "description": "Reference to APIDefinition"
+    },
+    "api_version": {
+      "type": "string",
+      "description": "API version called"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Merchant making the call"
+    },
+    "endpoint": {
+      "type": "string",
+      "description": "API endpoint"
+    },
+    "method": {
+      "type": "string",
+      "description": "HTTP method"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When call was made"
+    },
+    "response_status": {
+      "type": "number",
+      "description": "HTTP response status"
+    },
+    "response_time_ms": {
+      "type": "number",
+      "description": "Response time in milliseconds"
+    },
+    "request_size_bytes": {
+      "type": "number"
+    },
+    "response_size_bytes": {
+      "type": "number"
+    },
+    "api_key_used": {
+      "type": "string",
+      "description": "API key identifier"
+    },
+    "cost": {
+      "type": "number",
+      "description": "Cost of this call"
+    },
+    "throttled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Was request throttled"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error message if failed"
+    },
+    "aggregation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date for daily aggregation"
+    }
+  },
+  "required": [
+    "psp_id",
+    "api_id",
+    "endpoint",
+    "method"
+  ]
+}

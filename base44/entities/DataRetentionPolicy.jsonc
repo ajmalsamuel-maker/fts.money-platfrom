@@ -1,0 +1,92 @@
+{
+  "name": "DataRetentionPolicy",
+  "type": "object",
+  "properties": {
+    "policy_name": {
+      "type": "string",
+      "description": "Name of retention policy"
+    },
+    "data_category": {
+      "type": "string",
+      "enum": [
+        "transaction_data",
+        "customer_data",
+        "payment_data",
+        "audit_logs",
+        "communication_logs",
+        "compliance_records",
+        "marketing_data"
+      ],
+      "description": "Category of data"
+    },
+    "retention_period_days": {
+      "type": "number",
+      "description": "How many days to retain data"
+    },
+    "legal_basis": {
+      "type": "string",
+      "description": "Legal requirement for retention (e.g., PCI DSS, GDPR, tax law)"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "Applicable jurisdiction (UK, EU, US, etc.)"
+    },
+    "auto_delete_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Automatic deletion when period expires"
+    },
+    "archive_before_delete": {
+      "type": "boolean",
+      "default": true,
+      "description": "Archive to cold storage before deletion"
+    },
+    "archive_location": {
+      "type": "string",
+      "description": "Where archived data is stored"
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Conditions where retention period extended (e.g., legal hold)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "draft"
+      ],
+      "default": "active"
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date",
+      "description": "When policy was last reviewed"
+    },
+    "next_review_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When policy should be reviewed next"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "DPO or legal team member who approved"
+    },
+    "applies_to_entities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of database entities this applies to"
+    }
+  },
+  "required": [
+    "policy_name",
+    "data_category",
+    "retention_period_days",
+    "legal_basis"
+  ]
+}

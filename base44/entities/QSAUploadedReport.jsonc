@@ -1,0 +1,71 @@
+{
+  "name": "QSAUploadedReport",
+  "type": "object",
+  "properties": {
+    "report_title": {
+      "type": "string",
+      "description": "Title of the report"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "preliminary_findings",
+        "final_audit_report",
+        "gap_analysis",
+        "remediation_plan",
+        "aoc",
+        "technical_assessment",
+        "other"
+      ],
+      "description": "Type of report"
+    },
+    "requirement_numbers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Related PCI requirements"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Uploaded file URL"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "uploaded_by_qsa": {
+      "type": "string",
+      "description": "QSA email who uploaded"
+    },
+    "upload_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "submitted",
+        "reviewed",
+        "approved"
+      ],
+      "default": "submitted"
+    },
+    "findings_count": {
+      "type": "number",
+      "description": "Number of findings in report"
+    },
+    "severity_summary": {
+      "type": "string",
+      "description": "Summary of findings severity"
+    }
+  },
+  "required": [
+    "report_title",
+    "report_type",
+    "uploaded_by_qsa"
+  ]
+}

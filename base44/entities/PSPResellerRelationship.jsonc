@@ -1,0 +1,99 @@
+{
+  "name": "PSPResellerRelationship",
+  "type": "object",
+  "properties": {
+    "relationship_id": {
+      "type": "string"
+    },
+    "offering_id": {
+      "type": "string",
+      "description": "Reference to PSPWholesaleOffering"
+    },
+    "offering_name": {
+      "type": "string"
+    },
+    "provider_psp_id": {
+      "type": "string",
+      "description": "Wholesale provider PSP"
+    },
+    "provider_psp_name": {
+      "type": "string"
+    },
+    "reseller_psp_id": {
+      "type": "string",
+      "description": "PSP buying the service"
+    },
+    "reseller_psp_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_approval",
+        "approved",
+        "active",
+        "suspended",
+        "terminated"
+      ],
+      "default": "pending_approval",
+      "description": "Requires platform approval"
+    },
+    "contract_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "contract_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "pricing_terms": {
+      "type": "object",
+      "description": "Agreed pricing between provider and reseller"
+    },
+    "platform_commission_percentage": {
+      "type": "number",
+      "description": "FTS.Money's commission"
+    },
+    "monthly_fee": {
+      "type": "number"
+    },
+    "per_transaction_fee": {
+      "type": "number"
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0,
+      "description": "Total transaction volume through this relationship"
+    },
+    "total_revenue_provider": {
+      "type": "number",
+      "default": 0,
+      "description": "Provider PSP earnings"
+    },
+    "total_revenue_platform": {
+      "type": "number",
+      "default": 0,
+      "description": "FTS.Money earnings"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "Platform admin who approved"
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "offering_id",
+    "provider_psp_id",
+    "reseller_psp_id"
+  ]
+}

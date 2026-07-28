@@ -1,0 +1,140 @@
+{
+  "name": "SignedAuditLog",
+  "type": "object",
+  "properties": {
+    "log_id": {
+      "type": "string",
+      "description": "Unique log identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor_lei": {
+      "type": "string",
+      "description": "LEI of entity performing action"
+    },
+    "actor_vlei_credential": {
+      "type": "string",
+      "description": "vLEI credential used for action"
+    },
+    "actor_email": {
+      "type": "string",
+      "description": "User email (for backward compatibility)"
+    },
+    "actor_name": {
+      "type": "string"
+    },
+    "actor_role": {
+      "type": "string"
+    },
+    "parent_lei": {
+      "type": "string",
+      "description": "Parent entity LEI in chain"
+    },
+    "credential_chain": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Full provenance chain",
+      "default": []
+    },
+    "action": {
+      "type": "string",
+      "description": "Action performed"
+    },
+    "action_category": {
+      "type": "string",
+      "enum": [
+        "authentication",
+        "transaction",
+        "configuration",
+        "user_management",
+        "compliance",
+        "financial"
+      ],
+      "description": "Category of action"
+    },
+    "target_entity_type": {
+      "type": "string"
+    },
+    "target_entity_id": {
+      "type": "string"
+    },
+    "target_lei": {
+      "type": "string",
+      "description": "LEI of target entity (if applicable)"
+    },
+    "old_value": {
+      "type": "string"
+    },
+    "new_value": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "user_agent": {
+      "type": "string"
+    },
+    "digital_signature": {
+      "type": "string",
+      "description": "EdDSA/ECDSA signature of log entry"
+    },
+    "signature_algorithm": {
+      "type": "string",
+      "enum": [
+        "EdDSA",
+        "ECDSA-P256",
+        "ECDSA-P384"
+      ],
+      "default": "EdDSA"
+    },
+    "signature_verification": {
+      "type": "object",
+      "properties": {
+        "verified": {
+          "type": "boolean"
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verified_by": {
+          "type": "string"
+        }
+      }
+    },
+    "previous_log_hash": {
+      "type": "string",
+      "description": "Hash of previous log (blockchain-style chain)"
+    },
+    "log_hash": {
+      "type": "string",
+      "description": "SHA-256 hash of this log entry"
+    },
+    "immutable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Cannot be modified after creation"
+    },
+    "compliance_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Regulatory compliance tags (PCI, GDPR, FATF, etc.)",
+      "default": []
+    }
+  },
+  "required": [
+    "actor_lei",
+    "action",
+    "timestamp"
+  ]
+}

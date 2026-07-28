@@ -1,0 +1,61 @@
+{
+  "name": "VirtualTerminalUser",
+  "type": "object",
+  "properties": {
+    "terminal_id": {
+      "type": "string",
+      "description": "Reference to VirtualTerminal"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "email": {
+      "type": "string",
+      "description": "User email for login"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "operator",
+        "manager"
+      ],
+      "default": "operator"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "suspended"
+      ],
+      "default": "active"
+    },
+    "temp_password": {
+      "type": "string"
+    },
+    "must_change_password": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "terminal_id",
+    "merchant_id",
+    "email",
+    "full_name"
+  ]
+}

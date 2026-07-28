@@ -1,0 +1,93 @@
+{
+  "name": "GDPRConsent",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Reference to User/Customer"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email for quick reference"
+    },
+    "consent_type": {
+      "type": "string",
+      "enum": [
+        "marketing",
+        "analytics",
+        "data_processing",
+        "data_sharing",
+        "third_party"
+      ],
+      "description": "Type of consent"
+    },
+    "consent_given": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether consent was granted"
+    },
+    "consent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent was given/withdrawn"
+    },
+    "consent_method": {
+      "type": "string",
+      "enum": [
+        "explicit",
+        "implicit",
+        "opt_in",
+        "opt_out"
+      ],
+      "description": "How consent was obtained"
+    },
+    "consent_version": {
+      "type": "string",
+      "description": "Version of privacy policy/terms"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address when consent given"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser/device info"
+    },
+    "revoked_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent was withdrawn"
+    },
+    "revoked_reason": {
+      "type": "string",
+      "description": "Reason for withdrawal"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When consent expires (if applicable)"
+    },
+    "legal_basis": {
+      "type": "string",
+      "enum": [
+        "consent",
+        "contract",
+        "legal_obligation",
+        "vital_interests",
+        "public_task",
+        "legitimate_interests"
+      ],
+      "description": "GDPR legal basis for processing"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "Specific purpose of data processing"
+    }
+  },
+  "required": [
+    "user_id",
+    "consent_type",
+    "consent_given",
+    "legal_basis"
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "name": "MerchantPricingRule",
+  "type": "object",
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "description": "Unique rule identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "rule_name": {
+      "type": "string",
+      "description": "Rule name (e.g., 'Standard Card Processing')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Rule description"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Reference to PSPProductTemplate (optional)"
+    },
+    "applies_to": {
+      "type": "string",
+      "enum": [
+        "all_merchants",
+        "specific_merchants",
+        "merchant_tier",
+        "product"
+      ],
+      "default": "all_merchants",
+      "description": "Rule scope"
+    },
+    "merchant_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specific merchant IDs if applies_to=specific_merchants"
+    },
+    "merchant_tier": {
+      "type": "string",
+      "enum": [
+        "startup",
+        "growth",
+        "enterprise",
+        "vip"
+      ],
+      "description": "Merchant tier if applies_to=merchant_tier"
+    },
+    "pricing_type": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "fixed",
+        "tiered",
+        "hybrid",
+        "volume_based"
+      ],
+      "description": "Type of pricing model"
+    },
+    "base_percentage": {
+      "type": "number",
+      "description": "Base percentage rate (e.g., 2.9)"
+    },
+    "base_fixed": {
+      "type": "number",
+      "description": "Base fixed amount (e.g., 0.30)"
+    },
+    "tiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tier_name": {
+            "type": "string"
+          },
+          "volume_min": {
+            "type": "number"
+          },
+          "volume_max": {
+            "type": "number"
+          },
+          "percentage": {
+            "type": "number"
+          },
+          "fixed": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Tiered pricing structure"
+    },
+    "volume_discounts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "threshold": {
+            "type": "number"
+          },
+          "discount_percentage": {
+            "type": "number"
+          },
+          "discount_fixed": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Volume-based discounts"
+    },
+    "min_charge": {
+      "type": "number",
+      "description": "Minimum charge per transaction"
+    },
+    "max_charge": {
+      "type": "number",
+      "description": "Maximum charge per transaction (cap)"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "Currency for pricing"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Rule priority (lower = higher priority)"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When rule becomes effective"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When rule expires"
+    },
+    "promotional_campaign_id": {
+      "type": "string",
+      "description": "Reference to PromotionalPricing if applicable"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "expired",
+        "archived"
+      ],
+      "default": "draft",
+      "description": "Rule status"
+    },
+    "inherits_from_master": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether rule inherits from MasterPricing"
+    },
+    "master_pricing_id": {
+      "type": "string",
+      "description": "Reference to MasterPricing item"
+    },
+    "markup_percentage": {
+      "type": "number",
+      "description": "Markup over master pricing (if inherited)"
+    },
+    "total_revenue": {
+      "type": "number",
+      "default": 0,
+      "description": "Total revenue from this rule"
+    },
+    "transaction_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of transactions using this rule"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "User who created the rule"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "rule_name",
+    "pricing_type"
+  ]
+}

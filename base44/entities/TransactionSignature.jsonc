@@ -1,0 +1,105 @@
+{
+  "name": "TransactionSignature",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to Transaction entity"
+    },
+    "operation_type": {
+      "type": "string",
+      "enum": [
+        "sale",
+        "refund",
+        "void",
+        "capture",
+        "auth",
+        "settlement",
+        "chargeback"
+      ],
+      "description": "Type of operation signed"
+    },
+    "signature": {
+      "type": "string",
+      "description": "Digital signature (Base64 encoded)"
+    },
+    "signature_algorithm": {
+      "type": "string",
+      "enum": [
+        "RSA-PSS-SHA256",
+        "ECDSA-SHA256",
+        "EdDSA"
+      ],
+      "default": "RSA-PSS-SHA256",
+      "description": "Signature algorithm used"
+    },
+    "signed_data": {
+      "type": "string",
+      "description": "Hash of signed transaction data (SHA-256)"
+    },
+    "signed_by": {
+      "type": "string",
+      "description": "User ID who authorized the operation"
+    },
+    "signed_by_email": {
+      "type": "string",
+      "description": "Email of authorizing user"
+    },
+    "signature_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3161 trusted timestamp"
+    },
+    "certificate_fingerprint": {
+      "type": "string",
+      "description": "SHA-256 fingerprint of signing certificate"
+    },
+    "is_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether signature has been verified"
+    },
+    "verification_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When signature was verified"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "valid",
+        "invalid",
+        "expired",
+        "revoked"
+      ],
+      "description": "Signature verification status"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Merchant associated with transaction"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Transaction amount (for audit)"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Transaction currency"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of signing request"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional signature metadata"
+    }
+  },
+  "required": [
+    "transaction_id",
+    "operation_type",
+    "signature",
+    "signed_data",
+    "signed_by"
+  ]
+}

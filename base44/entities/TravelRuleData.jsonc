@@ -1,0 +1,110 @@
+{
+  "name": "TravelRuleData",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to Transaction"
+    },
+    "rule_triggered": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether Travel Rule threshold was met (>$1000/\u20ac1000)"
+    },
+    "threshold_currency": {
+      "type": "string",
+      "description": "ISO 4217 currency for threshold calculation"
+    },
+    "threshold_amount": {
+      "type": "number",
+      "description": "Threshold amount in local currency"
+    },
+    "originator_name": {
+      "type": "string",
+      "description": "Full name of transaction originator"
+    },
+    "originator_account": {
+      "type": "string",
+      "description": "Account number or wallet address"
+    },
+    "originator_address": {
+      "type": "string",
+      "description": "Physical address of originator"
+    },
+    "originator_country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code"
+    },
+    "originator_national_id": {
+      "type": "string",
+      "description": "National ID/passport/tax number"
+    },
+    "originator_dob": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of birth"
+    },
+    "beneficiary_name": {
+      "type": "string",
+      "description": "Full name of beneficiary"
+    },
+    "beneficiary_account": {
+      "type": "string",
+      "description": "Account number or wallet address"
+    },
+    "beneficiary_address": {
+      "type": "string",
+      "description": "Physical address of beneficiary"
+    },
+    "beneficiary_country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code"
+    },
+    "beneficiary_vasp": {
+      "type": "string",
+      "description": "Beneficiary VASP/exchange name"
+    },
+    "beneficiary_vasp_id": {
+      "type": "string",
+      "description": "Beneficiary VASP registration/license ID"
+    },
+    "transfer_direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound",
+        "internal"
+      ],
+      "description": "Direction of crypto transfer"
+    },
+    "compliance_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "incomplete",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "data_completeness_score": {
+      "type": "number",
+      "description": "0-100 score for data completeness"
+    },
+    "transmitted_to_vasp": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether data was transmitted to counterparty VASP"
+    },
+    "transmission_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verification_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "transaction_id"
+  ]
+}

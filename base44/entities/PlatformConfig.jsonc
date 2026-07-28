@@ -1,0 +1,62 @@
+{
+  "name": "PlatformConfig",
+  "type": "object",
+  "properties": {
+    "config_key": {
+      "type": "string",
+      "description": "Configuration key (unique)"
+    },
+    "config_category": {
+      "type": "string",
+      "enum": [
+        "lei_vlei",
+        "compliance",
+        "security",
+        "features",
+        "limits"
+      ],
+      "description": "Configuration category"
+    },
+    "config_value": {
+      "type": "object",
+      "description": "Configuration value (flexible JSON)"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "enforcement_level": {
+      "type": "string",
+      "enum": [
+        "optional",
+        "warning",
+        "mandatory",
+        "blocking"
+      ],
+      "default": "optional",
+      "description": "How strictly to enforce this config"
+    },
+    "rollout_phase": {
+      "type": "string",
+      "enum": [
+        "disabled",
+        "testing",
+        "gradual",
+        "full"
+      ],
+      "default": "disabled"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When this config becomes active"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "config_key",
+    "config_category"
+  ]
+}

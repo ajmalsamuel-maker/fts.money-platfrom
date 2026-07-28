@@ -1,0 +1,169 @@
+{
+  "name": "AssetIssuer",
+  "type": "object",
+  "properties": {
+    "provider_code": {
+      "type": "string",
+      "description": "Parent RWA provider (tenant isolation)"
+    },
+    "issuer_code": {
+      "type": "string",
+      "description": "Unique issuer code"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "lei": {
+      "type": "string",
+      "description": "Legal Entity Identifier"
+    },
+    "email": {
+      "type": "string"
+    },
+    "issuer_type": {
+      "type": "string",
+      "enum": [
+        "corporation",
+        "fund",
+        "fund_manager",
+        "investment_bank",
+        "broker_dealer",
+        "real_estate_company",
+        "government"
+      ],
+      "default": "corporation"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_kyb",
+        "active",
+        "suspended",
+        "terminated"
+      ],
+      "default": "pending_kyb"
+    },
+    "kyb_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "total_assets_tokenized": {
+      "type": "number",
+      "default": 0
+    },
+    "total_value": {
+      "type": "number",
+      "default": 0
+    },
+    "password_hash": {
+      "type": "string"
+    },
+    "registration_number": {
+      "type": "string",
+      "description": "Company registration number"
+    },
+    "incorporation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of incorporation"
+    },
+    "primary_jurisdiction": {
+      "type": "string",
+      "description": "Primary regulatory jurisdiction"
+    },
+    "business_address": {
+      "type": "string",
+      "description": "Registered business address"
+    },
+    "website": {
+      "type": "string"
+    },
+    "asset_types_planned": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Asset types the issuer plans to tokenize"
+    },
+    "expected_aum": {
+      "type": "string",
+      "description": "Expected assets under management range"
+    },
+    "tas_number": {
+      "type": "string",
+      "description": "Trust Anchor Service number (instant verification)"
+    },
+    "lei_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "expired",
+        "grace_period"
+      ],
+      "default": "pending",
+      "description": "LEI verification status"
+    },
+    "lei_grace_period_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End of 6-month LEI grace period"
+    },
+    "compliance_grace_status": {
+      "type": "string",
+      "enum": [
+        "grace_period_active",
+        "grace_expired",
+        "compliant",
+        "non_compliant"
+      ],
+      "description": "Grace period compliance status"
+    },
+    "securities_license_number": {
+      "type": "string",
+      "description": "Securities regulatory license"
+    },
+    "securities_regulator": {
+      "type": "string",
+      "description": "Regulatory body (SEC, FCA, MAS, etc.)"
+    },
+    "license_jurisdiction": {
+      "type": "string"
+    },
+    "aml_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "clear",
+        "monitoring",
+        "flagged",
+        "blocked"
+      ],
+      "default": "pending"
+    },
+    "aml_risk_score": {
+      "type": "number",
+      "description": "AML risk score (0-100)"
+    },
+    "onboarding_data": {
+      "type": "string",
+      "description": "JSON stringified onboarding data"
+    },
+    "compliance_notes": {
+      "type": "string",
+      "description": "Compliance officer notes"
+    }
+  },
+  "required": [
+    "provider_code",
+    "issuer_code",
+    "company_name",
+    "email"
+  ]
+}

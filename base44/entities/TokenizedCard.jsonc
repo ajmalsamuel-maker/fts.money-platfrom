@@ -1,0 +1,149 @@
+{
+  "name": "TokenizedCard",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name for reference"
+    },
+    "customer_email": {
+      "type": "string",
+      "description": "Customer email"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Customer name"
+    },
+    "token": {
+      "type": "string",
+      "description": "EMV payment token from tokenization provider"
+    },
+    "token_provider": {
+      "type": "string",
+      "enum": [
+        "spreedly",
+        "basistheory",
+        "processor"
+      ],
+      "description": "Tokenization provider"
+    },
+    "token_type": {
+      "type": "string",
+      "enum": [
+        "single_use",
+        "multi_use",
+        "network_token"
+      ],
+      "default": "multi_use",
+      "description": "Token usage type"
+    },
+    "card_brand": {
+      "type": "string",
+      "enum": [
+        "visa",
+        "mastercard",
+        "amex",
+        "discover",
+        "jcb",
+        "diners_club",
+        "unionpay"
+      ],
+      "description": "Card network brand"
+    },
+    "card_last_four": {
+      "type": "string",
+      "description": "Last 4 digits of card"
+    },
+    "card_bin": {
+      "type": "string",
+      "description": "First 6 digits (BIN) of card"
+    },
+    "expiry_month": {
+      "type": "string",
+      "description": "Card expiry month (MM)"
+    },
+    "expiry_year": {
+      "type": "string",
+      "description": "Card expiry year (YYYY)"
+    },
+    "billing_address": {
+      "type": "object",
+      "description": "Billing address details",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      }
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false,
+      "description": "Default payment method for customer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "revoked",
+        "suspended"
+      ],
+      "default": "active"
+    },
+    "token_expiry": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the token expires"
+    },
+    "network_token_cryptogram": {
+      "type": "string",
+      "description": "EMV network token cryptogram for transactions"
+    },
+    "token_requestor_id": {
+      "type": "string",
+      "description": "Token requestor ID from card network"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times token has been used"
+    },
+    "last_used_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time token was used"
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Unique fingerprint for card deduplication"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional provider-specific metadata"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "customer_email",
+    "token",
+    "token_provider",
+    "card_last_four",
+    "card_brand"
+  ]
+}

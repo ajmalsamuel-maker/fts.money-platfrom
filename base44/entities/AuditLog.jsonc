@@ -1,0 +1,203 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "user_login",
+        "user_logout",
+        "user_login_failed",
+        "user_created",
+        "user_updated",
+        "user_deleted",
+        "user_role_changed",
+        "password_changed",
+        "password_reset",
+        "session_timeout",
+        "permission_changed",
+        "transaction_created",
+        "transaction_updated",
+        "transaction_refunded",
+        "transaction_voided",
+        "transaction_signed",
+        "merchant_created",
+        "merchant_updated",
+        "merchant_deleted",
+        "merchant_approved",
+        "merchant_suspended",
+        "terminal_created",
+        "terminal_updated",
+        "terminal_deleted",
+        "settlement_created",
+        "settlement_approved",
+        "payout_initiated",
+        "payout_completed",
+        "chargeback_created",
+        "chargeback_updated",
+        "dispute_created",
+        "dispute_updated",
+        "api_key_created",
+        "api_key_revoked",
+        "settings_updated",
+        "export_data",
+        "import_data",
+        "report_generated",
+        "config_changed",
+        "system_access",
+        "data_access",
+        "security_alert",
+        "token_created",
+        "token_detokenized",
+        "signature_verified",
+        "certificate_created"
+      ],
+      "description": "Type of audit event"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "authentication",
+        "authorization",
+        "user_management",
+        "transaction",
+        "merchant",
+        "terminal",
+        "settlement",
+        "chargeback",
+        "configuration",
+        "data_access",
+        "security",
+        "system"
+      ],
+      "description": "Category of the event"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ],
+      "default": "info"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "ID of the user who performed the action"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user"
+    },
+    "user_role": {
+      "type": "string",
+      "description": "Role of the user at the time of action"
+    },
+    "target_entity": {
+      "type": "string",
+      "description": "Type of entity affected (User, Merchant, Transaction, etc.)"
+    },
+    "target_id": {
+      "type": "string",
+      "description": "ID of the affected entity"
+    },
+    "action": {
+      "type": "string",
+      "description": "Specific action performed"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the event"
+    },
+    "old_value": {
+      "type": "string",
+      "description": "Previous value (JSON string for complex data)"
+    },
+    "new_value": {
+      "type": "string",
+      "description": "New value (JSON string for complex data)"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of the request"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Browser/client user agent"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Session identifier"
+    },
+    "request_id": {
+      "type": "string",
+      "description": "Unique request identifier for tracing"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failure",
+        "pending"
+      ],
+      "default": "success"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details if status is failure"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context data"
+    },
+    "pci_relevant": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag for PCI-DSS relevant events"
+    },
+    "retention_period": {
+      "type": "string",
+      "enum": [
+        "1_year",
+        "3_years",
+        "7_years"
+      ],
+      "default": "1_year",
+      "description": "How long to retain this log"
+    },
+    "signature": {
+      "type": "string",
+      "description": "RSA-PSS/ECDSA digital signature of the log entry (Base64)"
+    },
+    "signature_algorithm": {
+      "type": "string",
+      "enum": [
+        "RSA-PSS-SHA256",
+        "ECDSA-SHA256",
+        "EdDSA"
+      ],
+      "default": "RSA-PSS-SHA256",
+      "description": "Algorithm used for signing"
+    },
+    "signature_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3161 trusted timestamp of signature"
+    },
+    "signature_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether signature has been verified"
+    },
+    "signature_fingerprint": {
+      "type": "string",
+      "description": "SHA-256 fingerprint of signing certificate"
+    }
+  },
+  "required": [
+    "event_type",
+    "category",
+    "action",
+    "description"
+  ]
+}

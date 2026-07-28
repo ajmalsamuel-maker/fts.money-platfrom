@@ -1,0 +1,37 @@
+{
+  "name": "ChallengeParticipant",
+  "type": "object",
+  "properties": {
+    "challenge_id": {
+      "type": "string"
+    },
+    "participant_id": {
+      "type": "string"
+    },
+    "program_id": {
+      "type": "string"
+    },
+    "current_progress": {
+      "type": "number",
+      "default": 0,
+      "description": "Current progress towards target"
+    },
+    "is_completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "bonus_awarded": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "challenge_id",
+    "participant_id",
+    "program_id"
+  ]
+}

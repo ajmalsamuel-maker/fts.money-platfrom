@@ -1,0 +1,98 @@
+{
+  "name": "PCIPolicy",
+  "type": "object",
+  "properties": {
+    "policy_name": {
+      "type": "string",
+      "description": "Name of the policy"
+    },
+    "policy_category": {
+      "type": "string",
+      "enum": [
+        "security_policy",
+        "access_control",
+        "data_protection",
+        "network_security",
+        "vulnerability_management",
+        "monitoring",
+        "incident_response",
+        "business_continuity",
+        "acceptable_use",
+        "other"
+      ],
+      "description": "Category of policy"
+    },
+    "related_requirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of PCI requirements this policy addresses"
+    },
+    "version": {
+      "type": "string",
+      "description": "Policy version number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "under_review",
+        "approved",
+        "active",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "review_frequency": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "quarterly",
+        "semi_annually",
+        "annually"
+      ],
+      "default": "annually"
+    },
+    "last_review_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_review_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Policy owner"
+    },
+    "approver": {
+      "type": "string",
+      "description": "Person who approved the policy"
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "document_url": {
+      "type": "string",
+      "description": "Link to policy document"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Brief summary of the policy"
+    },
+    "content": {
+      "type": "string",
+      "description": "Full policy content"
+    }
+  },
+  "required": [
+    "policy_name",
+    "policy_category"
+  ]
+}

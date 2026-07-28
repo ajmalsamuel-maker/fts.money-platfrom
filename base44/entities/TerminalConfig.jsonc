@@ -1,0 +1,88 @@
+{
+  "name": "TerminalConfig",
+  "type": "object",
+  "properties": {
+    "terminal_id": {
+      "type": "string",
+      "description": "Unique terminal identifier"
+    },
+    "bank_mid_id": {
+      "type": "string",
+      "description": "Reference to BankMID"
+    },
+    "bank_mid_name": {
+      "type": "string",
+      "description": "Bank MID name for reference"
+    },
+    "terminal_type": {
+      "type": "string",
+      "enum": [
+        "visa_mastercard",
+        "amex",
+        "discover",
+        "cup",
+        "diners",
+        "jcb",
+        "all_networks"
+      ],
+      "default": "visa_mastercard",
+      "description": "Card network for this terminal"
+    },
+    "description": {
+      "type": "string",
+      "description": "Terminal description"
+    },
+    "vendor": {
+      "type": "string",
+      "description": "Terminal vendor/manufacturer"
+    },
+    "model": {
+      "type": "string",
+      "description": "Terminal model"
+    },
+    "serial_number": {
+      "type": "string",
+      "description": "Terminal serial number"
+    },
+    "location": {
+      "type": "string",
+      "description": "Physical location"
+    },
+    "connection_method": {
+      "type": "string",
+      "enum": [
+        "tcp_ip",
+        "tls",
+        "http",
+        "https"
+      ],
+      "default": "https",
+      "description": "Connection protocol"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance"
+      ],
+      "default": "active",
+      "description": "Terminal status"
+    },
+    "last_heartbeat": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last health check"
+    },
+    "transaction_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total transactions processed"
+    }
+  },
+  "required": [
+    "terminal_id",
+    "bank_mid_id",
+    "terminal_type"
+  ]
+}

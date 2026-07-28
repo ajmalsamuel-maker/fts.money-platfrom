@@ -1,0 +1,117 @@
+{
+  "name": "ProcessorConnectorConfig",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation"
+    },
+    "connector_name": {
+      "type": "string",
+      "description": "Connector name (stripe, adyen, paypal, etc.) - must match assigned connector"
+    },
+    "api_endpoint": {
+      "type": "string",
+      "description": "Connector API endpoint URL"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "API key (stored encrypted)"
+    },
+    "api_secret": {
+      "type": "string",
+      "description": "API secret/password (stored encrypted)"
+    },
+    "webhook_secret": {
+      "type": "string",
+      "description": "Webhook signing secret from processor"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "sandbox",
+        "production"
+      ],
+      "default": "sandbox"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "testing",
+        "inactive",
+        "error"
+      ],
+      "default": "active"
+    },
+    "merchant_account_id": {
+      "type": "string",
+      "description": "Sub-merchant account ID (if applicable)"
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Currencies supported by this connector"
+    },
+    "supported_payment_methods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Payment methods supported (card, bank_transfer, etc.)"
+    },
+    "transaction_fee_percentage": {
+      "type": "number",
+      "description": "Connector's fee as percentage"
+    },
+    "transaction_fee_fixed": {
+      "type": "number",
+      "description": "Connector's fixed fee per transaction"
+    },
+    "daily_volume_limit": {
+      "type": "number",
+      "description": "Daily transaction volume limit"
+    },
+    "current_daily_volume": {
+      "type": "number",
+      "default": 0
+    },
+    "health_check_status": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "degraded",
+        "down"
+      ],
+      "default": "healthy"
+    },
+    "last_health_check": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "success_rate_percent": {
+      "type": "number",
+      "description": "Percentage of successful transactions"
+    },
+    "avg_response_time_ms": {
+      "type": "number",
+      "description": "Average response time in milliseconds"
+    },
+    "priority": {
+      "type": "integer",
+      "default": 100,
+      "description": "Higher = preferred in failover scenarios"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Custom connector-specific settings"
+    }
+  },
+  "required": [
+    "psp_code",
+    "connector_name",
+    "api_key"
+  ]
+}

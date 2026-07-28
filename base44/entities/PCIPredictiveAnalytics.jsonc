@@ -1,0 +1,67 @@
+{
+  "name": "PCIPredictiveAnalytics",
+  "type": "object",
+  "properties": {
+    "prediction_type": {
+      "type": "string",
+      "enum": [
+        "gap_forecast",
+        "risk_trend",
+        "compliance_score",
+        "remediation_time",
+        "audit_readiness"
+      ],
+      "description": "Type of prediction"
+    },
+    "requirement_number": {
+      "type": "string",
+      "description": "Related requirement if applicable"
+    },
+    "prediction_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When will this occur"
+    },
+    "confidence_score": {
+      "type": "number",
+      "description": "Confidence percentage (0-100)"
+    },
+    "predicted_value": {
+      "type": "string",
+      "description": "What is predicted"
+    },
+    "current_value": {
+      "type": "string",
+      "description": "Current state"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "AI-generated recommendations"
+    },
+    "historical_data": {
+      "type": "object",
+      "description": "Data used for prediction"
+    },
+    "model_version": {
+      "type": "string",
+      "description": "ML model version used"
+    }
+  },
+  "required": [
+    "prediction_type",
+    "confidence_score"
+  ]
+}

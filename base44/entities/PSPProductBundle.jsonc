@@ -1,0 +1,77 @@
+{
+  "name": "PSPProductBundle",
+  "type": "object",
+  "properties": {
+    "bundle_id": {
+      "type": "string",
+      "description": "Unique bundle identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "bundle_name": {
+      "type": "string",
+      "description": "Bundle name (e.g., 'Complete Payment Suite')"
+    },
+    "bundle_description": {
+      "type": "string",
+      "description": "Bundle description"
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "is_optional": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "description": "Products included in bundle"
+    },
+    "bundle_price": {
+      "type": "number",
+      "description": "Total bundle price"
+    },
+    "discount_percentage": {
+      "type": "number",
+      "description": "Discount vs individual product prices"
+    },
+    "savings_amount": {
+      "type": "number",
+      "description": "Total savings when buying bundle"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "total_subscribers": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of merchants subscribed to bundle"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "bundle_name",
+    "products"
+  ]
+}

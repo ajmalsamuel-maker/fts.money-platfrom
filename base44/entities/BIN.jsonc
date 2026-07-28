@@ -1,0 +1,75 @@
+{
+  "name": "BIN",
+  "type": "object",
+  "properties": {
+    "bin": {
+      "type": "string",
+      "description": "Bank Identification Number (first 6-8 digits)"
+    },
+    "scheme": {
+      "type": "string",
+      "description": "Card scheme (visa, mastercard, etc)"
+    },
+    "type": {
+      "type": "string",
+      "description": "Card type (debit, credit, prepaid)"
+    },
+    "brand": {
+      "type": "string",
+      "description": "Card brand"
+    },
+    "prepaid": {
+      "type": "boolean",
+      "description": "Whether the card is prepaid"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country code"
+    },
+    "country_name": {
+      "type": "string",
+      "description": "Country name"
+    },
+    "bank_name": {
+      "type": "string",
+      "description": "Issuing bank name"
+    },
+    "bank_url": {
+      "type": "string",
+      "description": "Bank website URL"
+    },
+    "bank_phone": {
+      "type": "string",
+      "description": "Bank phone number"
+    },
+    "bank_city": {
+      "type": "string",
+      "description": "Bank city"
+    },
+    "routing_priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Priority for routing (lower = higher priority)"
+    },
+    "preferred_processor": {
+      "type": "string",
+      "description": "Preferred payment processor for this BIN"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "blocked"
+      ],
+      "default": "active"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional BIN metadata"
+    }
+  },
+  "required": [
+    "bin"
+  ]
+}

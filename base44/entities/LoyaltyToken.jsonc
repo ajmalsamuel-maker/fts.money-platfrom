@@ -1,0 +1,52 @@
+{
+  "name": "LoyaltyToken",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "token_name": {
+      "type": "string",
+      "description": "Token name (e.g., RunMiles, GreenPoints)"
+    },
+    "token_symbol": {
+      "type": "string",
+      "description": "Token symbol (e.g., RUN, GRN)"
+    },
+    "blockchain_network": {
+      "type": "string",
+      "enum": [
+        "polygon",
+        "ethereum",
+        "polygon_edge",
+        "off_chain"
+      ],
+      "default": "polygon_edge"
+    },
+    "contract_address": {
+      "type": "string"
+    },
+    "total_supply": {
+      "type": "number",
+      "default": 0
+    },
+    "circulating_supply": {
+      "type": "number",
+      "default": 0
+    },
+    "is_blockchain_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether tokens are on blockchain or off-chain"
+    },
+    "conversion_rate_to_usd": {
+      "type": "number",
+      "description": "Exchange rate (e.g., 100 tokens = $1)"
+    }
+  },
+  "required": [
+    "program_id",
+    "token_name",
+    "token_symbol"
+  ]
+}

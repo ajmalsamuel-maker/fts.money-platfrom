@@ -1,0 +1,155 @@
+{
+  "name": "Dispute",
+  "type": "object",
+  "properties": {
+    "dispute_id": {
+      "type": "string",
+      "description": "Unique dispute case number"
+    },
+    "transaction_id": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "card_network": {
+      "type": "string",
+      "enum": [
+        "visa",
+        "mastercard",
+        "amex",
+        "discover"
+      ]
+    },
+    "dispute_type": {
+      "type": "string",
+      "enum": [
+        "chargeback",
+        "retrieval",
+        "pre_arbitration",
+        "arbitration",
+        "compliance"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "description": "Network-specific reason code"
+    },
+    "reason_category": {
+      "type": "string",
+      "enum": [
+        "fraud",
+        "authorization",
+        "processing_error",
+        "consumer_dispute",
+        "not_received",
+        "not_as_described",
+        "cancelled",
+        "credit_not_processed",
+        "duplicate"
+      ]
+    },
+    "reason_description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "under_review",
+        "pending_response",
+        "merchant_won",
+        "merchant_lost",
+        "accepted",
+        "expired",
+        "escalated"
+      ],
+      "default": "open"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "first_chargeback",
+        "second_presentment",
+        "pre_arbitration",
+        "arbitration",
+        "final"
+      ],
+      "default": "first_chargeback"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "original_transaction_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "dispute_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "response_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "days_to_respond": {
+      "type": "number"
+    },
+    "cardholder_name": {
+      "type": "string"
+    },
+    "card_last_four": {
+      "type": "string"
+    },
+    "evidence_submitted": {
+      "type": "boolean",
+      "default": false
+    },
+    "evidence_documents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "merchant_response": {
+      "type": "string"
+    },
+    "issuer_comments": {
+      "type": "string"
+    },
+    "resolution_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "liability": {
+      "type": "string",
+      "enum": [
+        "merchant",
+        "issuer",
+        "pending"
+      ]
+    },
+    "arn": {
+      "type": "string",
+      "description": "Acquirer Reference Number"
+    },
+    "case_number": {
+      "type": "string",
+      "description": "Network case number"
+    }
+  },
+  "required": [
+    "dispute_id",
+    "transaction_id",
+    "merchant_id",
+    "amount",
+    "reason_code"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "name": "RWAHolding",
+  "type": "object",
+  "properties": {
+    "investor_id": {
+      "type": "string",
+      "description": "Reference to RWAInvestor"
+    },
+    "asset_id": {
+      "type": "string",
+      "description": "Reference to RWAAsset"
+    },
+    "wallet_address": {
+      "type": "string",
+      "description": "Investor wallet address"
+    },
+    "contract_address": {
+      "type": "string",
+      "description": "Token contract address"
+    },
+    "token_balance": {
+      "type": "number",
+      "description": "Number of tokens held"
+    },
+    "purchase_price": {
+      "type": "number",
+      "description": "Price per token at purchase"
+    },
+    "total_invested": {
+      "type": "number",
+      "description": "Total amount invested"
+    },
+    "current_value": {
+      "type": "number",
+      "description": "Current market value"
+    },
+    "unrealized_gain_loss": {
+      "type": "number",
+      "description": "Unrealized P&L"
+    },
+    "realized_gain_loss": {
+      "type": "number",
+      "default": 0,
+      "description": "Realized P&L from sales"
+    },
+    "purchase_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When tokens were acquired"
+    },
+    "lockup_end_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When lockup period ends"
+    },
+    "is_locked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether tokens are currently locked"
+    },
+    "dividends_received": {
+      "type": "number",
+      "default": 0,
+      "description": "Total dividends/coupons received"
+    },
+    "last_dividend_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last dividend payment date"
+    },
+    "cost_basis": {
+      "type": "number",
+      "description": "Tax cost basis"
+    },
+    "acquisition_method": {
+      "type": "string",
+      "enum": [
+        "primary_sale",
+        "secondary_purchase",
+        "transfer"
+      ],
+      "description": "How tokens were acquired"
+    },
+    "purchase_tx_hash": {
+      "type": "string",
+      "description": "Blockchain transaction hash"
+    }
+  },
+  "required": [
+    "investor_id",
+    "asset_id",
+    "wallet_address",
+    "token_balance"
+  ]
+}

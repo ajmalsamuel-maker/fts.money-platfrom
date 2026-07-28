@@ -1,0 +1,99 @@
+{
+  "name": "ConnectorUsageMetric",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "PSP using the connector"
+    },
+    "platform_connector_id": {
+      "type": "string",
+      "description": "Reference to PlatformConnector"
+    },
+    "connector_name": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Merchant within the PSP (optional)"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0
+    },
+    "successful_transactions": {
+      "type": "number",
+      "default": 0
+    },
+    "failed_transactions": {
+      "type": "number",
+      "default": 0
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Percentage"
+    },
+    "avg_response_time_ms": {
+      "type": "number"
+    },
+    "platform_fees_charged": {
+      "type": "number",
+      "default": 0,
+      "description": "Total fees FTS charges PSP for this connector"
+    },
+    "psp_fees_collected": {
+      "type": "number",
+      "default": 0,
+      "description": "Fees PSP collected from merchants"
+    },
+    "psp_margin": {
+      "type": "number",
+      "description": "PSP's profit margin"
+    },
+    "chargeback_count": {
+      "type": "number",
+      "default": 0
+    },
+    "refund_count": {
+      "type": "number",
+      "default": 0
+    },
+    "transaction_breakdown": {
+      "type": "object",
+      "description": "Breakdown by payment method, card type, etc."
+    },
+    "billed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether usage has been invoiced to PSP"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to generated invoice"
+    }
+  },
+  "required": [
+    "psp_code",
+    "platform_connector_id",
+    "period_start"
+  ]
+}

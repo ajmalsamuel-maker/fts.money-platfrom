@@ -1,0 +1,98 @@
+{
+  "name": "PricingInheritance",
+  "type": "object",
+  "properties": {
+    "inheritance_id": {
+      "type": "string",
+      "description": "Unique inheritance identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_name": {
+      "type": "string",
+      "description": "PSP name for quick reference"
+    },
+    "master_pricing_id": {
+      "type": "string",
+      "description": "Reference to MasterPricing being inherited"
+    },
+    "inherited_from_template": {
+      "type": "string",
+      "description": "Template ID if inherited from template"
+    },
+    "override_allowed": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether PSP can override inherited pricing"
+    },
+    "overrides": {
+      "type": "object",
+      "properties": {
+        "sell_rate_percentage": {
+          "type": "number"
+        },
+        "sell_rate_fixed": {
+          "type": "number"
+        },
+        "margin_percentage": {
+          "type": "number"
+        },
+        "minimum_charge": {
+          "type": "number"
+        },
+        "maximum_charge": {
+          "type": "number"
+        }
+      },
+      "description": "PSP-specific overrides to master pricing"
+    },
+    "override_reason": {
+      "type": "string",
+      "description": "Business justification for override"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "Who approved the override"
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending_approval",
+        "rejected",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date",
+      "description": "When override becomes effective"
+    },
+    "effective_until": {
+      "type": "string",
+      "format": "date",
+      "description": "When override expires"
+    },
+    "auto_sync_updates": {
+      "type": "boolean",
+      "default": true,
+      "description": "Auto-sync when master pricing changes"
+    },
+    "last_synced": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last sync timestamp"
+    }
+  },
+  "required": [
+    "psp_id",
+    "master_pricing_id"
+  ]
+}

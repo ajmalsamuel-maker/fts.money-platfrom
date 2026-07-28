@@ -1,0 +1,66 @@
+{
+  "name": "PCIIntegration",
+  "type": "object",
+  "properties": {
+    "integration_name": {
+      "type": "string",
+      "description": "Name of integration (AWS, Azure, Qualys, etc.)"
+    },
+    "integration_type": {
+      "type": "string",
+      "enum": [
+        "cloud_provider",
+        "vulnerability_scanner",
+        "siem",
+        "identity",
+        "ticketing",
+        "communication",
+        "secrets_manager"
+      ],
+      "description": "Type of integration"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "error",
+        "configuring"
+      ],
+      "default": "inactive"
+    },
+    "api_endpoint": {
+      "type": "string"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "Encrypted API key"
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sync_frequency": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "daily",
+        "weekly",
+        "manual"
+      ],
+      "default": "daily"
+    },
+    "evidence_collected": {
+      "type": "number",
+      "default": 0
+    },
+    "config": {
+      "type": "object",
+      "description": "Integration-specific configuration"
+    }
+  },
+  "required": [
+    "integration_name",
+    "integration_type"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "name": "PCIWorkflow",
+  "type": "object",
+  "properties": {
+    "workflow_name": {
+      "type": "string",
+      "description": "Name of the workflow"
+    },
+    "workflow_type": {
+      "type": "string",
+      "enum": [
+        "remediation",
+        "evidence_approval",
+        "policy_review",
+        "audit_preparation",
+        "risk_assessment",
+        "vendor_review"
+      ],
+      "description": "Type of workflow"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "finding_created",
+        "evidence_uploaded",
+        "scheduled",
+        "integration_alert"
+      ],
+      "description": "What triggers this workflow"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "completed",
+        "cancelled"
+      ],
+      "default": "active"
+    },
+    "current_step": {
+      "type": "number",
+      "default": 1
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Workflow steps with assignments"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Current assignee email"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "related_finding_id": {
+      "type": "string"
+    },
+    "related_requirement": {
+      "type": "string"
+    },
+    "sla_hours": {
+      "type": "number",
+      "description": "SLA in hours"
+    },
+    "sla_status": {
+      "type": "string",
+      "enum": [
+        "on_track",
+        "at_risk",
+        "breached"
+      ],
+      "default": "on_track"
+    }
+  },
+  "required": [
+    "workflow_name",
+    "workflow_type"
+  ]
+}

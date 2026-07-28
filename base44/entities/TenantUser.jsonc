@@ -1,0 +1,59 @@
+{
+  "name": "TenantUser",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Reference to Tenant"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "Reference to AuthUser"
+    },
+    "email": {
+      "type": "string",
+      "description": "User email for quick reference"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "User full name"
+    },
+    "tenant_role": {
+      "type": "string",
+      "enum": [
+        "tenant_admin",
+        "billing_manager",
+        "support_agent",
+        "standard_user"
+      ],
+      "default": "standard_user",
+      "description": "User role within the tenant"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specific permissions granted to this user"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "tenant_id",
+    "user_id",
+    "email",
+    "tenant_role"
+  ]
+}

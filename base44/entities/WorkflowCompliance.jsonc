@@ -1,0 +1,127 @@
+{
+  "name": "WorkflowCompliance",
+  "type": "object",
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "description": "Unique workflow identifier"
+    },
+    "workflow_name": {
+      "type": "string",
+      "description": "Name of the workflow"
+    },
+    "workflow_type": {
+      "type": "string",
+      "enum": [
+        "psp_provisioning",
+        "merchant_onboarding",
+        "transaction_processing",
+        "compliance_verification",
+        "payout_processing",
+        "service_provisioning",
+        "dispute_resolution",
+        "risk_assessment"
+      ],
+      "description": "Type of workflow"
+    },
+    "iso_19510_compliant": {
+      "type": "boolean",
+      "default": false,
+      "description": "BPMN 2.0 compliant (workflow modeling)"
+    },
+    "iso_23005_7_compliant": {
+      "type": "boolean",
+      "default": false,
+      "description": "Multimedia workflow interoperability"
+    },
+    "iso_10746_compliant": {
+      "type": "boolean",
+      "default": false,
+      "description": "ODP architectural framework compliant"
+    },
+    "iso_9001_compliant": {
+      "type": "boolean",
+      "default": false,
+      "description": "Quality management compliant"
+    },
+    "bpmn_diagram_url": {
+      "type": "string",
+      "description": "URL to BPMN 2.0 diagram"
+    },
+    "workflow_definition": {
+      "type": "object",
+      "description": "BPMN 2.0 workflow definition (JSON)"
+    },
+    "quality_metrics": {
+      "type": "object",
+      "properties": {
+        "average_completion_time": {
+          "type": "number"
+        },
+        "success_rate": {
+          "type": "number"
+        },
+        "error_rate": {
+          "type": "number"
+        },
+        "sla_compliance": {
+          "type": "number"
+        }
+      },
+      "description": "ISO 9001 quality metrics"
+    },
+    "audit_trail": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Audit trail for quality management"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "under_review"
+      ],
+      "default": "draft"
+    },
+    "version": {
+      "type": "string",
+      "description": "Workflow version"
+    },
+    "last_audit_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Last compliance audit date"
+    },
+    "next_audit_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Next scheduled audit"
+    },
+    "compliance_notes": {
+      "type": "string",
+      "description": "Notes on compliance status"
+    }
+  },
+  "required": [
+    "workflow_name",
+    "workflow_type"
+  ]
+}

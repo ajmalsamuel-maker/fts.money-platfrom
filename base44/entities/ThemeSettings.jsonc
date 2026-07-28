@@ -1,0 +1,51 @@
+{
+  "name": "ThemeSettings",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "default": "default"
+    },
+    "company_name": {
+      "type": "string",
+      "default": "PaymentHub"
+    },
+    "primary_color": {
+      "type": "string",
+      "default": "#3b82f6"
+    },
+    "secondary_color": {
+      "type": "string",
+      "default": "#06b6d4"
+    },
+    "accent_color": {
+      "type": "string",
+      "default": "#8b5cf6"
+    },
+    "sidebar_bg": {
+      "type": "string",
+      "default": "#0f172a"
+    },
+    "sidebar_text": {
+      "type": "string",
+      "default": "#94a3b8"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "favicon_url": {
+      "type": "string"
+    },
+    "dark_mode": {
+      "type": "boolean",
+      "default": false
+    },
+    "compact_sidebar": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

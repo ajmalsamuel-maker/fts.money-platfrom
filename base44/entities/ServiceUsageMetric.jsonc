@@ -1,0 +1,97 @@
+{
+  "name": "ServiceUsageMetric",
+  "type": "object",
+  "properties": {
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string"
+    },
+    "service_id": {
+      "type": "string",
+      "description": "Reference to ServiceCatalog"
+    },
+    "service_name": {
+      "type": "string"
+    },
+    "subscription_id": {
+      "type": "string",
+      "description": "Reference to PSPServiceSubscription"
+    },
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to ServiceProvider"
+    },
+    "usage_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When service was called"
+    },
+    "usage_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date for aggregation"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "api_call",
+        "transaction_routed",
+        "fraud_check",
+        "kyb_verification",
+        "aml_screening",
+        "lei_issuance",
+        "document_verification",
+        "orchestration_decision",
+        "analytics_query",
+        "webhook_delivery"
+      ],
+      "description": "Type of usage"
+    },
+    "quantity": {
+      "type": "number",
+      "default": 1,
+      "description": "Number of units consumed"
+    },
+    "unit_cost": {
+      "type": "number",
+      "description": "Cost per unit"
+    },
+    "total_cost": {
+      "type": "number",
+      "description": "Total cost for this usage"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Which merchant triggered this (if applicable)"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Associated transaction ID (if applicable)"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context (request params, response summary, etc.)"
+    },
+    "response_time_ms": {
+      "type": "number",
+      "description": "Service response time"
+    },
+    "success": {
+      "type": "boolean",
+      "description": "Whether the service call succeeded"
+    },
+    "error_code": {
+      "type": "string",
+      "description": "Error code if failed"
+    }
+  },
+  "required": [
+    "psp_id",
+    "service_id",
+    "metric_type",
+    "total_cost"
+  ]
+}

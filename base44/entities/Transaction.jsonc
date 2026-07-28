@@ -1,0 +1,466 @@
+{
+  "name": "Transaction",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Unique transaction reference"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation (CRITICAL for multi-tenancy)"
+    },
+    "merchant_transaction_id": {
+      "type": "string",
+      "description": "Merchant's order/transaction ID"
+    },
+    "order_id": {
+      "type": "string",
+      "description": "Order reference number"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to merchant"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "mid": {
+      "type": "string",
+      "description": "MID used for this transaction"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "sale",
+        "refund",
+        "void",
+        "auth",
+        "capture",
+        "void_auth",
+        "void_sale",
+        "chargeback",
+        "payout",
+        "payout_only",
+        "verify_identity",
+        "fraud_control",
+        "vertoken",
+        "query_conn_bal",
+        "gentoken",
+        "transfer"
+      ]
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "sale",
+        "refund",
+        "auth",
+        "capture",
+        "void",
+        "void_auth",
+        "void_sale"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "accepted",
+        "approved",
+        "declined",
+        "rejected",
+        "failed",
+        "voided",
+        "reversed",
+        "settled",
+        "error",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "original_amount": {
+      "type": "number",
+      "description": "Original transaction amount before fees"
+    },
+    "vat_amount": {
+      "type": "number",
+      "description": "VAT/Tax amount",
+      "default": 0
+    },
+    "actual_amount": {
+      "type": "number",
+      "description": "Actual amount after conversions/fees"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "ISO 4217 currency code"
+    },
+    "fee": {
+      "type": "number"
+    },
+    "net_amount": {
+      "type": "number"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "visa",
+        "mastercard",
+        "amex",
+        "discover",
+        "jcb",
+        "diners_club",
+        "unionpay",
+        "debit_card",
+        "credit_card",
+        "atm_card",
+        "atm_transfer",
+        "bank_transfer",
+        "alipay",
+        "wechat",
+        "baidu",
+        "bitcoin",
+        "bitcoin_cash",
+        "crypto_currency",
+        "circle_usd_coin",
+        "wallet",
+        "e_wallet",
+        "cup_qr",
+        "china_union_pay",
+        "convenience_store",
+        "coupon",
+        "other"
+      ]
+    },
+    "payment_code": {
+      "type": "string",
+      "description": "Payment gateway specific code"
+    },
+    "card_number": {
+      "type": "string",
+      "description": "Masked/tokenized card number"
+    },
+    "card_last_four": {
+      "type": "string"
+    },
+    "card_prefix": {
+      "type": "string",
+      "description": "First 6 digits of card (BIN)"
+    },
+    "card_brand": {
+      "type": "string"
+    },
+    "issuer_bank": {
+      "type": "string",
+      "description": "Card issuing bank"
+    },
+    "issuer_country": {
+      "type": "string",
+      "description": "ISO 3166-1 country code of card issuer"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_phone": {
+      "type": "string"
+    },
+    "customer_country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code"
+    },
+    "bill_to_account_name": {
+      "type": "string",
+      "description": "Billing account name"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User/operator who initiated transaction"
+    },
+    "description": {
+      "type": "string"
+    },
+    "remarks": {
+      "type": "string",
+      "description": "Additional remarks/notes"
+    },
+    "auth_code": {
+      "type": "string",
+      "description": "Authorization/approval code"
+    },
+    "approval_code": {
+      "type": "string",
+      "description": "Approval code from processor"
+    },
+    "response_code": {
+      "type": "string"
+    },
+    "response_message": {
+      "type": "string"
+    },
+    "connector_response_code": {
+      "type": "string",
+      "description": "Response code from payment connector"
+    },
+    "connector_txn_no": {
+      "type": "string",
+      "description": "Transaction number from connector/gateway"
+    },
+    "trial_id": {
+      "type": "string",
+      "description": "Trial/test transaction ID"
+    },
+    "channel_txn_id": {
+      "type": "string",
+      "description": "Channel transaction ID"
+    },
+    "rrn": {
+      "type": "string",
+      "description": "Retrieval Reference Number (ISO 8583)"
+    },
+    "eci": {
+      "type": "string",
+      "description": "Electronic Commerce Indicator (ISO 8583)"
+    },
+    "arn": {
+      "type": "string",
+      "description": "Acquirer Reference Number (ISO 8583)"
+    },
+    "risk_score": {
+      "type": "number"
+    },
+    "fraud_control_status": {
+      "type": "string",
+      "description": "Fraud control check status"
+    },
+    "is_3ds": {
+      "type": "boolean",
+      "default": false
+    },
+    "terminal_id": {
+      "type": "string"
+    },
+    "batch_id": {
+      "type": "string"
+    },
+    "settlement_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "complete_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Transaction completion timestamp"
+    },
+    "accepted_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Time when transaction was accepted"
+    },
+    "operator": {
+      "type": "string",
+      "description": "Operator/staff who processed transaction"
+    },
+    "notification_status": {
+      "type": "string",
+      "description": "Status of customer notification"
+    },
+    "last_sent_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last notification sent time"
+    },
+    "beneficiary_name": {
+      "type": "string",
+      "description": "Beneficiary account name for transfers"
+    },
+    "beneficiary_iban": {
+      "type": "string",
+      "description": "ISO 13616 IBAN for beneficiary"
+    },
+    "beneficiary_bic": {
+      "type": "string",
+      "description": "ISO 9362 BIC/SWIFT code"
+    },
+    "account_no": {
+      "type": "string",
+      "description": "Beneficiary account number"
+    },
+    "bank_code": {
+      "type": "string",
+      "description": "Bank code for transfers"
+    },
+    "bank_name": {
+      "type": "string",
+      "description": "Bank name for transfers"
+    },
+    "branch_number": {
+      "type": "string",
+      "description": "Bank branch number"
+    },
+    "transaction_log": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Detailed transaction processing log"
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Transaction status change history"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional transaction metadata"
+    },
+    "iso20022_message_id": {
+      "type": "string",
+      "description": "ISO 20022 Message Identification (GrpHdr.MsgId)"
+    },
+    "iso20022_payment_info_id": {
+      "type": "string",
+      "description": "ISO 20022 Payment Information ID (PmtInf.PmtInfId)"
+    },
+    "iso20022_end_to_end_id": {
+      "type": "string",
+      "description": "ISO 20022 End-to-End Identification (PmtId.EndToEndId)"
+    },
+    "iso20022_transaction_id": {
+      "type": "string",
+      "description": "ISO 20022 Transaction Identification (PmtId.TxId)"
+    },
+    "iso20022_uetr": {
+      "type": "string",
+      "description": "ISO 20022 Unique End-to-End Transaction Reference"
+    },
+    "iso20022_charge_bearer": {
+      "type": "string",
+      "enum": [
+        "DEBT",
+        "CRED",
+        "SHAR",
+        "SLEV"
+      ],
+      "default": "SLEV",
+      "description": "ISO 20022 Charge Bearer (DEBT=Debtor, CRED=Creditor, SHAR=Shared, SLEV=Service Level)"
+    },
+    "iso20022_purpose_code": {
+      "type": "string",
+      "description": "ISO 20022 Purpose Code (e.g., SUPP for supplier payment)"
+    },
+    "iso20022_category_purpose": {
+      "type": "string",
+      "description": "ISO 20022 Category Purpose"
+    },
+    "iso20022_instruction_priority": {
+      "type": "string",
+      "enum": [
+        "NORM",
+        "HIGH"
+      ],
+      "default": "NORM",
+      "description": "ISO 20022 Instruction Priority"
+    },
+    "psp_lei": {
+      "type": "string",
+      "description": "PSP Legal Entity Identifier (20-character)"
+    },
+    "merchant_lei": {
+      "type": "string",
+      "description": "Merchant Legal Entity Identifier (20-character)"
+    },
+    "customer_lei": {
+      "type": "string",
+      "description": "Customer Legal Entity Identifier (if applicable)"
+    },
+    "credential_chain": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Full LEI credential chain for transaction provenance",
+      "default": []
+    },
+    "vlei_signature": {
+      "type": "string",
+      "description": "vLEI digital signature of transaction"
+    },
+    "signature_algorithm": {
+      "type": "string",
+      "enum": [
+        "EdDSA",
+        "ECDSA-P256",
+        "ECDSA-P384"
+      ],
+      "description": "Digital signature algorithm used"
+    },
+    "signed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When transaction was cryptographically signed"
+    },
+    "chain_validated": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether credential chain was validated"
+    },
+    "chain_validation_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When chain validation occurred"
+    },
+    "crypto_asset": {
+      "type": "string",
+      "description": "Cryptocurrency symbol (ISO 23257)"
+    },
+    "crypto_address": {
+      "type": "string",
+      "description": "Blockchain wallet address (ISO 23257)"
+    },
+    "crypto_dti": {
+      "type": "string",
+      "description": "Digital Token Identifier - ISO 24165 (9-char alphanumeric)"
+    },
+    "blockchain_network": {
+      "type": "string",
+      "description": "Blockchain network (ISO 23257)"
+    },
+    "blockchain_chain_id": {
+      "type": "number",
+      "description": "Blockchain chain ID (ISO 23257)"
+    },
+    "crypto_tx_hash": {
+      "type": "string",
+      "description": "Blockchain transaction hash (ISO 23257)"
+    },
+    "iso_compliance_score": {
+      "type": "number",
+      "description": "ISO standards compliance score (0-100)"
+    },
+    "iso_validated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last ISO validation timestamp"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "amount",
+    "type",
+    "psp_code"
+  ]
+}

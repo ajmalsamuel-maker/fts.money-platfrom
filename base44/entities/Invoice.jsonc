@@ -1,0 +1,138 @@
+{
+  "name": "Invoice",
+  "type": "object",
+  "properties": {
+    "invoice_number": {
+      "type": "string",
+      "description": "Unique invoice number"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "billing_cycle_id": {
+      "type": "string",
+      "description": "Reference to BillingCycle"
+    },
+    "invoice_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "subtotal": {
+      "type": "number",
+      "default": 0,
+      "description": "Total before tax"
+    },
+    "tax_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "tax_rate": {
+      "type": "number",
+      "default": 0
+    },
+    "total_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Subtotal + tax"
+    },
+    "amount_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "amount_due": {
+      "type": "number",
+      "default": 0
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "settlement_offset",
+        "bank_transfer",
+        "credit_card",
+        "direct_debit",
+        "other"
+      ],
+      "default": "settlement_offset"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "issued",
+        "paid",
+        "partially_paid",
+        "overdue",
+        "cancelled",
+        "credited"
+      ],
+      "default": "draft"
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "transaction_summary": {
+      "type": "object",
+      "properties": {
+        "total_transactions": {
+          "type": "number"
+        },
+        "total_volume": {
+          "type": "number"
+        },
+        "successful_transactions": {
+          "type": "number"
+        },
+        "refunds": {
+          "type": "number"
+        },
+        "chargebacks": {
+          "type": "number"
+        }
+      }
+    },
+    "line_items_count": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    },
+    "pdf_url": {
+      "type": "string",
+      "description": "URL to generated PDF invoice"
+    },
+    "sent_to_email": {
+      "type": "string"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "invoice_number",
+    "merchant_id",
+    "invoice_date",
+    "due_date"
+  ]
+}

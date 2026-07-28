@@ -1,0 +1,181 @@
+{
+  "name": "SuspiciousActivityReport",
+  "type": "object",
+  "properties": {
+    "sar_id": {
+      "type": "string",
+      "description": "Unique SAR identifier"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "SAR",
+        "STR",
+        "CTR",
+        "DOEP"
+      ],
+      "description": "Report type (SAR=Suspicious Activity, STR=Suspicious Transaction, CTR=Currency Transaction, DOEP=Designated Officer Electronic Procedures)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_review",
+        "reviewed",
+        "filed",
+        "rejected"
+      ],
+      "default": "draft"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "transaction_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Related transaction IDs"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "customer_country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2"
+    },
+    "suspicious_indicators": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Red flags detected"
+    },
+    "activity_description": {
+      "type": "string",
+      "description": "Detailed description of suspicious activity"
+    },
+    "total_amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217"
+    },
+    "activity_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "activity_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "detection_method": {
+      "type": "string",
+      "enum": [
+        "automated",
+        "manual_review",
+        "external_report",
+        "law_enforcement"
+      ],
+      "description": "How the activity was detected"
+    },
+    "detection_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "risk_score": {
+      "type": "number",
+      "description": "0-100 risk assessment score"
+    },
+    "ml_ft_indicators": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Money laundering / terrorist financing indicators"
+    },
+    "crypto_related": {
+      "type": "boolean",
+      "default": false
+    },
+    "crypto_assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 23257 crypto assets involved"
+    },
+    "wallet_addresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blockchain_networks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Compliance officer assigned"
+    },
+    "reviewed_by": {
+      "type": "string"
+    },
+    "review_notes": {
+      "type": "string"
+    },
+    "filed_with_authority": {
+      "type": "string",
+      "description": "Authority filed with (FinCEN, FCA, etc.)"
+    },
+    "filing_reference": {
+      "type": "string",
+      "description": "Reference number from authority"
+    },
+    "filing_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "supporting_documents": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "follow_up_actions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "account_blocked": {
+      "type": "boolean",
+      "default": false
+    },
+    "law_enforcement_notified": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "report_type",
+    "activity_description"
+  ]
+}

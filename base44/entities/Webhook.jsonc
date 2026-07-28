@@ -1,0 +1,62 @@
+{
+  "name": "Webhook",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name for reference"
+    },
+    "url": {
+      "type": "string",
+      "description": "Webhook endpoint URL"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Event types to subscribe to"
+    },
+    "secret": {
+      "type": "string",
+      "description": "Webhook signing secret"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "last_success": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last successful delivery"
+    },
+    "last_failure": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last failed delivery"
+    },
+    "failure_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Consecutive failures"
+    },
+    "delivery_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total deliveries attempted"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "url",
+    "events"
+  ]
+}

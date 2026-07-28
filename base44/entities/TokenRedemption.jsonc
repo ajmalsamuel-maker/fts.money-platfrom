@@ -1,0 +1,61 @@
+{
+  "name": "TokenRedemption",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "participant_id": {
+      "type": "string"
+    },
+    "redemption_option_id": {
+      "type": "string",
+      "description": "Reference to RedemptionOption"
+    },
+    "tokens_redeemed": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_approval",
+        "approved",
+        "rejected",
+        "processing",
+        "fulfilled",
+        "cancelled"
+      ],
+      "default": "pending_approval"
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this redemption needs admin approval"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "Admin email who approved"
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "fulfillment_details": {
+      "type": "object",
+      "description": "Tracking number, delivery details, etc."
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to TokenTransaction"
+    }
+  },
+  "required": [
+    "program_id",
+    "participant_id",
+    "redemption_option_id",
+    "tokens_redeemed"
+  ]
+}

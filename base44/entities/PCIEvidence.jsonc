@@ -1,0 +1,94 @@
+{
+  "name": "PCIEvidence",
+  "type": "object",
+  "properties": {
+    "requirement_number": {
+      "type": "string",
+      "description": "Related PCI requirement"
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "document",
+        "screenshot",
+        "scan_report",
+        "log_file",
+        "configuration",
+        "policy",
+        "procedure",
+        "test_result",
+        "certificate",
+        "other"
+      ],
+      "description": "Type of evidence"
+    },
+    "title": {
+      "type": "string",
+      "description": "Evidence title/name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Uploaded file URL"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "file_type": {
+      "type": "string"
+    },
+    "uploaded_by": {
+      "type": "string"
+    },
+    "validity_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "validity_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "valid",
+        "expiring_soon",
+        "expired",
+        "pending_review"
+      ],
+      "default": "valid"
+    },
+    "review_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "reviewed_by": {
+      "type": "string"
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "review_notes": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "requirement_number",
+    "evidence_type",
+    "title"
+  ]
+}

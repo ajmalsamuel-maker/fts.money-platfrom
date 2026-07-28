@@ -1,0 +1,133 @@
+{
+  "name": "RWAOrder",
+  "type": "object",
+  "properties": {
+    "order_id": {
+      "type": "string",
+      "description": "Unique order identifier"
+    },
+    "asset_id": {
+      "type": "string",
+      "description": "Reference to RWAAsset"
+    },
+    "investor_id": {
+      "type": "string",
+      "description": "Reference to RWAInvestor"
+    },
+    "order_type": {
+      "type": "string",
+      "enum": [
+        "buy",
+        "sell",
+        "redeem"
+      ],
+      "description": "Type of order"
+    },
+    "order_side": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "secondary"
+      ],
+      "description": "Primary issuance or secondary market"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "Number of tokens"
+    },
+    "price_per_token": {
+      "type": "number",
+      "description": "Price per token in USD"
+    },
+    "total_amount": {
+      "type": "number",
+      "description": "Total order value"
+    },
+    "fees": {
+      "type": "number",
+      "description": "Platform fees"
+    },
+    "net_amount": {
+      "type": "number",
+      "description": "Amount after fees"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "payment_received",
+        "settling",
+        "settled",
+        "failed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Order status"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "bank_transfer",
+        "crypto",
+        "stablecoin"
+      ],
+      "description": "How payment was made"
+    },
+    "payment_reference": {
+      "type": "string",
+      "description": "Payment transaction reference"
+    },
+    "payment_received_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When payment was confirmed"
+    },
+    "settlement_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When settlement completed"
+    },
+    "settlement_type": {
+      "type": "string",
+      "enum": [
+        "dvp",
+        "fop",
+        "rvp"
+      ],
+      "default": "dvp",
+      "description": "Delivery vs Payment, Free of Payment, or Receive vs Payment"
+    },
+    "blockchain_tx_hash": {
+      "type": "string",
+      "description": "Settlement transaction hash"
+    },
+    "buyer_wallet": {
+      "type": "string",
+      "description": "Buyer's wallet address"
+    },
+    "seller_wallet": {
+      "type": "string",
+      "description": "Seller's wallet address (for secondary)"
+    },
+    "compliance_checked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether compliance checks passed"
+    },
+    "compliance_notes": {
+      "type": "string",
+      "description": "Compliance review notes"
+    },
+    "order_notes": {
+      "type": "string",
+      "description": "Additional order notes"
+    }
+  },
+  "required": [
+    "asset_id",
+    "investor_id",
+    "order_type",
+    "quantity",
+    "price_per_token"
+  ]
+}

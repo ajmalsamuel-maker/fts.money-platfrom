@@ -1,0 +1,75 @@
+{
+  "name": "AIPaymentDecision",
+  "type": "object",
+  "properties": {
+    "decision_id": {
+      "type": "string"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "transaction_id": {
+      "type": "string"
+    },
+    "decision_type": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "decline",
+        "review",
+        "route",
+        "flag"
+      ],
+      "description": "Type of decision made"
+    },
+    "confidence_score": {
+      "type": "number",
+      "description": "AI confidence in decision (0-1)"
+    },
+    "reasoning": {
+      "type": "string",
+      "description": "AI explanation for decision"
+    },
+    "factors_analyzed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_score": {
+      "type": "number"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "human_override": {
+      "type": "boolean",
+      "default": false
+    },
+    "override_reason": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "successful",
+        "failed",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "execution_time_ms": {
+      "type": "number"
+    },
+    "feedback_score": {
+      "type": "number",
+      "description": "Human feedback on decision quality"
+    }
+  },
+  "required": [
+    "decision_id",
+    "agent_id",
+    "decision_type",
+    "confidence_score"
+  ]
+}

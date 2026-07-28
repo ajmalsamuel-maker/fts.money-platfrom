@@ -1,0 +1,79 @@
+{
+  "name": "IssuerAuditLog",
+  "type": "object",
+  "properties": {
+    "issuer_id": {
+      "type": "string",
+      "description": "Reference to AssetIssuer"
+    },
+    "issuer_code": {
+      "type": "string",
+      "description": "Issuer code for quick reference"
+    },
+    "provider_code": {
+      "type": "string",
+      "description": "Provider code for tenant isolation"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "issuer_created",
+        "issuer_updated",
+        "status_changed",
+        "kyb_status_changed",
+        "aml_status_changed",
+        "password_reset",
+        "lei_verified",
+        "tas_verified",
+        "compliance_update",
+        "document_uploaded",
+        "license_updated",
+        "suspension",
+        "termination",
+        "reactivation"
+      ],
+      "description": "Type of action performed"
+    },
+    "action_description": {
+      "type": "string",
+      "description": "Human-readable description of the action"
+    },
+    "performed_by": {
+      "type": "string",
+      "description": "Email of RWA Provider admin who performed the action"
+    },
+    "performed_by_name": {
+      "type": "string",
+      "description": "Name of the admin"
+    },
+    "old_values": {
+      "type": "object",
+      "description": "Previous values before change"
+    },
+    "new_values": {
+      "type": "object",
+      "description": "New values after change"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context (IP address, user agent, etc.)"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ],
+      "default": "info",
+      "description": "Severity level of the action"
+    }
+  },
+  "required": [
+    "issuer_id",
+    "provider_code",
+    "action_type",
+    "action_description",
+    "performed_by"
+  ]
+}

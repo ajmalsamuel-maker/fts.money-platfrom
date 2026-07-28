@@ -1,0 +1,83 @@
+{
+  "name": "SocialTask",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string",
+      "description": "Reference to loyalty program"
+    },
+    "task_name": {
+      "type": "string",
+      "description": "Name of the social task"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "invite",
+        "referral",
+        "social_share",
+        "review",
+        "community_post",
+        "engagement"
+      ],
+      "description": "Type of social task"
+    },
+    "description": {
+      "type": "string",
+      "description": "Task description"
+    },
+    "points_reward": {
+      "type": "number",
+      "description": "Points awarded for completing task"
+    },
+    "verification_method": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "manual",
+        "api"
+      ],
+      "default": "auto",
+      "description": "How task completion is verified"
+    },
+    "share_url": {
+      "type": "string",
+      "description": "URL to share (for social_share tasks)"
+    },
+    "share_message": {
+      "type": "string",
+      "description": "Message template for sharing"
+    },
+    "max_completions_per_user": {
+      "type": "number",
+      "description": "Max times a user can complete this task"
+    },
+    "multiplier": {
+      "type": "number",
+      "default": 1,
+      "description": "Points multiplier during campaigns"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "badge_earned": {
+      "type": "string",
+      "description": "Badge awarded on completion"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "program_id",
+    "task_name",
+    "task_type",
+    "points_reward"
+  ]
+}

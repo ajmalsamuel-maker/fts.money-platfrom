@@ -1,0 +1,88 @@
+{
+  "name": "RiskAlert",
+  "type": "object",
+  "properties": {
+    "alert_id": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "velocity",
+        "chargeback_threshold",
+        "fraud_pattern",
+        "volume_spike",
+        "decline_rate",
+        "geographic_anomaly",
+        "bin_attack",
+        "card_testing",
+        "aml_flag",
+        "sanctions_match"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "investigating",
+        "resolved",
+        "escalated",
+        "false_positive"
+      ],
+      "default": "open"
+    },
+    "description": {
+      "type": "string"
+    },
+    "details": {
+      "type": "string"
+    },
+    "affected_transactions": {
+      "type": "number"
+    },
+    "affected_amount": {
+      "type": "number"
+    },
+    "threshold_value": {
+      "type": "number"
+    },
+    "actual_value": {
+      "type": "number"
+    },
+    "recommended_action": {
+      "type": "string"
+    },
+    "assigned_to": {
+      "type": "string"
+    },
+    "resolution_notes": {
+      "type": "string"
+    },
+    "resolved_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "alert_id",
+    "merchant_id",
+    "alert_type",
+    "severity"
+  ]
+}

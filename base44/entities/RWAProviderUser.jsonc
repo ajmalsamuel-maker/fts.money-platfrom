@@ -1,0 +1,50 @@
+{
+  "name": "RWAProviderUser",
+  "type": "object",
+  "properties": {
+    "provider_code": {
+      "type": "string",
+      "description": "Reference to RWAProvider code"
+    },
+    "email": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "owner",
+        "administrator",
+        "developer",
+        "operations",
+        "analyst",
+        "viewer"
+      ],
+      "default": "viewer"
+    },
+    "password_hash": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "provider_code",
+    "email",
+    "full_name",
+    "role"
+  ]
+}

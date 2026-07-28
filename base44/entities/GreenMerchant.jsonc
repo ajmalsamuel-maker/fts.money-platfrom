@@ -1,0 +1,87 @@
+{
+  "name": "GreenMerchant",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_email": {
+      "type": "string",
+      "description": "Merchant email"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant business name"
+    },
+    "green_badge_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "premium",
+        "inactive"
+      ],
+      "default": "pending"
+    },
+    "certification_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "b_corp",
+          "climate_neutral",
+          "organic",
+          "fair_trade",
+          "carbon_neutral",
+          "renewable_energy"
+        ]
+      },
+      "description": "Sustainability certifications"
+    },
+    "sustainability_score": {
+      "type": "number",
+      "description": "Score 0-100 based on practices",
+      "default": 0
+    },
+    "carbon_footprint": {
+      "type": "number",
+      "description": "Estimated annual CO2 emissions (kg)"
+    },
+    "offset_commitment": {
+      "type": "number",
+      "description": "Percentage of carbon offset commitment"
+    },
+    "sponsored_tasks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of NanoTask IDs sponsored by merchant"
+    },
+    "total_nano_rewards_issued": {
+      "type": "number",
+      "description": "Total NANO tokens issued through campaigns",
+      "default": 0
+    },
+    "campaign_budget": {
+      "type": "number",
+      "description": "Monthly budget for task sponsorship in USD"
+    },
+    "green_transactions": {
+      "type": "number",
+      "description": "Number of eco-friendly transactions",
+      "default": 0
+    },
+    "total_co2_offset": {
+      "type": "number",
+      "description": "Total CO2 offset by merchant (kg)",
+      "default": 0
+    }
+  },
+  "required": [
+    "merchant_id",
+    "merchant_email",
+    "merchant_name"
+  ]
+}

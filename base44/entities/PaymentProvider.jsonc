@@ -1,0 +1,56 @@
+{
+  "name": "PaymentProvider",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Provider name (e.g., Visa, Mastercard, PayPal, Stripe)"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "card_scheme",
+        "acquirer",
+        "bank",
+        "wallet",
+        "apm",
+        "crypto"
+      ],
+      "description": "Type of payment provider"
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported currencies"
+    },
+    "supported_regions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported regions/countries"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending"
+      ],
+      "default": "active"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Provider logo URL"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "type"
+  ]
+}

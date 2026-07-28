@@ -1,0 +1,77 @@
+{
+  "name": "APIVersion",
+  "type": "object",
+  "properties": {
+    "version_id": {
+      "type": "string",
+      "description": "Unique version identifier"
+    },
+    "api_id": {
+      "type": "string",
+      "description": "Reference to APIDefinition"
+    },
+    "api_name": {
+      "type": "string",
+      "description": "API name for quick reference"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version identifier (e.g., 'v1', 'v2')"
+    },
+    "version_description": {
+      "type": "string",
+      "description": "What changed in this version"
+    },
+    "release_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When version was released"
+    },
+    "deprecation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When version will be deprecated"
+    },
+    "sunset_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When version will be removed (90 days after deprecation)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_deprecated": {
+      "type": "boolean",
+      "default": false
+    },
+    "breaking_changes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of breaking changes"
+    },
+    "migration_guide": {
+      "type": "string",
+      "description": "Migration instructions for upgrading"
+    },
+    "schema": {
+      "type": "object",
+      "description": "Version-specific schema"
+    },
+    "total_calls": {
+      "type": "number",
+      "default": 0,
+      "description": "Calls to this version"
+    },
+    "adoption_percentage": {
+      "type": "number",
+      "description": "% of users on this version"
+    }
+  },
+  "required": [
+    "api_id",
+    "version"
+  ]
+}

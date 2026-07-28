@@ -1,0 +1,139 @@
+{
+  "name": "FIXScore",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_email": {
+      "type": "string",
+      "description": "Merchant email"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant business name"
+    },
+    "overall_score": {
+      "type": "number",
+      "description": "Overall FIX score (0-1000)",
+      "default": 0
+    },
+    "score_tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum",
+        "diamond"
+      ],
+      "default": "bronze",
+      "description": "Score tier based on overall score"
+    },
+    "transaction_score": {
+      "type": "number",
+      "description": "Transaction volume score (0-300)",
+      "default": 0
+    },
+    "service_adoption_score": {
+      "type": "number",
+      "description": "Service adoption score (0-250)",
+      "default": 0
+    },
+    "esg_score": {
+      "type": "number",
+      "description": "ESG performance score (0-250)",
+      "default": 0
+    },
+    "compliance_score": {
+      "type": "number",
+      "description": "Compliance & security score (0-200)",
+      "default": 0
+    },
+    "monthly_transaction_volume": {
+      "type": "number",
+      "description": "Total transaction volume (USD) last 30 days",
+      "default": 0
+    },
+    "services_active": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of active FTS services"
+    },
+    "carbon_offset_kg": {
+      "type": "number",
+      "description": "Total carbon offset in kg",
+      "default": 0
+    },
+    "nano_tasks_sponsored": {
+      "type": "number",
+      "description": "Number of NANO tasks sponsored",
+      "default": 0
+    },
+    "green_bonds_invested": {
+      "type": "number",
+      "description": "Total invested in green bonds (USD)",
+      "default": 0
+    },
+    "pci_compliant": {
+      "type": "boolean",
+      "description": "PCI DSS compliance status",
+      "default": false
+    },
+    "lei_verified": {
+      "type": "boolean",
+      "description": "LEI verification status",
+      "default": false
+    },
+    "uptime_percentage": {
+      "type": "number",
+      "description": "Service uptime last 30 days",
+      "default": 100
+    },
+    "rank_global": {
+      "type": "number",
+      "description": "Global rank among all merchants"
+    },
+    "rank_industry": {
+      "type": "number",
+      "description": "Rank within industry category"
+    },
+    "industry_category": {
+      "type": "string",
+      "description": "Merchant industry category"
+    },
+    "score_trend": {
+      "type": "string",
+      "enum": [
+        "up",
+        "down",
+        "stable"
+      ],
+      "default": "stable",
+      "description": "Score trend compared to last period"
+    },
+    "last_calculated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last score calculation timestamp"
+    },
+    "benefits_unlocked": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Benefits unlocked based on score tier"
+    },
+    "next_tier_threshold": {
+      "type": "number",
+      "description": "Points needed to reach next tier"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "merchant_email"
+  ]
+}

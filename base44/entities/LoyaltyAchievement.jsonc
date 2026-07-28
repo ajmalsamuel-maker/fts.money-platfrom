@@ -1,0 +1,79 @@
+{
+  "name": "LoyaltyAchievement",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "achievement_name": {
+      "type": "string"
+    },
+    "achievement_type": {
+      "type": "string",
+      "enum": [
+        "milestone",
+        "streak",
+        "challenge",
+        "special",
+        "first_time",
+        "mastery",
+        "social",
+        "community",
+        "impact",
+        "seasonal",
+        "limited_edition",
+        "legendary"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "badge_image_url": {
+      "type": "string"
+    },
+    "bonus_points_awarded": {
+      "type": "number",
+      "default": 0
+    },
+    "trigger_condition": {
+      "type": "object",
+      "description": "Conditions to unlock this achievement"
+    },
+    "rarity": {
+      "type": "string",
+      "enum": [
+        "common",
+        "rare",
+        "epic",
+        "legendary"
+      ],
+      "default": "common"
+    },
+    "nft_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Mint as NFT on blockchain"
+    },
+    "nft_contract_address": {
+      "type": "string"
+    },
+    "unlock_count": {
+      "type": "number",
+      "default": 0,
+      "description": "How many users unlocked this"
+    },
+    "display_order": {
+      "type": "number",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "program_id",
+    "achievement_name",
+    "achievement_type"
+  ]
+}

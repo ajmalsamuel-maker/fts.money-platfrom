@@ -1,0 +1,37 @@
+{
+  "name": "ParticipantAchievement",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "participant_id": {
+      "type": "string",
+      "description": "Reference to LoyaltyParticipant"
+    },
+    "achievement_id": {
+      "type": "string",
+      "description": "Reference to LoyaltyAchievement"
+    },
+    "earned_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "bonus_points_awarded": {
+      "type": "number",
+      "default": 0
+    },
+    "nft_token_id": {
+      "type": "string",
+      "description": "NFT token ID if minted"
+    },
+    "blockchain_tx_hash": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "program_id",
+    "participant_id",
+    "achievement_id"
+  ]
+}

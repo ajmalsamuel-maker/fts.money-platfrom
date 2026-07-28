@@ -1,0 +1,238 @@
+{
+  "name": "RWAWhiteLabelCustomer",
+  "type": "object",
+  "properties": {
+    "customer_code": {
+      "type": "string",
+      "description": "Unique customer identifier (e.g., 'goldvault', 'estatefund')"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Legal company name"
+    },
+    "company_type": {
+      "type": "string",
+      "enum": [
+        "fund_manager",
+        "broker_dealer",
+        "investment_bank",
+        "wealth_manager",
+        "family_office"
+      ],
+      "description": "Type of financial institution"
+    },
+    "lei": {
+      "type": "string",
+      "description": "Legal Entity Identifier (required)"
+    },
+    "vlei_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether vLEI is verified"
+    },
+    "license_type": {
+      "type": "string",
+      "description": "Financial license (SEC registered, FINRA member, etc.)"
+    },
+    "license_number": {
+      "type": "string",
+      "description": "License/registration number"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "Primary operating jurisdiction"
+    },
+    "password_hash": {
+      "type": "string",
+      "description": "Hashed password for portal login"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "provisioning",
+        "active",
+        "suspended",
+        "terminated"
+      ],
+      "default": "pending",
+      "description": "Customer status"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "professional",
+      "description": "Service tier"
+    },
+    "monthly_fee": {
+      "type": "number",
+      "description": "Monthly platform fee"
+    },
+    "setup_fee": {
+      "type": "number",
+      "description": "One-time setup fee"
+    },
+    "asset_types_enabled": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "real_estate",
+          "treasury_bill",
+          "private_credit",
+          "commodity",
+          "equity",
+          "corporate_bond"
+        ]
+      },
+      "description": "Which asset types customer can tokenize"
+    },
+    "custom_domain": {
+      "type": "string",
+      "description": "Custom domain (e.g., tokenize.goldvault.com)"
+    },
+    "portal_url": {
+      "type": "string",
+      "description": "Live portal URL"
+    },
+    "branding": {
+      "type": "object",
+      "description": "White-label branding configuration",
+      "properties": {
+        "logo_url": {
+          "type": "string"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "company_name": {
+          "type": "string"
+        }
+      }
+    },
+    "blockchain_networks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ethereum",
+          "polygon",
+          "base",
+          "avalanche"
+        ]
+      },
+      "default": [
+        "polygon"
+      ],
+      "description": "Enabled blockchain networks"
+    },
+    "factory_contract_address": {
+      "type": "string",
+      "description": "Deployed token factory address"
+    },
+    "identity_registry_address": {
+      "type": "string",
+      "description": "Identity registry contract address"
+    },
+    "compliance_engine_address": {
+      "type": "string",
+      "description": "Compliance engine contract address"
+    },
+    "fireblocks_vault_account_id": {
+      "type": "string",
+      "description": "Fireblocks vault account ID"
+    },
+    "fireblocks_api_key": {
+      "type": "string",
+      "description": "Fireblocks API key (encrypted)"
+    },
+    "chainlink_subscription_id": {
+      "type": "string",
+      "description": "Chainlink VRF/Price Feed subscription"
+    },
+    "total_assets_tokenized": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of assets tokenized"
+    },
+    "total_value_locked": {
+      "type": "number",
+      "default": 0,
+      "description": "Total value of assets (USD)"
+    },
+    "total_investors": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of investors"
+    },
+    "provisioning_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "deploying_contracts",
+        "configuring_custody",
+        "setting_up_portal",
+        "completed",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Provisioning stage"
+    },
+    "provisioning_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Provisioning progress log"
+    },
+    "admin_email": {
+      "type": "string",
+      "description": "Primary admin contact"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "kyb_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Business verification status"
+    },
+    "go_live_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When platform went live"
+    }
+  },
+  "required": [
+    "customer_code",
+    "company_name",
+    "lei",
+    "admin_email"
+  ]
+}

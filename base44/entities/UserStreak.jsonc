@@ -1,0 +1,41 @@
+{
+  "name": "UserStreak",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User tracking streak"
+    },
+    "current_streak": {
+      "type": "number",
+      "description": "Current consecutive days",
+      "default": 0
+    },
+    "longest_streak": {
+      "type": "number",
+      "description": "Longest streak ever",
+      "default": 0
+    },
+    "last_activity_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "weekly_streak": {
+      "type": "number",
+      "description": "Consecutive weeks with tasks",
+      "default": 0
+    },
+    "streak_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "at_risk",
+        "broken"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

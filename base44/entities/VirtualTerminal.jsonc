@@ -1,0 +1,95 @@
+{
+  "name": "VirtualTerminal",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to merchant - one VT per merchant"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "allowed_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "USD",
+        "EUR",
+        "GBP"
+      ]
+    },
+    "daily_limit": {
+      "type": "number",
+      "default": 50000
+    },
+    "per_transaction_limit": {
+      "type": "number",
+      "default": 10000
+    },
+    "requires_cvv": {
+      "type": "boolean",
+      "default": true
+    },
+    "requires_billing_address": {
+      "type": "boolean",
+      "default": false
+    },
+    "enable_3ds": {
+      "type": "boolean",
+      "default": true
+    },
+    "enable_card_on_file": {
+      "type": "boolean",
+      "default": true
+    },
+    "enable_recurring": {
+      "type": "boolean",
+      "default": true
+    },
+    "enable_split_tender": {
+      "type": "boolean",
+      "default": true
+    },
+    "enable_itemized_sale": {
+      "type": "boolean",
+      "default": true
+    },
+    "send_receipts_email": {
+      "type": "boolean",
+      "default": true
+    },
+    "send_receipts_sms": {
+      "type": "boolean",
+      "default": false
+    },
+    "allowed_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "admin",
+        "manager",
+        "operator"
+      ],
+      "description": "Which merchant user roles can access VT"
+    },
+    "settings": {
+      "type": "object",
+      "description": "Additional configurable settings"
+    }
+  },
+  "required": [
+    "merchant_id"
+  ]
+}

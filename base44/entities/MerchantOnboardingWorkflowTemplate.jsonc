@@ -1,0 +1,167 @@
+{
+  "name": "MerchantOnboardingWorkflowTemplate",
+  "type": "object",
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "description": "Unique workflow identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "workflow_name": {
+      "type": "string",
+      "description": "Workflow name (e.g., 'Standard Merchant Onboarding')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Workflow description"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_id": {
+            "type": "string"
+          },
+          "step_name": {
+            "type": "string"
+          },
+          "step_order": {
+            "type": "number"
+          },
+          "step_type": {
+            "type": "string",
+            "enum": [
+              "form",
+              "verification",
+              "approval",
+              "notification",
+              "integration",
+              "conditional"
+            ]
+          },
+          "required": {
+            "type": "boolean",
+            "default": true
+          },
+          "form_fields": {
+            "type": "array"
+          },
+          "approval_role": {
+            "type": "string"
+          },
+          "notification_template": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "equals",
+                  "not_equals",
+                  "greater_than",
+                  "less_than",
+                  "contains"
+                ]
+              },
+              "value": {
+                "type": "string"
+              },
+              "then_step": {
+                "type": "string"
+              },
+              "else_step": {
+                "type": "string"
+              }
+            }
+          },
+          "rollback_action": {
+            "type": "string",
+            "description": "Action to take on failure"
+          }
+        }
+      },
+      "description": "Workflow steps"
+    },
+    "approval_gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_id": {
+            "type": "string"
+          },
+          "approver_role": {
+            "type": "string"
+          },
+          "auto_approve_threshold": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "notification_config": {
+      "type": "object",
+      "properties": {
+        "email_notifications": {
+          "type": "boolean",
+          "default": true
+        },
+        "slack_notifications": {
+          "type": "boolean",
+          "default": false
+        },
+        "webhook_url": {
+          "type": "string"
+        }
+      }
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0.0"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "total_executions": {
+      "type": "number",
+      "default": 0
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Percentage of successful completions"
+    },
+    "avg_completion_time": {
+      "type": "number",
+      "description": "Average time to complete in seconds"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "archived"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "workflow_name",
+    "steps"
+  ]
+}

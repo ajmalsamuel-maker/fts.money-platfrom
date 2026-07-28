@@ -1,0 +1,93 @@
+{
+  "name": "ServicePricingConfig",
+  "type": "object",
+  "properties": {
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "iso_gateway",
+        "orchestration"
+      ],
+      "description": "Service this pricing applies to"
+    },
+    "tier_name": {
+      "type": "string",
+      "description": "Tier name (e.g., developer, business, enterprise)"
+    },
+    "monthly_fee": {
+      "type": "number",
+      "description": "Monthly base fee"
+    },
+    "included_units": {
+      "type": "number",
+      "description": "Included messages/executions per month"
+    },
+    "overage_rate": {
+      "type": "number",
+      "description": "Cost per unit over the limit"
+    },
+    "enrichment_fees": {
+      "type": "object",
+      "properties": {
+        "lei_enrichment": {
+          "type": "number",
+          "default": 0.0001,
+          "description": "Additional cost per LEI enrichment"
+        },
+        "structured_remittance": {
+          "type": "number",
+          "default": 5e-05,
+          "description": "Additional cost per structured remittance parsing"
+        },
+        "purpose_codes": {
+          "type": "number",
+          "default": 2e-05,
+          "description": "Additional cost per purpose code addition"
+        },
+        "mt_translation": {
+          "type": "number",
+          "default": 0.0003,
+          "description": "Additional cost for MT message translation"
+        }
+      },
+      "description": "Add-on fees for enrichment features"
+    },
+    "features_included": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "iso8583_translation",
+          "iso20022_translation",
+          "mt_translation",
+          "lei_enrichment",
+          "structured_remittance",
+          "purpose_codes",
+          "end_to_end_refs",
+          "ultimate_party_id",
+          "party_info_structure"
+        ]
+      },
+      "description": "Features included in this tier"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "service_type",
+    "tier_name",
+    "monthly_fee",
+    "included_units",
+    "overage_rate"
+  ]
+}

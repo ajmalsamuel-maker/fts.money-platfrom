@@ -1,0 +1,143 @@
+{
+  "name": "PaymentGateway",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name for reference"
+    },
+    "gateway_name": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "paypal",
+        "adyen",
+        "square",
+        "braintree",
+        "authorize_net"
+      ],
+      "description": "Payment gateway provider"
+    },
+    "gateway_mode": {
+      "type": "string",
+      "enum": [
+        "test",
+        "live"
+      ],
+      "default": "test",
+      "description": "Gateway environment mode"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "Encrypted API key (stored securely)"
+    },
+    "api_secret": {
+      "type": "string",
+      "description": "Encrypted API secret"
+    },
+    "merchant_account_id": {
+      "type": "string",
+      "description": "Gateway-specific merchant account ID"
+    },
+    "webhook_secret": {
+      "type": "string",
+      "description": "Webhook signature verification secret"
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "USD",
+        "EUR",
+        "GBP"
+      ],
+      "description": "Currencies supported by this gateway connection"
+    },
+    "supported_methods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "card",
+        "wallet"
+      ],
+      "description": "Payment methods supported"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false,
+      "description": "Default gateway for this merchant"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Routing priority (lower = higher priority)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "testing",
+        "suspended"
+      ],
+      "default": "testing",
+      "description": "Gateway connection status"
+    },
+    "connection_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether connection has been tested successfully"
+    },
+    "last_verified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last successful connection test"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Percentage of successful transactions"
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0,
+      "description": "Total transaction volume processed"
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0,
+      "description": "Total number of transactions"
+    },
+    "fee_structure": {
+      "type": "object",
+      "description": "Gateway fee configuration",
+      "properties": {
+        "percentage": {
+          "type": "number"
+        },
+        "fixed_fee": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional gateway-specific settings"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "gateway_name",
+    "api_key"
+  ]
+}

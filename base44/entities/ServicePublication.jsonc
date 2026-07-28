@@ -1,0 +1,191 @@
+{
+  "name": "ServicePublication",
+  "type": "object",
+  "properties": {
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "psp_payment_processing",
+        "crypto_vasp",
+        "iso_gateway",
+        "orchestration",
+        "rwa_tokenization",
+        "tax_management",
+        "einvoicing",
+        "nano_marketplace",
+        "pci_compliance",
+        "lei_compliance",
+        "digital_identity"
+      ],
+      "description": "Service being published"
+    },
+    "version": {
+      "type": "string",
+      "description": "Service version (e.g., v1.0, v2.0)",
+      "default": "v1.0"
+    },
+    "publication_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_approval",
+        "soft_launch",
+        "published",
+        "unpublished",
+        "archived"
+      ],
+      "default": "draft",
+      "description": "Current publication state"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "internal_only",
+        "beta_customers",
+        "public"
+      ],
+      "default": "internal_only"
+    },
+    "beta_customer_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails allowed during soft launch"
+    },
+    "marketing_name": {
+      "type": "string",
+      "description": "Public-facing service name"
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Short marketing tagline"
+    },
+    "description": {
+      "type": "string",
+      "description": "Full service description"
+    },
+    "key_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Bullet points of features"
+    },
+    "hero_image_url": {
+      "type": "string",
+      "description": "Hero/banner image"
+    },
+    "demo_video_url": {
+      "type": "string"
+    },
+    "documentation_url": {
+      "type": "string"
+    },
+    "pricing_configured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Master + Platform pricing complete"
+    },
+    "compliance_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Compliance/legal review done"
+    },
+    "infrastructure_ready": {
+      "type": "boolean",
+      "default": false,
+      "description": "Infrastructure provisioned"
+    },
+    "go_live_checklist": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "completed_by": {
+            "type": "string"
+          },
+          "completed_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "requested_by": {
+      "type": "string",
+      "description": "Who requested publication"
+    },
+    "requested_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "published_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When service went public"
+    },
+    "scheduled_publish_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Schedule future publication"
+    },
+    "unpublished_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "unpublish_reason": {
+      "type": "string"
+    },
+    "active_subscriptions_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Current active subscribers"
+    },
+    "total_signups": {
+      "type": "number",
+      "default": 0
+    },
+    "legacy_version_of": {
+      "type": "string",
+      "description": "Reference to previous version ID (if upgrade)"
+    },
+    "superseded_by_version": {
+      "type": "string",
+      "description": "Newer version ID (if superseded)"
+    },
+    "allow_new_signups": {
+      "type": "boolean",
+      "default": true,
+      "description": "Can new customers subscribe (false for legacy versions)"
+    },
+    "migration_path": {
+      "type": "string",
+      "description": "How to migrate from old to new version"
+    },
+    "approval_notes": {
+      "type": "string"
+    },
+    "rejection_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "service_type",
+    "version",
+    "marketing_name"
+  ]
+}

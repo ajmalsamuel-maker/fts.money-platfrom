@@ -1,0 +1,224 @@
+{
+  "name": "ProviderAgreement",
+  "type": "object",
+  "properties": {
+    "agreement_id": {
+      "type": "string",
+      "description": "Unique agreement identifier"
+    },
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to PaymentProvider or ServiceProvider"
+    },
+    "provider_name": {
+      "type": "string",
+      "description": "Provider name for quick reference"
+    },
+    "provider_type": {
+      "type": "string",
+      "enum": [
+        "payment_provider",
+        "service_provider",
+        "payout_provider",
+        "acquirer"
+      ],
+      "description": "Type of provider"
+    },
+    "agreement_name": {
+      "type": "string",
+      "description": "Name of the agreement"
+    },
+    "contract_reference": {
+      "type": "string",
+      "description": "Contract or agreement reference number"
+    },
+    "contract_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Agreement start date"
+    },
+    "contract_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Agreement end date"
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether contract auto-renews"
+    },
+    "notice_period_days": {
+      "type": "number",
+      "description": "Notice period for termination in days"
+    },
+    "rate_cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "service_category": {
+            "type": "string"
+          },
+          "service_name": {
+            "type": "string"
+          },
+          "master_pricing_id": {
+            "type": "string"
+          },
+          "negotiated_rate_type": {
+            "type": "string",
+            "enum": [
+              "percentage",
+              "fixed",
+              "tiered",
+              "hybrid"
+            ]
+          },
+          "negotiated_rate_percentage": {
+            "type": "number"
+          },
+          "negotiated_rate_fixed": {
+            "type": "number"
+          },
+          "negotiated_rate_tiers": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "volume_commitment": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "effective_from": {
+            "type": "string"
+          },
+          "effective_until": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Custom rate cards for this provider"
+    },
+    "volume_discounts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "threshold_amount": {
+            "type": "number"
+          },
+          "discount_percentage": {
+            "type": "number"
+          },
+          "applies_to": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Volume-based discount tiers"
+    },
+    "minimum_monthly_commitment": {
+      "type": "number",
+      "description": "Minimum monthly volume or fee commitment"
+    },
+    "penalty_for_under_commitment": {
+      "type": "number",
+      "description": "Penalty if minimum not met"
+    },
+    "special_terms": {
+      "type": "string",
+      "description": "Special terms and conditions"
+    },
+    "sla_requirements": {
+      "type": "object",
+      "properties": {
+        "uptime_percentage": {
+          "type": "number"
+        },
+        "response_time_ms": {
+          "type": "number"
+        },
+        "support_level": {
+          "type": "string"
+        }
+      },
+      "description": "Service level agreement requirements"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_approval",
+        "active",
+        "expired",
+        "terminated"
+      ],
+      "default": "draft",
+      "description": "Agreement status"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Priority when multiple agreements exist (lower = higher priority)"
+    },
+    "approved_by": {
+      "type": "string",
+      "description": "Finance manager who approved"
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "contract_document_url": {
+      "type": "string",
+      "description": "Link to signed contract document"
+    },
+    "contract_documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "uploaded_date": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Version-controlled contract documents"
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0,
+      "description": "Total volume under this agreement"
+    },
+    "total_savings": {
+      "type": "number",
+      "default": 0,
+      "description": "Total savings vs standard rates"
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider_id",
+    "provider_name",
+    "agreement_name",
+    "contract_start_date"
+  ]
+}

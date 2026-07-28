@@ -1,0 +1,41 @@
+{
+  "name": "ServiceCatalogCache",
+  "type": "object",
+  "properties": {
+    "service_id": {
+      "type": "string",
+      "description": "Reference to ServiceCatalog"
+    },
+    "service_name": {
+      "type": "string",
+      "description": "Cached service name"
+    },
+    "cached_data": {
+      "type": "object",
+      "description": "Full cached service details"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "URL where data was fetched from"
+    },
+    "last_fetched": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When data was last fetched"
+    },
+    "next_check_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When to check for updates next"
+    },
+    "data_hash": {
+      "type": "string",
+      "description": "Hash of cached data to detect changes"
+    }
+  },
+  "required": [
+    "service_id",
+    "service_name",
+    "cached_data"
+  ]
+}

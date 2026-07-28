@@ -1,0 +1,74 @@
+{
+  "name": "ServiceBillingConfig",
+  "type": "object",
+  "properties": {
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "psp_payment_processing",
+        "crypto_vasp",
+        "iso_gateway",
+        "orchestration",
+        "rwa_tokenization",
+        "tax_management",
+        "einvoicing",
+        "nano_marketplace",
+        "pci_compliance",
+        "lei_compliance",
+        "digital_identity"
+      ],
+      "description": "Service type"
+    },
+    "service_name": {
+      "type": "string",
+      "description": "Human-readable service name"
+    },
+    "pricing_configured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether pricing has been configured"
+    },
+    "master_pricing_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Master pricing items created"
+    },
+    "platform_tiers_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Platform tier pricing created"
+    },
+    "pricing_template": {
+      "type": "object",
+      "description": "Default pricing template for this service"
+    },
+    "required_pricing_items": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of pricing items that must be configured"
+    },
+    "configuration_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "complete",
+        "needs_review"
+      ],
+      "default": "not_started"
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "service_type",
+    "service_name"
+  ]
+}

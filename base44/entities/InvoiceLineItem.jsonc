@@ -1,0 +1,90 @@
+{
+  "name": "InvoiceLineItem",
+  "type": "object",
+  "properties": {
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to Invoice"
+    },
+    "invoice_number": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "line_number": {
+      "type": "number",
+      "description": "Sequence number on invoice"
+    },
+    "fee_code": {
+      "type": "string",
+      "description": "Reference to FeeType"
+    },
+    "fee_name": {
+      "type": "string",
+      "description": "Display name of fee"
+    },
+    "description": {
+      "type": "string",
+      "description": "Line item description"
+    },
+    "mid": {
+      "type": "string",
+      "description": "MID this charge applies to (if applicable)"
+    },
+    "quantity": {
+      "type": "number",
+      "default": 1,
+      "description": "Number of units (e.g., transaction count)"
+    },
+    "unit_price": {
+      "type": "number",
+      "description": "Price per unit"
+    },
+    "fixed_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "base_amount": {
+      "type": "number",
+      "description": "Amount percentage is calculated on"
+    },
+    "line_total": {
+      "type": "number",
+      "description": "Total for this line"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "billing_transaction_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "References to source billing transactions"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional details"
+    }
+  },
+  "required": [
+    "invoice_id",
+    "fee_code",
+    "fee_name",
+    "line_total"
+  ]
+}

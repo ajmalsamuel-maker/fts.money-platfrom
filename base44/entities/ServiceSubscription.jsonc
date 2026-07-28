@@ -1,0 +1,93 @@
+{
+  "name": "ServiceSubscription",
+  "type": "object",
+  "properties": {
+    "customer_email": {
+      "type": "string",
+      "description": "Subscriber email"
+    },
+    "service_publication_id": {
+      "type": "string",
+      "description": "Reference to ServicePublication"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "psp_payment_processing",
+        "crypto_vasp",
+        "iso_gateway",
+        "orchestration",
+        "rwa_tokenization",
+        "tax_management",
+        "einvoicing",
+        "nano_marketplace",
+        "pci_compliance",
+        "lei_compliance",
+        "digital_identity"
+      ]
+    },
+    "service_version": {
+      "type": "string",
+      "description": "Locked to this version"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "cancelled",
+        "upgrade_pending"
+      ],
+      "default": "active"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "professional",
+        "enterprise"
+      ]
+    },
+    "monthly_fee": {
+      "type": "number",
+      "description": "Locked monthly rate"
+    },
+    "pricing_locked": {
+      "type": "boolean",
+      "default": true,
+      "description": "Grandfathered pricing protection"
+    },
+    "locked_pricing_config": {
+      "type": "object",
+      "description": "Snapshot of pricing at subscription time"
+    },
+    "subscribed_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_billing_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "auto_upgrade_to_new_version": {
+      "type": "boolean",
+      "default": false,
+      "description": "Auto-upgrade when new version available"
+    },
+    "upgrade_available": {
+      "type": "boolean",
+      "default": false
+    },
+    "upgrade_to_version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "customer_email",
+    "service_publication_id",
+    "service_type",
+    "service_version",
+    "tier"
+  ]
+}

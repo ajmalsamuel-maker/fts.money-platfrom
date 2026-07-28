@@ -1,0 +1,65 @@
+{
+  "name": "QSAAuditTask",
+  "type": "object",
+  "properties": {
+    "task_title": {
+      "type": "string",
+      "description": "Title of audit task"
+    },
+    "task_description": {
+      "type": "string"
+    },
+    "requirement_number": {
+      "type": "string",
+      "description": "Related PCI requirement"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Email of assigned person"
+    },
+    "assigned_type": {
+      "type": "string",
+      "enum": [
+        "qsa",
+        "internal"
+      ],
+      "description": "Who is responsible"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "blocked"
+      ],
+      "default": "pending"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "completion_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_title",
+    "assigned_to",
+    "assigned_type"
+  ]
+}

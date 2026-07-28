@@ -1,0 +1,121 @@
+{
+  "name": "ISOMessageLog",
+  "type": "object",
+  "properties": {
+    "message_id": {
+      "type": "string",
+      "description": "Unique message identifier (UUID)"
+    },
+    "connection_id": {
+      "type": "string",
+      "description": "Reference to ISOGatewayConnection"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to ISOGatewayCustomer"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound"
+      ]
+    },
+    "source_standard": {
+      "type": "string",
+      "enum": [
+        "ISO8583",
+        "ISO20022"
+      ]
+    },
+    "target_standard": {
+      "type": "string",
+      "enum": [
+        "ISO8583",
+        "ISO20022"
+      ]
+    },
+    "source_message": {
+      "type": "string",
+      "description": "Original message (base64 for binary, XML string for 20022)"
+    },
+    "translated_message": {
+      "type": "string",
+      "description": "Translated message output"
+    },
+    "message_type": {
+      "type": "string",
+      "description": "MTI (8583) or message type (20022: pacs.008, pain.001, etc.)"
+    },
+    "enrichment_applied": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of enrichment operations performed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed",
+        "pending",
+        "retrying"
+      ],
+      "default": "pending"
+    },
+    "error_code": {
+      "type": "string"
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "processing_time_ms": {
+      "type": "number",
+      "description": "Time taken to translate"
+    },
+    "delivery_status": {
+      "type": "string",
+      "enum": [
+        "delivered",
+        "failed",
+        "pending",
+        "retrying"
+      ],
+      "description": "Delivery to destination endpoint"
+    },
+    "delivery_attempts": {
+      "type": "number",
+      "default": 0
+    },
+    "delivered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_ip": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string",
+      "description": "Original request correlation ID"
+    },
+    "validation_errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Schema validation errors"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context (transaction amount, currency, etc.)"
+    }
+  },
+  "required": [
+    "connection_id",
+    "customer_id",
+    "source_standard",
+    "target_standard",
+    "source_message"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "name": "QSAUser",
+  "type": "object",
+  "properties": {
+    "qsa_email": {
+      "type": "string",
+      "description": "QSA email address"
+    },
+    "qsa_name": {
+      "type": "string",
+      "description": "QSA full name"
+    },
+    "qsa_company": {
+      "type": "string",
+      "description": "QSA firm/company name"
+    },
+    "access_token": {
+      "type": "string",
+      "description": "Unique access token for login"
+    },
+    "token_expires": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When access token expires"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "revoked"
+      ],
+      "default": "active"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "read_evidence",
+        "read_requirements",
+        "upload_reports",
+        "send_messages"
+      ],
+      "description": "QSA permissions"
+    },
+    "invited_by": {
+      "type": "string",
+      "description": "Email of platform user who invited"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "login_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "qsa_email",
+    "qsa_name",
+    "access_token",
+    "token_expires"
+  ]
+}

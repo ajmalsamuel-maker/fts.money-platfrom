@@ -1,0 +1,91 @@
+{
+  "name": "PricingTemplate",
+  "type": "object",
+  "properties": {
+    "template_id": {
+      "type": "string",
+      "description": "Unique template identifier"
+    },
+    "template_name": {
+      "type": "string",
+      "description": "Template name (e.g., 'Startup Bundle', 'Enterprise Tier')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Template description"
+    },
+    "target_segment": {
+      "type": "string",
+      "enum": [
+        "startup",
+        "smb",
+        "enterprise",
+        "high_risk",
+        "low_risk",
+        "custom"
+      ],
+      "description": "Target PSP segment"
+    },
+    "pricing_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "master_pricing_id": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "item_name": {
+            "type": "string"
+          },
+          "default_sell_rate_percentage": {
+            "type": "number"
+          },
+          "default_sell_rate_fixed": {
+            "type": "number"
+          },
+          "default_margin_percentage": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Default pricing items in template"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of PSPs using this template"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false,
+      "description": "Default template for new PSPs"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "version": {
+      "type": "string",
+      "description": "Template version"
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "template_name",
+    "target_segment"
+  ]
+}

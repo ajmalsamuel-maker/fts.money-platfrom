@@ -1,0 +1,95 @@
+{
+  "name": "BillingTransaction",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "mid": {
+      "type": "string"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to source Transaction (if applicable)"
+    },
+    "billing_event_type": {
+      "type": "string",
+      "description": "Type of billable event"
+    },
+    "fee_code": {
+      "type": "string",
+      "description": "Fee type applied"
+    },
+    "fee_name": {
+      "type": "string"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "transaction_amount": {
+      "type": "number",
+      "description": "Original transaction amount (if applicable)"
+    },
+    "transaction_currency": {
+      "type": "string"
+    },
+    "fee_fixed": {
+      "type": "number",
+      "default": 0
+    },
+    "fee_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "fee_amount": {
+      "type": "number",
+      "description": "Calculated fee amount"
+    },
+    "fee_currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "billing_cycle_id": {
+      "type": "string",
+      "description": "Which billing cycle this belongs to"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Invoice this was billed on"
+    },
+    "invoice_line_item_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "invoiced",
+        "paid",
+        "credited"
+      ],
+      "default": "pending"
+    },
+    "offset_from_settlement": {
+      "type": "boolean",
+      "default": true
+    },
+    "settlement_id": {
+      "type": "string",
+      "description": "Settlement this fee was deducted from"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "billing_event_type",
+    "fee_code",
+    "fee_amount"
+  ]
+}

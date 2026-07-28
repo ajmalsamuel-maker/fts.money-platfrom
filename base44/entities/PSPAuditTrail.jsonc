@@ -1,0 +1,63 @@
+{
+  "name": "PSPAuditTrail",
+  "type": "object",
+  "properties": {
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "created",
+        "updated",
+        "deleted",
+        "enabled",
+        "disabled",
+        "restarted",
+        "backup_created",
+        "configuration_changed",
+        "provider_added",
+        "provider_removed",
+        "fee_structure_updated"
+      ],
+      "description": "Action performed"
+    },
+    "field_changed": {
+      "type": "string",
+      "description": "Field that was modified"
+    },
+    "old_value": {
+      "type": "string",
+      "description": "Previous value"
+    },
+    "new_value": {
+      "type": "string",
+      "description": "New value"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User who performed the action"
+    },
+    "user_role": {
+      "type": "string",
+      "description": "Role of the user"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of the request"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata"
+    }
+  },
+  "required": [
+    "psp_id",
+    "action",
+    "user_email"
+  ]
+}

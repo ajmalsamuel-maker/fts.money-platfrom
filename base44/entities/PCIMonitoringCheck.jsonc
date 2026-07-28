@@ -1,0 +1,73 @@
+{
+  "name": "PCIMonitoringCheck",
+  "type": "object",
+  "properties": {
+    "check_name": {
+      "type": "string",
+      "description": "Name of the automated check"
+    },
+    "requirement_number": {
+      "type": "string",
+      "description": "Related PCI requirement"
+    },
+    "check_type": {
+      "type": "string",
+      "enum": [
+        "firewall",
+        "encryption",
+        "access_control",
+        "vulnerability",
+        "log_monitoring",
+        "network_segmentation",
+        "security_testing",
+        "policy_compliance"
+      ],
+      "description": "Type of check"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "passing",
+        "failing",
+        "warning",
+        "not_run"
+      ],
+      "default": "not_run"
+    },
+    "last_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly"
+      ],
+      "default": "daily"
+    },
+    "result_data": {
+      "type": "object",
+      "description": "Check results and metrics"
+    },
+    "failure_count": {
+      "type": "number",
+      "default": 0
+    },
+    "automated": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "check_name",
+    "check_type"
+  ]
+}

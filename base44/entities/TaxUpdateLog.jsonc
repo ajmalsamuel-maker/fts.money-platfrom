@@ -1,0 +1,96 @@
+{
+  "name": "TaxUpdateLog",
+  "type": "object",
+  "properties": {
+    "country": {
+      "type": "string",
+      "description": "Country code (ISO 3166-1 alpha-2)"
+    },
+    "tax_type": {
+      "type": "string",
+      "enum": [
+        "VAT",
+        "GST",
+        "Sales Tax",
+        "Service Tax",
+        "Withholding"
+      ],
+      "description": "Type of tax"
+    },
+    "previous_rate": {
+      "type": "number",
+      "description": "Previous tax rate percentage"
+    },
+    "new_rate": {
+      "type": "number",
+      "description": "New tax rate percentage"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when the new rate becomes effective"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "Avalara",
+        "TaxJar",
+        "OECD",
+        "EU_VIES",
+        "manual",
+        "official_gazette",
+        "government_api"
+      ],
+      "description": "Source of the tax update"
+    },
+    "confidence_level": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "official",
+        "pending_verification",
+        "unverified"
+      ],
+      "default": "pending_verification",
+      "description": "Confidence level of the update"
+    },
+    "applied_by": {
+      "type": "string",
+      "description": "Email of admin who applied the update"
+    },
+    "applied_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when update was applied"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "applied",
+        "rejected",
+        "rolled_back"
+      ],
+      "default": "pending",
+      "description": "Status of the update"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the update"
+    },
+    "change_details": {
+      "type": "object",
+      "description": "Detailed changes (JSON object)"
+    },
+    "rollback_reason": {
+      "type": "string",
+      "description": "Reason for rollback if applicable"
+    }
+  },
+  "required": [
+    "country",
+    "new_rate",
+    "effective_date",
+    "source"
+  ]
+}

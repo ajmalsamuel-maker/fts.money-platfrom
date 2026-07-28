@@ -1,0 +1,111 @@
+{
+  "name": "PlatformPricingConfig",
+  "type": "object",
+  "properties": {
+    "tier_name": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "growth",
+        "professional",
+        "enterprise"
+      ],
+      "description": "Pricing tier name"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "psp_payment_processing",
+        "crypto_vasp",
+        "iso_gateway",
+        "orchestration",
+        "rwa_tokenization",
+        "tax_management",
+        "einvoicing",
+        "nano_marketplace",
+        "pci_compliance",
+        "lei_compliance",
+        "digital_identity"
+      ],
+      "default": "psp_payment_processing",
+      "description": "Which service this pricing tier applies to"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Display name for UI"
+    },
+    "setup_fee": {
+      "type": "number",
+      "description": "One-time setup fee in USD"
+    },
+    "monthly_hosting_fee": {
+      "type": "number",
+      "description": "Monthly platform hosting fee in USD"
+    },
+    "transaction_fee_percentage": {
+      "type": "number",
+      "description": "Transaction fee percentage"
+    },
+    "transaction_fee_fixed": {
+      "type": "number",
+      "description": "Fixed transaction fee in USD"
+    },
+    "service_specific_fees": {
+      "type": "object",
+      "description": "Service-specific pricing (e.g., wallet creation for crypto, message translation for ISO)"
+    },
+    "max_merchants": {
+      "type": "number",
+      "description": "Maximum number of merchants/customers allowed"
+    },
+    "max_transactions_per_month": {
+      "type": "number",
+      "description": "Maximum transactions per month"
+    },
+    "max_transaction_amount": {
+      "type": "number",
+      "description": "Maximum single transaction amount"
+    },
+    "enabled_modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Available module IDs for this tier"
+    },
+    "features": {
+      "type": "object",
+      "description": "Feature flags for this tier"
+    },
+    "support_level": {
+      "type": "string",
+      "enum": [
+        "email",
+        "priority",
+        "dedicated"
+      ],
+      "default": "email",
+      "description": "Support tier"
+    },
+    "sla_uptime": {
+      "type": "number",
+      "default": 99.9,
+      "description": "SLA uptime percentage"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "sort_order": {
+      "type": "number",
+      "description": "Display order"
+    }
+  },
+  "required": [
+    "tier_name",
+    "service_type",
+    "display_name",
+    "setup_fee",
+    "monthly_hosting_fee"
+  ]
+}

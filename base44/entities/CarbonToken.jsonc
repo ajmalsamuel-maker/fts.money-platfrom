@@ -1,0 +1,39 @@
+{
+  "name": "CarbonToken",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User who owns the carbon tokens"
+    },
+    "crbn_balance": {
+      "type": "number",
+      "description": "Current CRBN token balance (1 CRBN = 1 kg CO2 offset)",
+      "default": 0
+    },
+    "total_acquired": {
+      "type": "number",
+      "description": "Lifetime CRBN tokens acquired",
+      "default": 0
+    },
+    "total_retired": {
+      "type": "number",
+      "description": "Lifetime CRBN tokens retired (used)",
+      "default": 0
+    },
+    "wallet_address": {
+      "type": "string",
+      "description": "Polygon wallet address for on-chain CRBN tokens"
+    },
+    "verified_projects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of verified carbon offset project IDs"
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

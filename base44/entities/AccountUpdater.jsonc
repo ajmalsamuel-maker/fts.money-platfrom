@@ -1,0 +1,78 @@
+{
+  "name": "AccountUpdater",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string"
+    },
+    "customer_id": {
+      "type": "string"
+    },
+    "saved_card_id": {
+      "type": "string",
+      "description": "Original card reference"
+    },
+    "original_last_four": {
+      "type": "string"
+    },
+    "original_expiry_month": {
+      "type": "string"
+    },
+    "original_expiry_year": {
+      "type": "string"
+    },
+    "updated_last_four": {
+      "type": "string"
+    },
+    "updated_expiry_month": {
+      "type": "string"
+    },
+    "updated_expiry_year": {
+      "type": "string"
+    },
+    "update_reason": {
+      "type": "string",
+      "enum": [
+        "card_renewed",
+        "card_replaced",
+        "account_closed",
+        "contact_cardholder"
+      ],
+      "description": "Reason for update"
+    },
+    "update_source": {
+      "type": "string",
+      "enum": [
+        "visa_updater",
+        "mastercard_abr",
+        "amex_updater",
+        "manual"
+      ],
+      "description": "Update provider"
+    },
+    "update_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notification_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "applied",
+        "failed",
+        "manual_review"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "customer_id",
+    "saved_card_id",
+    "update_reason"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "name": "CommunityPost",
+  "type": "object",
+  "properties": {
+    "author_email": {
+      "type": "string",
+      "description": "Post author"
+    },
+    "title": {
+      "type": "string",
+      "description": "Post title"
+    },
+    "content": {
+      "type": "string",
+      "description": "Post content"
+    },
+    "post_type": {
+      "type": "string",
+      "enum": [
+        "tip",
+        "question",
+        "achievement",
+        "discussion"
+      ],
+      "default": "discussion"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Post tags"
+    },
+    "likes_count": {
+      "type": "number",
+      "default": 0
+    },
+    "comments_count": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "hidden",
+        "reported"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "author_email",
+    "title",
+    "content"
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "name": "ProvisionedPSP",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "Unique PSP identifier"
+    },
+    "psp_name": {
+      "type": "string"
+    },
+    "owner_email": {
+      "type": "string"
+    },
+    "owner_full_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "provisioning",
+        "active",
+        "suspended",
+        "decommissioned"
+      ],
+      "default": "pending"
+    },
+    "deployment_type": {
+      "type": "string",
+      "enum": [
+        "local",
+        "aws",
+        "gcp",
+        "azure",
+        "digitalocean",
+        "alibaba",
+        "oracle"
+      ],
+      "default": "local"
+    },
+    "country": {
+      "type": "string"
+    },
+    "timezone": {
+      "type": "string",
+      "default": "UTC"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "enabled_modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "enabled_payment_methods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Enabled payment methods for this PSP"
+    },
+    "enabled_payout_methods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Enabled payout methods for this PSP"
+    },
+    "enabled_services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Enabled FTS.Money services for this PSP"
+    },
+    "allow_direct_acquirer_connection": {
+      "type": "boolean",
+      "default": false,
+      "description": "Premium feature: Allow PSP to connect their own acquirers/banks directly"
+    },
+    "branding": {
+      "type": "object",
+      "description": "PSP branding configuration"
+    },
+    "transaction_fees": {
+      "type": "object",
+      "description": "Transaction fee configuration"
+    },
+    "database_url": {
+      "type": "string"
+    },
+    "api_endpoint": {
+      "type": "string"
+    },
+    "custom_domain": {
+      "type": "string"
+    },
+    "ssl_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "provisioning_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "provisioned_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_active": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lei": {
+      "type": "string",
+      "description": "PSP Legal Entity Identifier (20 characters)"
+    },
+    "vlei_credential": {
+      "type": "string",
+      "description": "PSP vLEI credential"
+    },
+    "parent_lei": {
+      "type": "string",
+      "description": "FTS.Money platform LEI"
+    },
+    "lei_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "grace_period",
+        "expired",
+        "required"
+      ],
+      "default": "pending"
+    },
+    "lei_verified_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "vlei_issued_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "grace_period_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "grace_period_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lei_application_id": {
+      "type": "string",
+      "description": "GLEIF LEI application reference"
+    }
+  },
+  "required": [
+    "psp_code",
+    "psp_name",
+    "owner_email"
+  ]
+}

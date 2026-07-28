@@ -1,0 +1,112 @@
+{
+  "name": "MerchantCheckoutConfig",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is checkout form active"
+    },
+    "form_title": {
+      "type": "string",
+      "description": "Checkout form title"
+    },
+    "form_description": {
+      "type": "string",
+      "description": "Checkout form subtitle/description"
+    },
+    "accepted_payment_methods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "card",
+        "bank_transfer"
+      ],
+      "description": "Payment methods to show (card, bank_transfer, wallet, crypto, etc.)"
+    },
+    "allowed_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported currencies (ISO 4217)"
+    },
+    "require_customer_email": {
+      "type": "boolean",
+      "default": true
+    },
+    "require_customer_phone": {
+      "type": "boolean",
+      "default": false
+    },
+    "require_billing_address": {
+      "type": "boolean",
+      "default": false
+    },
+    "enable_3ds": {
+      "type": "boolean",
+      "default": true,
+      "description": "Require 3D Secure for card payments"
+    },
+    "branding": {
+      "type": "object",
+      "properties": {
+        "logo_url": {
+          "type": "string"
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "secondary_color": {
+          "type": "string"
+        },
+        "background_image_url": {
+          "type": "string"
+        },
+        "font_family": {
+          "type": "string"
+        }
+      }
+    },
+    "success_redirect_url": {
+      "type": "string",
+      "description": "Where to redirect after successful payment"
+    },
+    "cancel_redirect_url": {
+      "type": "string",
+      "description": "Where to redirect if cancelled"
+    },
+    "webhook_url": {
+      "type": "string",
+      "description": "Merchant's webhook endpoint for payment status"
+    },
+    "webhook_secret": {
+      "type": "string",
+      "description": "Secret to sign webhook requests"
+    },
+    "require_verification": {
+      "type": "boolean",
+      "default": false,
+      "description": "Require email/SMS verification"
+    },
+    "enable_saved_cards": {
+      "type": "boolean",
+      "default": true,
+      "description": "Allow customers to save payment methods"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "psp_code"
+  ]
+}

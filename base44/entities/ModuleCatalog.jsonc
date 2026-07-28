@@ -1,0 +1,149 @@
+{
+  "name": "ModuleCatalog",
+  "type": "object",
+  "properties": {
+    "module_id": {
+      "type": "string",
+      "description": "Unique module identifier"
+    },
+    "module_name": {
+      "type": "string",
+      "description": "Display name"
+    },
+    "module_category": {
+      "type": "string",
+      "enum": [
+        "core",
+        "payments",
+        "payouts",
+        "merchants",
+        "risk_compliance",
+        "analytics",
+        "integrations",
+        "advanced"
+      ],
+      "description": "Module category for grouping"
+    },
+    "description": {
+      "type": "string",
+      "description": "Module description"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Lucide icon name"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "free",
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "description": "Minimum tier required"
+    },
+    "pricing_model": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "included",
+            "fixed_monthly",
+            "per_transaction",
+            "per_merchant",
+            "usage_based"
+          ]
+        },
+        "base_price": {
+          "type": "number"
+        },
+        "transaction_fee": {
+          "type": "number"
+        }
+      }
+    },
+    "menu_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "permission": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Menu items this module enables"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Required module IDs"
+    },
+    "conflicts_with": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Incompatible module IDs"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Feature flags enabled"
+    },
+    "compliance_requirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "PCI_DSS",
+          "GDPR",
+          "ISO_27001",
+          "ISO_20022",
+          "FATF",
+          "SOC2"
+        ]
+      },
+      "description": "Compliance standards this module adheres to"
+    },
+    "data_isolation_required": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this module requires PSP data isolation"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_beta": {
+      "type": "boolean",
+      "default": false
+    },
+    "documentation_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "module_id",
+    "module_name",
+    "module_category",
+    "subscription_tier"
+  ]
+}

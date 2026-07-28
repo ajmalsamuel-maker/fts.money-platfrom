@@ -1,0 +1,166 @@
+{
+  "name": "Tenant",
+  "type": "object",
+  "properties": {
+    "tenant_code": {
+      "type": "string",
+      "description": "Unique tenant identifier code"
+    },
+    "tenant_name": {
+      "type": "string",
+      "description": "Organization/company name"
+    },
+    "legal_entity_name": {
+      "type": "string",
+      "description": "Legal company name"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Custom domain for tenant"
+    },
+    "subdomain": {
+      "type": "string",
+      "description": "FTS subdomain (e.g., acme.fts.money)"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Primary contact email"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      }
+    },
+    "branding": {
+      "type": "object",
+      "properties": {
+        "logo_url": {
+          "type": "string"
+        },
+        "primary_color": {
+          "type": "string",
+          "default": "#3b82f6"
+        },
+        "secondary_color": {
+          "type": "string",
+          "default": "#8b5cf6"
+        },
+        "company_name_display": {
+          "type": "string"
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "max_psps": {
+          "type": "number",
+          "description": "Maximum PSPs allowed"
+        },
+        "max_users": {
+          "type": "number",
+          "description": "Maximum users allowed"
+        },
+        "enabled_features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "default_currency": {
+          "type": "string",
+          "default": "USD"
+        },
+        "timezone": {
+          "type": "string",
+          "default": "UTC"
+        }
+      }
+    },
+    "subscription": {
+      "type": "object",
+      "properties": {
+        "plan": {
+          "type": "string",
+          "enum": [
+            "starter",
+            "professional",
+            "enterprise",
+            "custom"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "trial",
+            "active",
+            "suspended",
+            "cancelled"
+          ]
+        },
+        "monthly_fee": {
+          "type": "number"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "trial_ends_at": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "total_psps": {
+      "type": "number",
+      "default": 0
+    },
+    "total_users": {
+      "type": "number",
+      "default": 0
+    },
+    "total_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant_code",
+    "tenant_name",
+    "contact_email"
+  ]
+}

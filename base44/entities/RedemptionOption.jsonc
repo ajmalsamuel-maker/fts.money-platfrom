@@ -1,0 +1,126 @@
+{
+  "name": "RedemptionOption",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "reward_name": {
+      "type": "string"
+    },
+    "reward_type": {
+      "type": "string",
+      "enum": [
+        "experience",
+        "merchandise",
+        "discount",
+        "donation",
+        "service",
+        "access",
+        "digital_goods",
+        "subscription",
+        "gift_card",
+        "cash_back",
+        "crypto",
+        "nft",
+        "travel",
+        "wellness",
+        "training",
+        "consultation",
+        "membership",
+        "event_ticket"
+      ]
+    },
+    "points_required": {
+      "type": "number"
+    },
+    "monetary_value": {
+      "type": "number"
+    },
+    "description": {
+      "type": "string"
+    },
+    "inventory_available": {
+      "type": "number",
+      "default": -1
+    },
+    "fulfillment_method": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "email_delivery",
+        "api_integration",
+        "physical_shipping",
+        "digital_download",
+        "blockchain_transfer",
+        "instant_discount_code",
+        "stripe_payout",
+        "paypal_payout",
+        "gift_card_api",
+        "nft_mint",
+        "webhook"
+      ],
+      "default": "manual"
+    },
+    "fulfillment_config": {
+      "type": "object",
+      "description": "API keys, webhook URLs, shipping providers"
+    },
+    "tier_restricted": {
+      "type": "boolean",
+      "default": false
+    },
+    "allowed_tiers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "terms_conditions": {
+      "type": "string"
+    },
+    "expires_days": {
+      "type": "number",
+      "description": "Days until reward expires after redemption"
+    },
+    "max_per_user": {
+      "type": "number",
+      "description": "Max redemptions per user"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "hybrid_redemption_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this reward supports points + cash payment"
+    },
+    "minimum_points_required": {
+      "type": "number",
+      "default": 0,
+      "description": "Minimum points required for hybrid redemption"
+    },
+    "maximum_points_applicable": {
+      "type": "number",
+      "description": "Maximum points that can be used towards this reward"
+    },
+    "cash_price": {
+      "type": "number",
+      "description": "Full cash price when hybrid redemption is enabled"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "Partner merchant providing the service/product"
+    }
+  },
+  "required": [
+    "program_id",
+    "reward_name",
+    "reward_type",
+    "points_required"
+  ]
+}

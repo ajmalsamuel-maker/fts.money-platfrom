@@ -1,0 +1,114 @@
+{
+  "name": "MeteringRule",
+  "type": "object",
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "description": "Unique rule identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "rule_name": {
+      "type": "string",
+      "description": "Rule name (e.g., 'Track All API Calls')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Rule description"
+    },
+    "metric_type": {
+      "type": "string",
+      "description": "Metric type to track"
+    },
+    "applies_to": {
+      "type": "string",
+      "enum": [
+        "all_merchants",
+        "specific_merchants",
+        "merchant_tier"
+      ],
+      "default": "all_merchants",
+      "description": "Which merchants this rule applies to"
+    },
+    "merchant_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specific merchant IDs (if applies_to=specific_merchants)"
+    },
+    "merchant_tier": {
+      "type": "string",
+      "description": "Merchant tier (if applies_to=merchant_tier)"
+    },
+    "auto_create_meter": {
+      "type": "boolean",
+      "default": true,
+      "description": "Automatically create meter for new merchants"
+    },
+    "billing_period": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly",
+        "yearly"
+      ],
+      "default": "monthly"
+    },
+    "threshold_config": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "limit": {
+          "type": "number"
+        },
+        "alert_percentage": {
+          "type": "number"
+        },
+        "notification_emails": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "aggregation_method": {
+      "type": "string",
+      "enum": [
+        "sum",
+        "count",
+        "average",
+        "max",
+        "min"
+      ],
+      "default": "sum",
+      "description": "How to aggregate events"
+    },
+    "custom_filters": {
+      "type": "object",
+      "description": "Custom filtering logic for events"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "rule_name",
+    "metric_type"
+  ]
+}

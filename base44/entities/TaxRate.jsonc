@@ -1,0 +1,64 @@
+{
+  "name": "TaxRate",
+  "type": "object",
+  "properties": {
+    "country": {
+      "type": "string",
+      "description": "Country code (ISO 3166-1 alpha-2)"
+    },
+    "tax_type": {
+      "type": "string",
+      "enum": [
+        "VAT",
+        "GST",
+        "Sales Tax",
+        "Service Tax",
+        "Withholding",
+        "Consumption Tax",
+        "IVA",
+        "ICMS"
+      ],
+      "description": "Type of tax"
+    },
+    "standard_rate": {
+      "type": "number",
+      "description": "Standard tax rate percentage"
+    },
+    "reduced_rate": {
+      "type": "number",
+      "description": "Reduced tax rate percentage (if applicable)"
+    },
+    "super_reduced_rate": {
+      "type": "number",
+      "description": "Super reduced rate (if applicable)"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when rate becomes effective"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of tax rate information"
+    },
+    "last_verified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last verification timestamp"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this rate is currently active"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about this tax rate"
+    }
+  },
+  "required": [
+    "country",
+    "tax_type",
+    "standard_rate"
+  ]
+}

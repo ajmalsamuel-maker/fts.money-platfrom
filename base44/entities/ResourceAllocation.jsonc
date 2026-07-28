@@ -1,0 +1,154 @@
+{
+  "name": "ResourceAllocation",
+  "type": "object",
+  "properties": {
+    "allocation_id": {
+      "type": "string",
+      "description": "Unique allocation identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_name": {
+      "type": "string",
+      "description": "PSP name for quick reference"
+    },
+    "pool_id": {
+      "type": "string",
+      "description": "Reference to ResourcePool"
+    },
+    "region": {
+      "type": "string",
+      "description": "Geographic region"
+    },
+    "allocated_resources": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": {
+          "type": "number"
+        },
+        "memory_gb": {
+          "type": "number"
+        },
+        "storage_gb": {
+          "type": "number"
+        },
+        "network_gbps": {
+          "type": "number"
+        },
+        "database_connections": {
+          "type": "number"
+        }
+      },
+      "description": "Resources allocated to this PSP"
+    },
+    "tier_based_limits": {
+      "type": "object",
+      "properties": {
+        "max_cpu_cores": {
+          "type": "number"
+        },
+        "max_memory_gb": {
+          "type": "number"
+        },
+        "max_storage_gb": {
+          "type": "number"
+        },
+        "max_database_connections": {
+          "type": "number"
+        }
+      },
+      "description": "Maximum limits based on PSP tier"
+    },
+    "current_usage": {
+      "type": "object",
+      "properties": {
+        "cpu_utilization": {
+          "type": "number"
+        },
+        "memory_utilization": {
+          "type": "number"
+        },
+        "storage_utilization": {
+          "type": "number"
+        },
+        "network_utilization": {
+          "type": "number"
+        }
+      },
+      "description": "Current resource usage percentages"
+    },
+    "auto_scaling_policy": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "scale_up_threshold": {
+          "type": "number",
+          "default": 80
+        },
+        "scale_down_threshold": {
+          "type": "number",
+          "default": 30
+        },
+        "cooldown_period_minutes": {
+          "type": "number",
+          "default": 15
+        }
+      },
+      "description": "Auto-scaling configuration"
+    },
+    "quota_exceeded": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether PSP has exceeded quota"
+    },
+    "quota_alerts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string"
+          },
+          "resource_type": {
+            "type": "string"
+          },
+          "threshold_exceeded": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Quota violation alerts"
+    },
+    "allocated_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_scaled": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "monthly_cost": {
+      "type": "number",
+      "description": "Estimated monthly cost"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "terminated"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "psp_id",
+    "pool_id",
+    "allocated_resources"
+  ]
+}

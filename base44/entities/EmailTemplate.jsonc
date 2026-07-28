@@ -1,0 +1,76 @@
+{
+  "name": "EmailTemplate",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to merchant"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "transaction_receipt",
+        "payment_confirmation",
+        "refund_notification",
+        "chargeback_alert"
+      ],
+      "description": "Type of email template"
+    },
+    "template_name": {
+      "type": "string",
+      "description": "Custom name for template"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Email subject line"
+    },
+    "html_body": {
+      "type": "string",
+      "description": "HTML email body with template variables"
+    },
+    "header_logo_url": {
+      "type": "string",
+      "description": "URL to header logo"
+    },
+    "primary_color": {
+      "type": "string",
+      "default": "#3b82f6",
+      "description": "Primary brand color"
+    },
+    "secondary_color": {
+      "type": "string",
+      "default": "#64748b",
+      "description": "Secondary color"
+    },
+    "footer_text": {
+      "type": "string",
+      "description": "Footer text/disclaimer"
+    },
+    "attach_receipt": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to attach PDF receipt"
+    },
+    "receipt_template_id": {
+      "type": "string",
+      "description": "Reference to receipt template"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "draft"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "template_type"
+  ]
+}

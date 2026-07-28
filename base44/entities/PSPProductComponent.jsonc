@@ -1,0 +1,66 @@
+{
+  "name": "PSPProductComponent",
+  "type": "object",
+  "properties": {
+    "component_id": {
+      "type": "string",
+      "description": "Unique component identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "component_name": {
+      "type": "string",
+      "description": "Component name"
+    },
+    "component_type": {
+      "type": "string",
+      "enum": [
+        "feature",
+        "service",
+        "integration",
+        "api_endpoint",
+        "dashboard",
+        "report",
+        "widget"
+      ],
+      "description": "Component type"
+    },
+    "description": {
+      "type": "string",
+      "description": "Component description"
+    },
+    "is_reusable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Can be used in multiple products"
+    },
+    "configuration_schema": {
+      "type": "object",
+      "description": "JSON schema for component configuration"
+    },
+    "default_config": {
+      "type": "object",
+      "description": "Default configuration values"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "component_name",
+    "component_type"
+  ]
+}

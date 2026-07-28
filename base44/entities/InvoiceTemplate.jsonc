@@ -1,0 +1,97 @@
+{
+  "name": "InvoiceTemplate",
+  "type": "object",
+  "properties": {
+    "template_name": {
+      "type": "string",
+      "description": "Name of the template"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "b2c",
+        "b2b",
+        "reverse_charge",
+        "custom"
+      ],
+      "default": "b2c"
+    },
+    "customer_segment": {
+      "type": "string",
+      "enum": [
+        "all",
+        "enterprise",
+        "sme",
+        "retail",
+        "subscription",
+        "digital_services"
+      ],
+      "default": "all"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "all",
+        "psp",
+        "iso_gateway",
+        "orchestration",
+        "crypto_gateway",
+        "rwa_platform"
+      ],
+      "default": "all"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "primary_color": {
+      "type": "string",
+      "default": "#3b82f6"
+    },
+    "secondary_color": {
+      "type": "string",
+      "default": "#06b6d4"
+    },
+    "accent_color": {
+      "type": "string",
+      "default": "#8b5cf6"
+    },
+    "section_order": {
+      "type": "string",
+      "description": "JSON string of section order array"
+    },
+    "visible_sections": {
+      "type": "string",
+      "description": "JSON string of visible sections object"
+    },
+    "payment_terms": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string",
+      "default": "en"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "draft"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "template_name",
+    "template_type"
+  ]
+}

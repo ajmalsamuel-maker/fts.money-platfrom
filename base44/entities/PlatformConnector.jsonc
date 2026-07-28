@@ -1,0 +1,155 @@
+{
+  "name": "PlatformConnector",
+  "type": "object",
+  "properties": {
+    "connector_id": {
+      "type": "string",
+      "description": "Unique connector identifier"
+    },
+    "connector_name": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "paypal",
+        "adyen",
+        "square",
+        "braintree",
+        "authorize_net",
+        "checkout",
+        "worldpay",
+        "cybersource",
+        "circle",
+        "fireblocks",
+        "bitpay"
+      ],
+      "description": "Payment gateway/processor name"
+    },
+    "connector_type": {
+      "type": "string",
+      "enum": [
+        "payment_gateway",
+        "crypto_processor",
+        "banking_connector",
+        "open_banking",
+        "card_network"
+      ],
+      "default": "payment_gateway"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "User-friendly display name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance",
+        "deprecated"
+      ],
+      "default": "active"
+    },
+    "master_api_key": {
+      "type": "string",
+      "description": "Encrypted master API key (FTS platform level)"
+    },
+    "master_api_secret": {
+      "type": "string",
+      "description": "Encrypted master API secret"
+    },
+    "master_merchant_account_id": {
+      "type": "string",
+      "description": "Platform-level merchant account ID"
+    },
+    "webhook_secret": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "sandbox",
+        "production"
+      ],
+      "default": "production"
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "USD",
+        "EUR",
+        "GBP"
+      ]
+    },
+    "supported_payment_methods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "card",
+        "wallet"
+      ]
+    },
+    "supported_countries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO country codes"
+    },
+    "platform_fee_percentage": {
+      "type": "number",
+      "description": "FTS master contract fee with provider",
+      "default": 0
+    },
+    "platform_fixed_fee": {
+      "type": "number",
+      "default": 0
+    },
+    "connection_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_health_check": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "total_volume_processed": {
+      "type": "number",
+      "default": 0,
+      "description": "Total volume across all PSPs"
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0
+    },
+    "avg_success_rate": {
+      "type": "number",
+      "description": "Platform-wide success rate"
+    },
+    "configuration": {
+      "type": "object",
+      "description": "Provider-specific configuration"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Features: 3ds, tokenization, recurring, payouts, etc."
+    }
+  },
+  "required": [
+    "connector_name",
+    "display_name"
+  ]
+}

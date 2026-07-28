@@ -1,0 +1,63 @@
+{
+  "name": "LoyaltyParticipant",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "participant_email": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "current_balance": {
+      "type": "number",
+      "default": 0
+    },
+    "lifetime_earned": {
+      "type": "number",
+      "default": 0
+    },
+    "lifetime_redeemed": {
+      "type": "number",
+      "default": 0
+    },
+    "current_tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ],
+      "default": "bronze"
+    },
+    "streak_days": {
+      "type": "number",
+      "default": 0
+    },
+    "longest_streak": {
+      "type": "number",
+      "default": 0
+    },
+    "last_activity_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "program_id",
+    "participant_email",
+    "full_name"
+  ]
+}

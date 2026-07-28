@@ -1,0 +1,58 @@
+{
+  "name": "PSPInstanceLog",
+  "type": "object",
+  "properties": {
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string"
+    },
+    "log_type": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "error",
+        "critical",
+        "deployment",
+        "configuration",
+        "restart",
+        "backup"
+      ],
+      "description": "Type of log entry"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "message": {
+      "type": "string",
+      "description": "Log message"
+    },
+    "details": {
+      "type": "object",
+      "description": "Additional log details"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of the log (e.g., 'system', 'api', 'admin')"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User who triggered the action"
+    }
+  },
+  "required": [
+    "psp_id",
+    "log_type",
+    "message"
+  ]
+}

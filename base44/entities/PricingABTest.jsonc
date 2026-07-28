@@ -1,0 +1,169 @@
+{
+  "name": "PricingABTest",
+  "type": "object",
+  "properties": {
+    "test_id": {
+      "type": "string",
+      "description": "Unique A/B test identifier"
+    },
+    "test_name": {
+      "type": "string",
+      "description": "Name of the test"
+    },
+    "description": {
+      "type": "string",
+      "description": "Test hypothesis and objectives"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "running",
+        "paused",
+        "completed",
+        "cancelled"
+      ],
+      "default": "draft"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "pricing_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "master_pricing_id": {
+            "type": "string"
+          },
+          "item_name": {
+            "type": "string"
+          },
+          "variant_a": {
+            "type": "object",
+            "properties": {
+              "sell_rate_percentage": {
+                "type": "number"
+              },
+              "sell_rate_fixed": {
+                "type": "number"
+              }
+            }
+          },
+          "variant_b": {
+            "type": "object",
+            "properties": {
+              "sell_rate_percentage": {
+                "type": "number"
+              },
+              "sell_rate_fixed": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "description": "Pricing variants being tested"
+    },
+    "target_segment": {
+      "type": "string",
+      "enum": [
+        "all_new_psps",
+        "startup",
+        "smb",
+        "enterprise",
+        "specific_psps"
+      ],
+      "description": "Which PSPs receive this test"
+    },
+    "traffic_split": {
+      "type": "object",
+      "properties": {
+        "variant_a": {
+          "type": "number",
+          "default": 50
+        },
+        "variant_b": {
+          "type": "number",
+          "default": 50
+        }
+      },
+      "description": "Traffic allocation percentages"
+    },
+    "success_metric": {
+      "type": "string",
+      "enum": [
+        "conversion_rate",
+        "revenue",
+        "volume",
+        "margin",
+        "retention"
+      ],
+      "description": "Primary metric to measure"
+    },
+    "results": {
+      "type": "object",
+      "properties": {
+        "variant_a": {
+          "type": "object",
+          "properties": {
+            "psp_count": {
+              "type": "number"
+            },
+            "revenue": {
+              "type": "number"
+            },
+            "volume": {
+              "type": "number"
+            },
+            "conversion_rate": {
+              "type": "number"
+            }
+          }
+        },
+        "variant_b": {
+          "type": "object",
+          "properties": {
+            "psp_count": {
+              "type": "number"
+            },
+            "revenue": {
+              "type": "number"
+            },
+            "volume": {
+              "type": "number"
+            },
+            "conversion_rate": {
+              "type": "number"
+            }
+          }
+        },
+        "winner": {
+          "type": "string",
+          "enum": [
+            "variant_a",
+            "variant_b",
+            "no_significant_difference"
+          ]
+        },
+        "confidence_level": {
+          "type": "number"
+        }
+      },
+      "description": "Test results"
+    },
+    "created_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "test_name",
+    "pricing_items",
+    "target_segment"
+  ]
+}

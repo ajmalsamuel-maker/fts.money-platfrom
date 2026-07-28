@@ -1,0 +1,89 @@
+{
+  "name": "MerchantPayoutPricing",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name"
+    },
+    "payout_route_id": {
+      "type": "string",
+      "description": "Reference to PayoutRoute"
+    },
+    "route_name": {
+      "type": "string",
+      "description": "Route name for quick reference"
+    },
+    "channel_type": {
+      "type": "string",
+      "description": "Channel type for filtering"
+    },
+    "is_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this route is enabled for the merchant"
+    },
+    "merchant_fee_percentage": {
+      "type": "number",
+      "description": "Fee percentage charged to merchant"
+    },
+    "merchant_fee_fixed": {
+      "type": "number",
+      "description": "Fixed fee charged to merchant"
+    },
+    "psp_cost_percentage": {
+      "type": "number",
+      "description": "PSP's cost percentage (from provider)"
+    },
+    "psp_cost_fixed": {
+      "type": "number",
+      "description": "PSP's fixed cost (from provider)"
+    },
+    "psp_margin_percentage": {
+      "type": "number",
+      "description": "PSP's profit margin percentage"
+    },
+    "psp_margin_fixed": {
+      "type": "number",
+      "description": "PSP's fixed profit margin"
+    },
+    "min_payout_amount": {
+      "type": "number",
+      "description": "Minimum payout amount for this merchant"
+    },
+    "max_payout_amount": {
+      "type": "number",
+      "description": "Maximum payout amount for this merchant"
+    },
+    "monthly_volume_limit": {
+      "type": "number",
+      "description": "Monthly payout volume limit"
+    },
+    "settlement_currency": {
+      "type": "string",
+      "description": "Currency for settlements"
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether payouts require manual approval"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "suspended"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "payout_route_id"
+  ]
+}

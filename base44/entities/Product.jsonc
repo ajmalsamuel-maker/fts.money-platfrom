@@ -1,0 +1,95 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Unique product identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Product name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Product description"
+    },
+    "sku": {
+      "type": "string",
+      "description": "Stock keeping unit"
+    },
+    "price": {
+      "type": "number",
+      "description": "Product price"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "physical",
+        "digital",
+        "service"
+      ],
+      "default": "physical"
+    },
+    "category": {
+      "type": "string",
+      "description": "Product category"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Product image URL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "out_of_stock"
+      ],
+      "default": "active"
+    },
+    "taxable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether product is taxable"
+    },
+    "tax_rate": {
+      "type": "number",
+      "description": "Tax rate percentage"
+    },
+    "inventory_tracking": {
+      "type": "boolean",
+      "default": false,
+      "description": "Track inventory"
+    },
+    "inventory_quantity": {
+      "type": "number",
+      "description": "Current inventory quantity"
+    },
+    "total_sold": {
+      "type": "number",
+      "default": 0,
+      "description": "Total units sold"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Custom metadata"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "name",
+    "price"
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "name": "MIDRoutingRule",
+  "type": "object",
+  "properties": {
+    "merchant_mid_id": {
+      "type": "string",
+      "description": "Reference to MerchantMID"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name for reference"
+    },
+    "priority": {
+      "type": "number",
+      "description": "Routing priority (1 = highest)"
+    },
+    "bank_mid_id": {
+      "type": "string",
+      "description": "Reference to BankMID to route to"
+    },
+    "bank_mid_name": {
+      "type": "string",
+      "description": "Bank MID name for reference"
+    },
+    "routing_conditions": {
+      "type": "object",
+      "description": "ISO-compliant routing conditions",
+      "properties": {
+        "transaction_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "card_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "min_amount": {
+          "type": "number"
+        },
+        "max_amount": {
+          "type": "number"
+        },
+        "currencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ISO 4217 currency codes"
+        },
+        "countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ISO 3166-1 alpha-2 country codes"
+        },
+        "mcc_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ISO 18245 MCC codes"
+        },
+        "time_based": {
+          "type": "boolean"
+        },
+        "active_hours_start": {
+          "type": "string"
+        },
+        "active_hours_end": {
+          "type": "string"
+        },
+        "timezone": {
+          "type": "string",
+          "description": "IANA timezone identifier"
+        },
+        "days_of_week": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "crypto_assets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ISO 23257 crypto asset symbols"
+        },
+        "blockchain_networks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ISO 23257 blockchain networks"
+        }
+      }
+    },
+    "failover_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable automatic failover to next priority"
+    },
+    "retry_attempts": {
+      "type": "number",
+      "default": 3,
+      "description": "Number of retry attempts before failover"
+    },
+    "weight_percentage": {
+      "type": "number",
+      "description": "Load balancing weight (for same priority)"
+    },
+    "effective_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When this rule becomes active"
+    },
+    "effective_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When this rule expires"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "testing"
+      ],
+      "default": "active",
+      "description": "Rule status"
+    },
+    "iso_compliance_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Require ISO compliance validation"
+    },
+    "iso_standards": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Required ISO standards (e.g., ISO 8583, ISO 20022)"
+    },
+    "success_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of successful routes"
+    },
+    "failure_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of failed routes"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time this rule was used"
+    }
+  },
+  "required": [
+    "merchant_mid_id",
+    "priority",
+    "bank_mid_id"
+  ]
+}

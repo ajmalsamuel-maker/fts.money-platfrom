@@ -1,0 +1,64 @@
+{
+  "name": "Terminal",
+  "type": "object",
+  "properties": {
+    "terminal_id": {
+      "type": "string",
+      "description": "Unique terminal identifier"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "pos",
+        "mpos",
+        "virtual",
+        "ecommerce",
+        "unattended"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance",
+        "decommissioned"
+      ],
+      "default": "active"
+    },
+    "model": {
+      "type": "string"
+    },
+    "serial_number": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "last_transaction_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "firmware_version": {
+      "type": "string"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "transaction_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "terminal_id",
+    "merchant_id",
+    "type"
+  ]
+}

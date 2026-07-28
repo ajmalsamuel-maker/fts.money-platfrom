@@ -1,0 +1,203 @@
+{
+  "name": "BlockchainConnector",
+  "type": "object",
+  "properties": {
+    "connector_id": {
+      "type": "string",
+      "description": "Unique connector identifier"
+    },
+    "connector_name": {
+      "type": "string",
+      "description": "Display name for connector"
+    },
+    "blockchain_network": {
+      "type": "string",
+      "description": "ISO 23257 blockchain network (ethereum, bitcoin, etc.)"
+    },
+    "chain_id": {
+      "type": "number",
+      "description": "EIP-155 Chain ID for EVM chains"
+    },
+    "connection_type": {
+      "type": "string",
+      "enum": [
+        "self_hosted_node",
+        "api_provider",
+        "exchange_api",
+        "custodian"
+      ],
+      "description": "Type of blockchain connection"
+    },
+    "provider_type": {
+      "type": "string",
+      "enum": [
+        "node_provider",
+        "exchange",
+        "wallet_provider",
+        "payment_processor"
+      ],
+      "description": "Provider service type"
+    },
+    "api_provider": {
+      "type": "string",
+      "enum": [
+        "alchemy",
+        "infura",
+        "quicknode",
+        "ankr",
+        "getblock",
+        "moralis",
+        "custom"
+      ],
+      "description": "API provider if using hosted service"
+    },
+    "rpc_endpoint": {
+      "type": "string",
+      "description": "RPC endpoint URL"
+    },
+    "wss_endpoint": {
+      "type": "string",
+      "description": "WebSocket endpoint for real-time updates"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "Encrypted API key"
+    },
+    "api_key_reference": {
+      "type": "string",
+      "description": "Reference to stored API key"
+    },
+    "supported_assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 23257 crypto assets supported"
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 24165 digital token identifiers"
+    },
+    "hot_wallet_address": {
+      "type": "string",
+      "description": "Hot wallet address for operations"
+    },
+    "cold_wallet_addresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Cold storage wallet addresses"
+    },
+    "multi_sig_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "multi_sig_threshold": {
+      "type": "number",
+      "description": "M-of-N signature threshold"
+    },
+    "transaction_fee_percentage": {
+      "type": "number",
+      "default": 0,
+      "description": "Transaction processing fee percentage"
+    },
+    "gas_fee_markup": {
+      "type": "number",
+      "default": 0,
+      "description": "Gas fee markup percentage"
+    },
+    "network_fee_percentage": {
+      "type": "number",
+      "default": 0,
+      "description": "Network/blockchain fee percentage"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance",
+        "error",
+        "testing"
+      ],
+      "default": "active"
+    },
+    "last_block_synced": {
+      "type": "number",
+      "description": "Last block number synced"
+    },
+    "sync_status": {
+      "type": "string",
+      "enum": [
+        "synced",
+        "syncing",
+        "error"
+      ],
+      "default": "synced"
+    },
+    "average_confirmation_time": {
+      "type": "number",
+      "description": "Average block confirmation time in seconds"
+    },
+    "gas_price_strategy": {
+      "type": "string",
+      "enum": [
+        "slow",
+        "standard",
+        "fast",
+        "custom"
+      ],
+      "default": "standard"
+    },
+    "max_gas_price": {
+      "type": "number",
+      "description": "Maximum gas price in gwei"
+    },
+    "daily_transaction_limit": {
+      "type": "number",
+      "description": "Daily transaction count limit"
+    },
+    "daily_volume_limit": {
+      "type": "number",
+      "description": "Daily volume limit in USD"
+    },
+    "compliance_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "FATF Travel Rule compliance enabled"
+    },
+    "travel_rule_threshold": {
+      "type": "number",
+      "default": 1000,
+      "description": "Minimum transaction amount for Travel Rule (USD)"
+    },
+    "kyc_required": {
+      "type": "boolean",
+      "default": true,
+      "description": "KYC verification required"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Percentage of successful transactions"
+    },
+    "health_check_url": {
+      "type": "string"
+    },
+    "last_health_check": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "monitoring_enabled": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "connector_name",
+    "blockchain_network"
+  ]
+}

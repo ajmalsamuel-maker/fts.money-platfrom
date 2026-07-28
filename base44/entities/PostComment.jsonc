@@ -1,0 +1,27 @@
+{
+  "name": "PostComment",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "description": "Reference to CommunityPost"
+    },
+    "author_email": {
+      "type": "string",
+      "description": "Comment author"
+    },
+    "content": {
+      "type": "string",
+      "description": "Comment content"
+    },
+    "likes_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "post_id",
+    "author_email",
+    "content"
+  ]
+}

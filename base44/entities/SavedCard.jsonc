@@ -1,0 +1,50 @@
+{
+  "name": "SavedCard",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "card_last_four": {
+      "type": "string"
+    },
+    "card_brand": {
+      "type": "string",
+      "enum": [
+        "visa",
+        "mastercard",
+        "amex",
+        "discover"
+      ]
+    },
+    "expiry_month": {
+      "type": "string"
+    },
+    "expiry_year": {
+      "type": "string"
+    },
+    "billing_address": {
+      "type": "object"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    },
+    "token": {
+      "type": "string",
+      "description": "Tokenized card reference"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "customer_email",
+    "card_last_four",
+    "card_brand"
+  ]
+}

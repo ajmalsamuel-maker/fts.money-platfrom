@@ -1,0 +1,208 @@
+{
+  "name": "ISOGatewayConnection",
+  "type": "object",
+  "properties": {
+    "connection_id": {
+      "type": "string",
+      "description": "Unique connection identifier"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to ISOGatewayCustomer"
+    },
+    "connection_name": {
+      "type": "string",
+      "description": "Friendly name (e.g., 'ATM Network to SWIFT')"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "8583_to_20022",
+        "20022_to_8583",
+        "MT_to_20022",
+        "20022_to_MT",
+        "8583_to_MT",
+        "MT_to_8583",
+        "bidirectional"
+      ],
+      "description": "Translation direction"
+    },
+    "source_standard": {
+      "type": "string",
+      "enum": [
+        "ISO8583",
+        "ISO20022",
+        "MT103",
+        "MT202",
+        "MT940"
+      ],
+      "description": "Input message standard"
+    },
+    "target_standard": {
+      "type": "string",
+      "enum": [
+        "ISO8583",
+        "ISO20022",
+        "MT103",
+        "MT202",
+        "MT940"
+      ],
+      "description": "Output message standard"
+    },
+    "source_endpoint": {
+      "type": "string",
+      "description": "Where messages come from (our webhook URL)"
+    },
+    "destination_endpoint": {
+      "type": "string",
+      "description": "Where to send translated messages"
+    },
+    "destination_auth": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "api_key",
+            "bearer_token",
+            "basic_auth",
+            "mtls"
+          ]
+        },
+        "credentials": {
+          "type": "object"
+        }
+      },
+      "description": "Authentication for destination endpoint"
+    },
+    "enrichment_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Auto-enrich with LEI, BIC, etc."
+    },
+    "enrichment_sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "GLEIF",
+          "SWIFT",
+          "IBAN_REGISTRY",
+          "BIC_DIRECTORY"
+        ]
+      },
+      "default": []
+    },
+    "enrichment_features": {
+      "type": "object",
+      "properties": {
+        "lei_enrichment": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-populate LEI from customer/merchant data"
+        },
+        "structured_remittance": {
+          "type": "boolean",
+          "default": true,
+          "description": "Parse and structure invoice/PO numbers"
+        },
+        "purpose_codes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Add ISO 20022 purpose codes"
+        },
+        "ultimate_party_id": {
+          "type": "boolean",
+          "default": false,
+          "description": "Identify ultimate debtor/creditor in OBO scenarios"
+        },
+        "end_to_end_refs": {
+          "type": "boolean",
+          "default": true,
+          "description": "Preserve end-to-end references"
+        },
+        "party_info_structure": {
+          "type": "boolean",
+          "default": false,
+          "description": "Structure party names, addresses, DOB for sanctions screening"
+        }
+      },
+      "default": {
+        "lei_enrichment": true,
+        "structured_remittance": true,
+        "purpose_codes": true,
+        "ultimate_party_id": false,
+        "end_to_end_refs": true,
+        "party_info_structure": false
+      }
+    },
+    "translation_rules": {
+      "type": "object",
+      "description": "Custom field mapping rules (JSON)"
+    },
+    "message_type_filter": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Filter specific MTIs or ISO 20022 message types"
+    },
+    "retry_config": {
+      "type": "object",
+      "properties": {
+        "max_retries": {
+          "type": "number",
+          "default": 3
+        },
+        "retry_delay_ms": {
+          "type": "number",
+          "default": 1000
+        },
+        "exponential_backoff": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "failed",
+        "testing"
+      ],
+      "default": "testing"
+    },
+    "sla_latency_ms": {
+      "type": "number",
+      "default": 500,
+      "description": "Target latency SLA"
+    },
+    "messages_processed": {
+      "type": "number",
+      "default": 0
+    },
+    "success_count": {
+      "type": "number",
+      "default": 0
+    },
+    "error_count": {
+      "type": "number",
+      "default": 0
+    },
+    "avg_latency_ms": {
+      "type": "number"
+    },
+    "last_message_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "customer_id",
+    "connection_name",
+    "direction",
+    "destination_endpoint"
+  ]
+}

@@ -1,0 +1,328 @@
+{
+  "name": "BankMID",
+  "type": "object",
+  "properties": {
+    "bank_mid_id": {
+      "type": "string",
+      "description": "Unique Bank MID identifier"
+    },
+    "bank_mid_name": {
+      "type": "string",
+      "description": "Descriptive name for the Bank MID"
+    },
+    "institution_type": {
+      "type": "string",
+      "enum": [
+        "traditional_bank",
+        "crypto_exchange",
+        "payment_institution",
+        "e_money_institution"
+      ],
+      "default": "traditional_bank",
+      "description": "Type of financial institution"
+    },
+    "acquirer_id": {
+      "type": "string",
+      "description": "Reference to PaymentProvider"
+    },
+    "acquirer_name": {
+      "type": "string",
+      "description": "Acquirer/Bank/Exchange name"
+    },
+    "legal_entity_name": {
+      "type": "string",
+      "description": "Full legal name of institution"
+    },
+    "lei": {
+      "type": "string",
+      "description": "Legal Entity Identifier (GLEIF)"
+    },
+    "lei_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "expired",
+        "not_found"
+      ],
+      "default": "pending"
+    },
+    "bic_swift": {
+      "type": "string",
+      "description": "ISO 9362 BIC/SWIFT code (8 or 11 characters)"
+    },
+    "iban": {
+      "type": "string",
+      "description": "ISO 13616 IBAN (if applicable)"
+    },
+    "country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "ISO 4217 primary currency code"
+    },
+    "supported_currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 4217 supported currency codes"
+    },
+    "license_number": {
+      "type": "string",
+      "description": "Financial services license number"
+    },
+    "licensing_authority": {
+      "type": "string",
+      "description": "Regulatory authority (e.g., FCA, BaFin, SEC, FINRA)"
+    },
+    "license_jurisdiction": {
+      "type": "string",
+      "description": "ISO 3166-1 jurisdiction of license"
+    },
+    "crypto_license_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Crypto-specific licenses (e.g., VASP, MTL, BitLicense)"
+    },
+    "connector_type": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "gateway",
+        "direct",
+        "aggregator",
+        "blockchain_api"
+      ],
+      "default": "standard",
+      "description": "Type of connection"
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "bank",
+        "ecomm",
+        "moto",
+        "pos",
+        "soft_pos",
+        "crypto_wallet"
+      ],
+      "default": "ecomm",
+      "description": "Primary account type"
+    },
+    "supported_card_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported card networks"
+    },
+    "supported_crypto_assets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 23257 supported cryptocurrencies"
+    },
+    "supported_blockchain_networks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO 23257 supported blockchain networks"
+    },
+    "crypto_dti_registry": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "ISO 24165 DTI mappings for crypto assets"
+    },
+    "supported_transaction_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported transaction types"
+    },
+    "settlement_day_cutoff": {
+      "type": "string",
+      "description": "Daily cutoff time for settlements (HH:MM format)"
+    },
+    "settlement_time_zone": {
+      "type": "string",
+      "description": "IANA timezone for settlement cutoff"
+    },
+    "settlement_currency": {
+      "type": "string",
+      "description": "ISO 4217 currency for settlements"
+    },
+    "settlement_cycle": {
+      "type": "string",
+      "enum": [
+        "T+0",
+        "T+1",
+        "T+2",
+        "T+3",
+        "T+7",
+        "instant"
+      ],
+      "default": "T+1",
+      "description": "Settlement cycle"
+    },
+    "bank_account_number": {
+      "type": "string",
+      "description": "Bank account number"
+    },
+    "crypto_wallet_address": {
+      "type": "string",
+      "description": "ISO 23257 primary crypto wallet address"
+    },
+    "crypto_wallet_network": {
+      "type": "string",
+      "description": "ISO 23257 blockchain network for wallet"
+    },
+    "branch_name": {
+      "type": "string",
+      "description": "Bank branch name"
+    },
+    "branch_code": {
+      "type": "string",
+      "description": "Bank branch code"
+    },
+    "routing_number": {
+      "type": "string",
+      "description": "Bank routing number (US)"
+    },
+    "sort_code": {
+      "type": "string",
+      "description": "Sort code (UK)"
+    },
+    "api_endpoint": {
+      "type": "string",
+      "description": "API endpoint URL"
+    },
+    "api_username": {
+      "type": "string",
+      "description": "API username"
+    },
+    "api_key_reference": {
+      "type": "string",
+      "description": "Reference to stored API key"
+    },
+    "daily_transaction_limit": {
+      "type": "number",
+      "description": "Daily transaction volume limit"
+    },
+    "monthly_transaction_limit": {
+      "type": "number",
+      "description": "Monthly transaction volume limit"
+    },
+    "per_transaction_limit": {
+      "type": "number",
+      "description": "Maximum amount per transaction"
+    },
+    "min_transaction_amount": {
+      "type": "number",
+      "description": "Minimum transaction amount"
+    },
+    "kyc_aml_compliant": {
+      "type": "boolean",
+      "default": false,
+      "description": "KYC/AML compliance status"
+    },
+    "pci_dss_compliant": {
+      "type": "boolean",
+      "default": false,
+      "description": "PCI DSS compliance status"
+    },
+    "iso_20022_compliant": {
+      "type": "boolean",
+      "default": false,
+      "description": "ISO 20022 messaging support"
+    },
+    "iso_8583_compliant": {
+      "type": "boolean",
+      "default": false,
+      "description": "ISO 8583 messaging support"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance",
+        "suspended",
+        "pending_verification"
+      ],
+      "default": "pending_verification",
+      "description": "Bank MID status"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "documents_submitted",
+        "under_review",
+        "verified",
+        "rejected"
+      ],
+      "default": "unverified"
+    },
+    "verification_documents": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Verification documents"
+    },
+    "effective_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When this Bank MID becomes active"
+    },
+    "effective_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When this Bank MID expires"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Current success rate percentage"
+    },
+    "avg_response_time_ms": {
+      "type": "number",
+      "description": "Average response time in milliseconds"
+    },
+    "risk_rating": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata"
+    }
+  },
+  "required": [
+    "bank_mid_id",
+    "bank_mid_name",
+    "institution_type",
+    "country",
+    "currency"
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "name": "AIPaymentAgent",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Agent name"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "learning"
+      ],
+      "default": "learning"
+    },
+    "agent_type": {
+      "type": "string",
+      "enum": [
+        "approval",
+        "routing",
+        "fraud_detection",
+        "subscription_manager",
+        "dispute_handler"
+      ],
+      "description": "Type of AI agent"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of agent capabilities"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "confidence_threshold": {
+      "type": "number",
+      "default": 0.85,
+      "description": "Minimum confidence for autonomous action"
+    },
+    "auto_approve_limit": {
+      "type": "number",
+      "description": "Max amount for autonomous approval"
+    },
+    "learning_mode": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether agent is learning from decisions"
+    },
+    "model_version": {
+      "type": "string"
+    },
+    "last_trained": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decisions_made": {
+      "type": "number",
+      "default": 0
+    },
+    "accuracy_rate": {
+      "type": "number"
+    },
+    "iso20022_integration": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "agent_id",
+    "merchant_id",
+    "name",
+    "agent_type"
+  ]
+}

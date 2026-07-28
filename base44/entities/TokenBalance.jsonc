@@ -1,0 +1,51 @@
+{
+  "name": "TokenBalance",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "participant_id": {
+      "type": "string"
+    },
+    "token_id": {
+      "type": "string",
+      "description": "Reference to LoyaltyToken"
+    },
+    "available_balance": {
+      "type": "number",
+      "default": 0
+    },
+    "pending_balance": {
+      "type": "number",
+      "default": 0,
+      "description": "Tokens pending verification"
+    },
+    "locked_balance": {
+      "type": "number",
+      "default": 0,
+      "description": "Tokens locked in redemptions"
+    },
+    "lifetime_earned": {
+      "type": "number",
+      "default": 0
+    },
+    "lifetime_spent": {
+      "type": "number",
+      "default": 0
+    },
+    "wallet_address": {
+      "type": "string",
+      "description": "Blockchain wallet address if on-chain"
+    },
+    "last_transaction_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "program_id",
+    "participant_id",
+    "token_id"
+  ]
+}

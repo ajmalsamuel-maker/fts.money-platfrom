@@ -1,0 +1,86 @@
+{
+  "name": "ImpactIndex",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "reporting_period": {
+      "type": "string",
+      "description": "e.g., '2027-Q1', '2028-Annual'"
+    },
+    "index_score": {
+      "type": "number",
+      "description": "Overall impact index score (baseline = 100)"
+    },
+    "miles_sub_index": {
+      "type": "number",
+      "description": "Activity/engagement sub-index (40% weight)"
+    },
+    "inclusion_sub_index": {
+      "type": "number",
+      "description": "Diversity/inclusion sub-index (30% weight)"
+    },
+    "awareness_sub_index": {
+      "type": "number",
+      "description": "Reach/awareness sub-index (20% weight)"
+    },
+    "fundraising_sub_index": {
+      "type": "number",
+      "description": "Financial impact sub-index (10% weight)"
+    },
+    "raw_metrics": {
+      "type": "object",
+      "description": "Raw data used for calculation",
+      "properties": {
+        "total_activities": {
+          "type": "number"
+        },
+        "total_participants": {
+          "type": "number"
+        },
+        "diverse_participants_pct": {
+          "type": "number"
+        },
+        "cities_reached": {
+          "type": "number"
+        },
+        "media_mentions": {
+          "type": "number"
+        },
+        "total_funds_raised": {
+          "type": "number"
+        },
+        "partner_charities": {
+          "type": "number"
+        }
+      }
+    },
+    "baseline_year": {
+      "type": "string",
+      "description": "Year used as baseline = 100"
+    },
+    "year_over_year_change": {
+      "type": "number",
+      "description": "Percentage change from previous period"
+    },
+    "trend": {
+      "type": "string",
+      "enum": [
+        "up",
+        "down",
+        "stable"
+      ],
+      "description": "Trend direction"
+    },
+    "calculated_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "program_id",
+    "reporting_period",
+    "index_score"
+  ]
+}

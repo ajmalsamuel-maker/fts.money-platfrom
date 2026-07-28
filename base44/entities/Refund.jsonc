@@ -1,0 +1,81 @@
+{
+  "name": "Refund",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant entity"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to original Transaction"
+    },
+    "refund_id": {
+      "type": "string",
+      "description": "Unique refund identifier"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Refund amount"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "original_amount": {
+      "type": "number",
+      "description": "Original transaction amount"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "requested_by_customer",
+        "duplicate",
+        "fraudulent",
+        "product_not_received",
+        "product_defective",
+        "other"
+      ],
+      "description": "Refund reason"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "succeeded",
+        "failed",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "processed_by": {
+      "type": "string",
+      "description": "User who processed the refund"
+    },
+    "gateway_refund_id": {
+      "type": "string",
+      "description": "Gateway refund reference"
+    },
+    "failure_reason": {
+      "type": "string",
+      "description": "Failure reason if status is failed"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Custom metadata"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "transaction_id",
+    "amount",
+    "reason"
+  ]
+}

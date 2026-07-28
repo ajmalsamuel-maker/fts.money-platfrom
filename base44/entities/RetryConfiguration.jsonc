@@ -1,0 +1,90 @@
+{
+  "name": "RetryConfiguration",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string"
+    },
+    "subscription_id": {
+      "type": "string",
+      "description": "Reference to Subscription if applicable"
+    },
+    "config_name": {
+      "type": "string",
+      "description": "Name of retry strategy"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "max_retry_attempts": {
+      "type": "number",
+      "default": 3,
+      "description": "Maximum number of retries"
+    },
+    "retry_schedule": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attempt_number": {
+            "type": "number"
+          },
+          "delay_hours": {
+            "type": "number",
+            "description": "Hours to wait before retry"
+          },
+          "use_different_gateway": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "description": "Retry timing strategy"
+    },
+    "decline_code_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "decline_code": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "retry",
+              "stop",
+              "contact_customer",
+              "switch_gateway"
+            ]
+          },
+          "retry_after_hours": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "ml_optimization_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Use ML to optimize retry timing"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Historical success rate of retries"
+    },
+    "total_retries": {
+      "type": "number",
+      "default": 0
+    },
+    "successful_retries": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "merchant_id",
+    "config_name"
+  ]
+}

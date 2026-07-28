@@ -1,0 +1,107 @@
+{
+  "name": "APIRatePolicy",
+  "type": "object",
+  "properties": {
+    "policy_id": {
+      "type": "string",
+      "description": "Unique policy identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP (null for platform default)"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "api_id": {
+      "type": "string",
+      "description": "Reference to APIDefinition (null for all APIs)"
+    },
+    "policy_name": {
+      "type": "string",
+      "description": "Policy name"
+    },
+    "policy_type": {
+      "type": "string",
+      "enum": [
+        "global",
+        "psp_specific",
+        "merchant_specific"
+      ],
+      "description": "Policy scope"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Specific merchant (if merchant_specific)"
+    },
+    "rate_limit_per_second": {
+      "type": "number",
+      "description": "Requests per second"
+    },
+    "rate_limit_per_minute": {
+      "type": "number",
+      "description": "Requests per minute"
+    },
+    "rate_limit_per_hour": {
+      "type": "number",
+      "description": "Requests per hour"
+    },
+    "rate_limit_per_day": {
+      "type": "number",
+      "description": "Requests per day"
+    },
+    "burst_limit": {
+      "type": "number",
+      "description": "Max burst requests"
+    },
+    "concurrent_requests": {
+      "type": "number",
+      "description": "Max concurrent requests"
+    },
+    "throttle_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "quota_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "monthly_quota": {
+      "type": "number",
+      "description": "Monthly API call quota"
+    },
+    "overage_allowed": {
+      "type": "boolean",
+      "default": false
+    },
+    "overage_price_per_call": {
+      "type": "number",
+      "description": "Price per call over quota"
+    },
+    "whitelist_ips": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IP whitelist (bypass rate limits)"
+    },
+    "priority": {
+      "type": "number",
+      "default": 100,
+      "description": "Policy priority (lower = higher priority)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "policy_name",
+    "policy_type"
+  ]
+}

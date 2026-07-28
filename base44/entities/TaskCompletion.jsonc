@@ -1,0 +1,51 @@
+{
+  "name": "TaskCompletion",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Reference to NanoTask"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User who completed the task"
+    },
+    "completion_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "verification_data": {
+      "type": "object",
+      "description": "Evidence submitted (photo URLs, GPS coords, etc.)"
+    },
+    "reward_issued": {
+      "type": "boolean",
+      "default": false
+    },
+    "nano_tokens_earned": {
+      "type": "number",
+      "description": "NANO tokens awarded"
+    },
+    "carbon_impact": {
+      "type": "number",
+      "description": "CO2 impact in kg"
+    },
+    "merchant_discount_applied": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "task_id",
+    "user_email"
+  ]
+}

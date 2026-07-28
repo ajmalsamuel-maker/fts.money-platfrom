@@ -1,0 +1,85 @@
+{
+  "name": "NanoTask",
+  "type": "object",
+  "properties": {
+    "task_title": {
+      "type": "string",
+      "description": "Title of the sustainability task"
+    },
+    "task_description": {
+      "type": "string",
+      "description": "Detailed description of the task"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "reduce_plastic",
+        "plant_tree",
+        "public_transport",
+        "recycle",
+        "energy_saving",
+        "custom"
+      ],
+      "description": "Type of sustainability task"
+    },
+    "reward_amount": {
+      "type": "number",
+      "description": "NANO tokens awarded for completion"
+    },
+    "carbon_impact": {
+      "type": "number",
+      "description": "Estimated CO2 saved/offset in kg"
+    },
+    "verification_method": {
+      "type": "string",
+      "enum": [
+        "receipt_scan",
+        "photo_upload",
+        "gps_tracking",
+        "qr_code",
+        "manual"
+      ],
+      "description": "How the task completion is verified"
+    },
+    "sponsor_merchant_id": {
+      "type": "string",
+      "description": "Merchant sponsoring this task (optional)"
+    },
+    "sponsor_discount": {
+      "type": "number",
+      "description": "Discount percentage offered by sponsor"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "completed",
+        "expired"
+      ],
+      "default": "active"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "completion_count": {
+      "type": "number",
+      "description": "How many times this task has been completed",
+      "default": 0
+    },
+    "max_completions": {
+      "type": "number",
+      "description": "Maximum number of completions (for campaigns)"
+    }
+  },
+  "required": [
+    "task_title",
+    "task_type",
+    "reward_amount"
+  ]
+}

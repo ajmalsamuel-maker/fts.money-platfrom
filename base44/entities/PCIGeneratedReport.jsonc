@@ -1,0 +1,79 @@
+{
+  "name": "PCIGeneratedReport",
+  "type": "object",
+  "properties": {
+    "report_title": {
+      "type": "string",
+      "description": "Report title"
+    },
+    "report_type": {
+      "type": "string",
+      "description": "Type of report"
+    },
+    "template_id": {
+      "type": "string",
+      "description": "Template used"
+    },
+    "generated_by": {
+      "type": "string",
+      "description": "User who generated"
+    },
+    "generation_method": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "scheduled",
+        "ai_assisted"
+      ],
+      "default": "manual"
+    },
+    "content": {
+      "type": "object",
+      "description": "Report content sections"
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Calculated metrics"
+    },
+    "charts_data": {
+      "type": "object",
+      "description": "Data for charts"
+    },
+    "pdf_url": {
+      "type": "string"
+    },
+    "docx_url": {
+      "type": "string"
+    },
+    "csv_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "final",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "shared_with": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "report_title",
+    "report_type"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "name": "ReconciliationItem",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation"
+    },
+    "reconciliation_batch_id": {
+      "type": "string",
+      "description": "Reference to ReconciliationBatch"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to Transaction"
+    },
+    "bank_reference": {
+      "type": "string",
+      "description": "Bank's reference for this transaction"
+    },
+    "posted_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "matched",
+        "pending",
+        "unmatched",
+        "discrepancy"
+      ],
+      "default": "pending"
+    },
+    "match_type": {
+      "type": "string",
+      "enum": [
+        "exact",
+        "fuzzy",
+        "manual",
+        "none"
+      ],
+      "description": "How the item was matched"
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence of automatic match (0-1)"
+    },
+    "discrepancy_type": {
+      "type": "string",
+      "enum": [
+        "amount_mismatch",
+        "date_mismatch",
+        "missing_bank",
+        "missing_internal"
+      ],
+      "description": "Type of discrepancy if exists"
+    },
+    "discrepancy_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    },
+    "resolved_by": {
+      "type": "string",
+      "description": "User who resolved discrepancy"
+    },
+    "resolved_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "psp_code",
+    "reconciliation_batch_id"
+  ]
+}

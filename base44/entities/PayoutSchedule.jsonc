@@ -1,0 +1,86 @@
+{
+  "name": "PayoutSchedule",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name"
+    },
+    "schedule_name": {
+      "type": "string",
+      "description": "Name of the schedule"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "bi_weekly",
+        "monthly",
+        "on_demand"
+      ],
+      "description": "Payout frequency"
+    },
+    "day_of_week": {
+      "type": "number",
+      "description": "Day of week (1-7) for weekly schedules"
+    },
+    "day_of_month": {
+      "type": "number",
+      "description": "Day of month (1-31) for monthly schedules"
+    },
+    "time": {
+      "type": "string",
+      "description": "Time of day (HH:MM format)"
+    },
+    "timezone": {
+      "type": "string",
+      "default": "UTC",
+      "description": "Timezone for schedule"
+    },
+    "min_balance": {
+      "type": "number",
+      "description": "Minimum balance threshold to trigger payout"
+    },
+    "reserve_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Amount to keep in reserve"
+    },
+    "preferred_route": {
+      "type": "string",
+      "description": "Preferred payout route ID"
+    },
+    "auto_reconcile": {
+      "type": "boolean",
+      "default": true,
+      "description": "Auto reconcile payouts"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "last_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_run": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "schedule_name",
+    "frequency"
+  ]
+}

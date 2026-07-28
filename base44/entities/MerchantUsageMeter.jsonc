@@ -1,0 +1,141 @@
+{
+  "name": "MerchantUsageMeter",
+  "type": "object",
+  "properties": {
+    "meter_id": {
+      "type": "string",
+      "description": "Unique meter identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name for quick reference"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "transaction_count",
+        "transaction_volume",
+        "api_calls",
+        "storage_gb",
+        "webhook_deliveries",
+        "terminal_transactions",
+        "payout_count",
+        "refund_count",
+        "dispute_count",
+        "custom"
+      ],
+      "description": "Type of usage metric"
+    },
+    "custom_metric_name": {
+      "type": "string",
+      "description": "Name of custom metric if metric_type is custom"
+    },
+    "current_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Current usage count for billing period"
+    },
+    "current_volume": {
+      "type": "number",
+      "default": 0,
+      "description": "Current usage volume (for monetary amounts)"
+    },
+    "billing_period_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start of current billing period"
+    },
+    "billing_period_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End of current billing period"
+    },
+    "reset_frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly",
+        "yearly"
+      ],
+      "default": "monthly",
+      "description": "How often meter resets"
+    },
+    "threshold_limit": {
+      "type": "number",
+      "description": "Alert threshold (optional limit)"
+    },
+    "threshold_percentage": {
+      "type": "number",
+      "description": "Alert at percentage of limit (e.g., 80)"
+    },
+    "alert_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Send alerts when threshold reached"
+    },
+    "last_alert_sent": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time alert was sent"
+    },
+    "unit": {
+      "type": "string",
+      "description": "Unit of measurement (transactions, GB, calls, etc.)"
+    },
+    "last_event_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of most recent usage event"
+    },
+    "historical_data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "period_start": {
+            "type": "string"
+          },
+          "period_end": {
+            "type": "string"
+          },
+          "count": {
+            "type": "number"
+          },
+          "volume": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Historical usage data by period"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "merchant_id",
+    "metric_type"
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "name": "WorkflowExecution",
+  "type": "object",
+  "properties": {
+    "execution_id": {
+      "type": "string",
+      "description": "Unique execution identifier"
+    },
+    "workflow_id": {
+      "type": "string",
+      "description": "Reference to MerchantOnboardingWorkflowTemplate"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to PSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Merchant being onboarded"
+    },
+    "merchant_name": {
+      "type": "string",
+      "description": "Merchant name for reference"
+    },
+    "current_step": {
+      "type": "string",
+      "description": "Current step ID"
+    },
+    "current_step_order": {
+      "type": "number",
+      "description": "Current step order"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "awaiting_approval",
+        "completed",
+        "failed",
+        "rolled_back"
+      ],
+      "default": "pending"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "step_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_id": {
+            "type": "string"
+          },
+          "step_name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "completed_at": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "collected_data": {
+      "type": "object",
+      "description": "Data collected through workflow"
+    },
+    "approval_requests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_id": {
+            "type": "string"
+          },
+          "requested_at": {
+            "type": "string"
+          },
+          "approved_by": {
+            "type": "string"
+          },
+          "approved_at": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "rollback_completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "rollback_details": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "workflow_id",
+    "psp_id",
+    "psp_code"
+  ]
+}

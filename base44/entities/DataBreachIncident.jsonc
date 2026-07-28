@@ -1,0 +1,153 @@
+{
+  "name": "DataBreachIncident",
+  "type": "object",
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "description": "Unique incident identifier"
+    },
+    "incident_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When breach occurred"
+    },
+    "discovered_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When breach was discovered"
+    },
+    "incident_type": {
+      "type": "string",
+      "enum": [
+        "unauthorized_access",
+        "data_loss",
+        "data_leak",
+        "ransomware",
+        "phishing",
+        "insider_threat",
+        "system_compromise",
+        "third_party"
+      ],
+      "description": "Type of breach"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Incident severity"
+    },
+    "affected_records": {
+      "type": "number",
+      "description": "Number of records compromised"
+    },
+    "affected_individuals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of affected user IDs"
+    },
+    "data_types_compromised": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "pii",
+          "payment_data",
+          "credentials",
+          "health_data",
+          "financial_data",
+          "transaction_history",
+          "card_data"
+        ]
+      },
+      "description": "Types of data affected"
+    },
+    "containment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When breach was contained"
+    },
+    "root_cause": {
+      "type": "string",
+      "description": "Identified cause of breach"
+    },
+    "remediation_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Actions taken to remediate"
+    },
+    "notification_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether regulatory notification required (72 hours)"
+    },
+    "authorities_notified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether DPA/ICO notified"
+    },
+    "authorities_notification_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "individuals_notified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether affected individuals notified"
+    },
+    "individuals_notification_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "contained",
+        "remediated",
+        "closed"
+      ],
+      "default": "open"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "DPO or security team member"
+    },
+    "external_reference": {
+      "type": "string",
+      "description": "Reference number from authorities"
+    },
+    "financial_impact": {
+      "type": "number",
+      "description": "Estimated financial impact"
+    },
+    "lessons_learned": {
+      "type": "string",
+      "description": "Post-incident analysis"
+    }
+  },
+  "required": [
+    "incident_date",
+    "incident_type",
+    "severity"
+  ]
+}

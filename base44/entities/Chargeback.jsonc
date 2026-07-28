@@ -1,0 +1,174 @@
+{
+  "name": "Chargeback",
+  "type": "object",
+  "properties": {
+    "chargeback_id": {
+      "type": "string"
+    },
+    "transaction_id": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "card_network": {
+      "type": "string",
+      "enum": [
+        "visa",
+        "mastercard",
+        "amex",
+        "discover"
+      ]
+    },
+    "reason_code": {
+      "type": "string"
+    },
+    "reason_category": {
+      "type": "string",
+      "enum": [
+        "fraud",
+        "authorization",
+        "processing_error",
+        "consumer_dispute",
+        "not_received",
+        "not_as_described",
+        "cancelled",
+        "credit_not_processed",
+        "duplicate"
+      ]
+    },
+    "reason_description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "received",
+        "pending_response",
+        "responded",
+        "accepted",
+        "won",
+        "lost",
+        "expired",
+        "pre_arbitration",
+        "arbitration"
+      ],
+      "default": "received"
+    },
+    "lifecycle_stage": {
+      "type": "string",
+      "enum": [
+        "first_chargeback",
+        "representment",
+        "pre_arbitration",
+        "arbitration",
+        "final"
+      ],
+      "default": "first_chargeback"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "original_transaction_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "chargeback_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "response_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "days_remaining": {
+      "type": "number"
+    },
+    "cardholder_name": {
+      "type": "string"
+    },
+    "card_last_four": {
+      "type": "string"
+    },
+    "card_bin": {
+      "type": "string"
+    },
+    "evidence_submitted": {
+      "type": "boolean",
+      "default": false
+    },
+    "evidence_documents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "representment_amount": {
+      "type": "number"
+    },
+    "representment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "merchant_response": {
+      "type": "string"
+    },
+    "issuer_comments": {
+      "type": "string"
+    },
+    "resolution_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "merchant_favor",
+        "issuer_favor",
+        "split"
+      ]
+    },
+    "arn": {
+      "type": "string",
+      "description": "Acquirer Reference Number"
+    },
+    "case_number": {
+      "type": "string"
+    },
+    "is_3ds": {
+      "type": "boolean",
+      "default": false
+    },
+    "liability_shift": {
+      "type": "boolean",
+      "default": false
+    },
+    "avs_result": {
+      "type": "string"
+    },
+    "cvv_result": {
+      "type": "string"
+    },
+    "fee_amount": {
+      "type": "number"
+    },
+    "reversal_fee": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "chargeback_id",
+    "transaction_id",
+    "merchant_id",
+    "amount",
+    "reason_code"
+  ]
+}

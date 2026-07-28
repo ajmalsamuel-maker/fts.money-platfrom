@@ -1,0 +1,76 @@
+{
+  "name": "ISOGatewayAPIKey",
+  "type": "object",
+  "properties": {
+    "api_key_id": {
+      "type": "string",
+      "description": "Unique key identifier"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to ISOGatewayCustomer"
+    },
+    "key_name": {
+      "type": "string",
+      "description": "Friendly name for the key"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "The actual API key (hashed)"
+    },
+    "key_prefix": {
+      "type": "string",
+      "description": "First 8 chars for display (e.g., 'iso_live_')"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "test",
+        "production"
+      ],
+      "default": "test"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "receive_8583",
+          "receive_20022",
+          "manage_connections",
+          "view_logs"
+        ]
+      },
+      "default": [
+        "receive_8583",
+        "receive_20022"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "revoked",
+        "expired"
+      ],
+      "default": "active"
+    },
+    "last_used_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "customer_id",
+    "key_name",
+    "api_key"
+  ]
+}

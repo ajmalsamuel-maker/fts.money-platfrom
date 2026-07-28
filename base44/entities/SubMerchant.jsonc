@@ -1,0 +1,136 @@
+{
+  "name": "SubMerchant",
+  "type": "object",
+  "properties": {
+    "platform_merchant_id": {
+      "type": "string",
+      "description": "Reference to platform/parent Merchant"
+    },
+    "sub_merchant_id": {
+      "type": "string",
+      "description": "Unique sub-merchant identifier"
+    },
+    "business_name": {
+      "type": "string"
+    },
+    "legal_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "line1": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      }
+    },
+    "tax_id": {
+      "type": "string",
+      "description": "Tax identification number"
+    },
+    "business_type": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "company",
+        "non_profit",
+        "government"
+      ]
+    },
+    "payout_split_percentage": {
+      "type": "number",
+      "description": "Percentage of transaction to sub-merchant"
+    },
+    "payout_schedule": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "on_demand"
+      ]
+    },
+    "bank_account": {
+      "type": "object",
+      "properties": {
+        "account_holder_name": {
+          "type": "string"
+        },
+        "account_number": {
+          "type": "string"
+        },
+        "routing_number": {
+          "type": "string"
+        },
+        "bank_name": {
+          "type": "string"
+        },
+        "swift_code": {
+          "type": "string"
+        },
+        "iban": {
+          "type": "string"
+        }
+      }
+    },
+    "onboarding_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "documents_required",
+        "under_review",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "kyb_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "deactivated"
+      ],
+      "default": "active"
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0
+    },
+    "pending_payout_amount": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "platform_merchant_id",
+    "business_name",
+    "email"
+  ]
+}

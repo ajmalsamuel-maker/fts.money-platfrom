@@ -1,0 +1,233 @@
+{
+  "name": "Merchant",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Unique merchant identifier"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation (CRITICAL for multi-tenancy)"
+    },
+    "merchant_code": {
+      "type": "string",
+      "description": "Unique merchant code for login identification"
+    },
+    "business_name": {
+      "type": "string",
+      "description": "Legal business name"
+    },
+    "trading_name": {
+      "type": "string",
+      "description": "Trading/DBA name"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending",
+        "suspended",
+        "terminated",
+        "onboarding"
+      ],
+      "default": "pending"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "retail",
+        "ecommerce",
+        "hospitality",
+        "services",
+        "travel",
+        "gaming",
+        "crypto",
+        "other"
+      ]
+    },
+    "mcc_code": {
+      "type": "string",
+      "description": "Merchant Category Code"
+    },
+    "country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "Base currency (ISO 4217)"
+    },
+    "timezone": {
+      "type": "string",
+      "default": "UTC",
+      "description": "IANA timezone identifier"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "processing_volume": {
+      "type": "number",
+      "description": "Monthly processing volume limit"
+    },
+    "fee_rate": {
+      "type": "number",
+      "description": "Transaction fee percentage"
+    },
+    "settlement_period": {
+      "type": "string",
+      "enum": [
+        "T+0",
+        "T+1",
+        "T+2",
+        "T+3",
+        "T+7"
+      ],
+      "default": "T+1"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "lei": {
+      "type": "string",
+      "description": "Legal Entity Identifier (GLEIF)"
+    },
+    "vlei": {
+      "type": "string",
+      "description": "Verifiable Legal Entity Identifier"
+    },
+    "lei_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "expired",
+        "not_found"
+      ],
+      "default": "pending"
+    },
+    "lei_verified_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "onboarding_token": {
+      "type": "string",
+      "description": "Unique token for self-onboarding URL"
+    },
+    "onboarding_url_expires": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "kyb_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "approved",
+        "rejected",
+        "pending_review"
+      ],
+      "default": "not_started"
+    },
+    "kyb_provider": {
+      "type": "string",
+      "default": "thekyb"
+    },
+    "kyb_reference_id": {
+      "type": "string"
+    },
+    "aml_status": {
+      "type": "string",
+      "enum": [
+        "clear",
+        "monitoring",
+        "flagged",
+        "blocked"
+      ],
+      "default": "clear"
+    },
+    "aml_provider": {
+      "type": "string",
+      "default": "amlwatcher"
+    },
+    "aml_last_check": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "aml_risk_score": {
+      "type": "number"
+    },
+    "documents": {
+      "type": "array",
+      "description": "Uploaded compliance documents",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "file_name": {
+            "type": "string"
+          },
+          "file_url": {
+            "type": "string"
+          },
+          "upload_date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "verified",
+              "rejected",
+              "expired"
+            ],
+            "default": "pending"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "business_name",
+    "contact_email",
+    "merchant_code",
+    "psp_code"
+  ]
+}

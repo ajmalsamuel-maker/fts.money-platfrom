@@ -1,0 +1,125 @@
+{
+  "name": "CheckoutComponent",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string"
+    },
+    "component_id": {
+      "type": "string",
+      "description": "Unique component identifier"
+    },
+    "component_type": {
+      "type": "string",
+      "enum": [
+        "payment_form",
+        "card_element",
+        "hosted_page",
+        "payment_request_button",
+        "express_checkout"
+      ],
+      "description": "Type of checkout component"
+    },
+    "component_name": {
+      "type": "string",
+      "description": "Display name"
+    },
+    "embed_code": {
+      "type": "string",
+      "description": "HTML/JavaScript embed code"
+    },
+    "public_key": {
+      "type": "string",
+      "description": "Public API key for client-side"
+    },
+    "allowed_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Whitelist of domains allowed to use component"
+    },
+    "supported_payment_methods": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "card",
+          "apple_pay",
+          "google_pay",
+          "paypal",
+          "bank_transfer",
+          "crypto"
+        ]
+      }
+    },
+    "styling": {
+      "type": "object",
+      "properties": {
+        "theme": {
+          "type": "string",
+          "enum": [
+            "light",
+            "dark",
+            "auto"
+          ]
+        },
+        "primary_color": {
+          "type": "string"
+        },
+        "border_radius": {
+          "type": "string"
+        },
+        "font_family": {
+          "type": "string"
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "properties": {
+        "collect_billing_address": {
+          "type": "boolean",
+          "default": true
+        },
+        "collect_shipping_address": {
+          "type": "boolean",
+          "default": false
+        },
+        "enable_autofill": {
+          "type": "boolean",
+          "default": true
+        },
+        "enable_3ds": {
+          "type": "boolean",
+          "default": true
+        },
+        "enable_network_tokenization": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0
+    },
+    "conversion_rate": {
+      "type": "number",
+      "description": "Percentage of checkouts completed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "component_type",
+    "component_name"
+  ]
+}

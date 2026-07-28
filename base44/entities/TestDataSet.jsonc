@@ -1,0 +1,62 @@
+{
+  "name": "TestDataSet",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation"
+    },
+    "dataset_name": {
+      "type": "string",
+      "description": "Name of the test dataset"
+    },
+    "dataset_type": {
+      "type": "string",
+      "enum": [
+        "cards",
+        "customers",
+        "merchants",
+        "mixed"
+      ],
+      "description": "Type of test data"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Test data records"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for categorization"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "How many times used in tests"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_synthetic": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether data is synthetically generated"
+    },
+    "purge_after_test": {
+      "type": "boolean",
+      "default": true,
+      "description": "Auto-delete after test completion"
+    }
+  },
+  "required": [
+    "psp_code",
+    "dataset_name",
+    "dataset_type"
+  ]
+}

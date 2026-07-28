@@ -1,0 +1,67 @@
+{
+  "name": "Settlement",
+  "type": "object",
+  "properties": {
+    "settlement_id": {
+      "type": "string"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "gross_amount": {
+      "type": "number"
+    },
+    "fees": {
+      "type": "number"
+    },
+    "chargebacks": {
+      "type": "number"
+    },
+    "refunds": {
+      "type": "number"
+    },
+    "net_amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "transaction_count": {
+      "type": "number"
+    },
+    "bank_reference": {
+      "type": "string"
+    },
+    "payout_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "gross_amount",
+    "net_amount"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "app_role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "editor",
+        "viewer"
+      ],
+      "default": "viewer",
+      "description": "Application role determining access permissions"
+    },
+    "department": {
+      "type": "string",
+      "description": "User's department"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last login timestamp"
+    },
+    "password_hash": {
+      "type": "string",
+      "description": "Hashed password for authentication"
+    },
+    "platform_role": {
+      "type": "string",
+      "description": "Role in FTS Control Plane (super_admin, platform_admin, operations, finance, support, viewer)"
+    },
+    "community_role": {
+      "type": "string",
+      "description": "Role in Community Portal (psp_owner, psp_admin, viewer)"
+    },
+    "account_type": {
+      "type": "string",
+      "enum": [
+        "platform_admin",
+        "community",
+        "merchant",
+        "staff"
+      ],
+      "description": "Type of account"
+    }
+  },
+  "required": []
+}

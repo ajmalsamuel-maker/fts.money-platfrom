@@ -1,0 +1,37 @@
+{
+  "name": "NanoToken",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User who owns the tokens"
+    },
+    "balance": {
+      "type": "number",
+      "description": "Current NANO token balance",
+      "default": 0
+    },
+    "total_earned": {
+      "type": "number",
+      "description": "Lifetime NANO tokens earned",
+      "default": 0
+    },
+    "total_spent": {
+      "type": "number",
+      "description": "Lifetime NANO tokens spent",
+      "default": 0
+    },
+    "wallet_address": {
+      "type": "string",
+      "description": "Polygon wallet address for on-chain tokens"
+    },
+    "staked_amount": {
+      "type": "number",
+      "description": "Amount of NANO tokens currently staked",
+      "default": 0
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

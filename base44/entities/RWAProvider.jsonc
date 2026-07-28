@@ -1,0 +1,108 @@
+{
+  "name": "RWAProvider",
+  "type": "object",
+  "properties": {
+    "provider_code": {
+      "type": "string",
+      "description": "Unique provider identifier"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending",
+        "suspended"
+      ],
+      "default": "pending"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "blockchain_network": {
+      "type": "string",
+      "default": "ethereum"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "enabled_languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "en"
+      ],
+      "description": "Enabled languages for this provider portal"
+    },
+    "default_language": {
+      "type": "string",
+      "default": "en",
+      "description": "Default language for this provider portal"
+    },
+    "lei": {
+      "type": "string",
+      "description": "Provider Legal Entity Identifier (MANDATORY for RWA)"
+    },
+    "vlei_credential": {
+      "type": "string",
+      "description": "Provider vLEI credential"
+    },
+    "parent_lei": {
+      "type": "string",
+      "description": "FTS.Money platform LEI"
+    },
+    "lei_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "grace_period",
+        "expired",
+        "required"
+      ],
+      "default": "required"
+    },
+    "lei_verified_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "vlei_issued_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "grace_period_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "grace_period_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lei_application_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider_code",
+    "company_name",
+    "contact_email"
+  ]
+}

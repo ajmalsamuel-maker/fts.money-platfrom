@@ -1,0 +1,149 @@
+{
+  "name": "RWAInvestor",
+  "type": "object",
+  "properties": {
+    "wallet_address": {
+      "type": "string",
+      "description": "Ethereum wallet address"
+    },
+    "email": {
+      "type": "string",
+      "description": "Investor email"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Investor full name"
+    },
+    "investor_type": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "institutional",
+        "fund"
+      ],
+      "description": "Type of investor"
+    },
+    "lei": {
+      "type": "string",
+      "description": "Legal Entity Identifier (for institutional)"
+    },
+    "vlei_credential": {
+      "type": "string",
+      "description": "vLEI credential proof"
+    },
+    "vlei_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether vLEI is verified"
+    },
+    "kyc_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "rejected",
+        "expired"
+      ],
+      "default": "pending",
+      "description": "KYC verification status"
+    },
+    "kyc_provider": {
+      "type": "string",
+      "description": "KYC verification provider"
+    },
+    "kyc_verified_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "KYC verification timestamp"
+    },
+    "accredited_investor": {
+      "type": "boolean",
+      "default": false,
+      "description": "Accredited investor status (US SEC)"
+    },
+    "accreditation_proof": {
+      "type": "string",
+      "description": "IPFS hash of accreditation proof"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "Investor jurisdiction (ISO 3166-1)"
+    },
+    "tax_id": {
+      "type": "string",
+      "description": "Tax identification number (encrypted)"
+    },
+    "tax_jurisdiction": {
+      "type": "string",
+      "description": "Tax residency"
+    },
+    "withholding_rate": {
+      "type": "number",
+      "description": "Tax withholding rate (basis points)"
+    },
+    "w8ben_provided": {
+      "type": "boolean",
+      "default": false,
+      "description": "W-8BEN form provided (US non-resident)"
+    },
+    "aml_screening_status": {
+      "type": "string",
+      "enum": [
+        "clear",
+        "flagged",
+        "blocked"
+      ],
+      "default": "clear",
+      "description": "AML screening status"
+    },
+    "sanctions_checked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether sanctions screening completed"
+    },
+    "pep_status": {
+      "type": "boolean",
+      "default": false,
+      "description": "Politically Exposed Person status"
+    },
+    "identity_registry_address": {
+      "type": "string",
+      "description": "On-chain identity registry contract address"
+    },
+    "total_invested": {
+      "type": "number",
+      "default": 0,
+      "description": "Total amount invested across all assets"
+    },
+    "portfolio_value": {
+      "type": "number",
+      "default": 0,
+      "description": "Current portfolio value"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "document_type": {
+            "type": "string"
+          },
+          "ipfs_hash": {
+            "type": "string"
+          },
+          "upload_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "KYC documents, accreditation proofs"
+    }
+  },
+  "required": [
+    "wallet_address",
+    "email",
+    "investor_type",
+    "jurisdiction"
+  ]
+}

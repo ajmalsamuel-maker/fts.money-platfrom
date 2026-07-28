@@ -1,0 +1,111 @@
+{
+  "name": "PSPServiceSubscription",
+  "type": "object",
+  "properties": {
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for quick reference"
+    },
+    "psp_name": {
+      "type": "string",
+      "description": "PSP name for quick reference"
+    },
+    "service_id": {
+      "type": "string",
+      "description": "Reference to ServiceCatalog"
+    },
+    "service_name": {
+      "type": "string",
+      "description": "Service name for quick reference"
+    },
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to ServiceProvider"
+    },
+    "subscribed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When PSP subscribed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "active",
+        "paused",
+        "cancelled"
+      ],
+      "default": "active"
+    },
+    "trial_ends_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Trial expiration date"
+    },
+    "configuration": {
+      "type": "object",
+      "description": "Service-specific configuration JSON"
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "annual"
+      ],
+      "default": "monthly"
+    },
+    "current_period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "current_period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "usage_limits": {
+      "type": "object",
+      "description": "Usage limits (e.g., max API calls per month)"
+    },
+    "current_usage": {
+      "type": "object",
+      "description": "Current period usage counters"
+    },
+    "base_fee": {
+      "type": "number",
+      "description": "Monthly base fee"
+    },
+    "variable_fee": {
+      "type": "number",
+      "description": "Per-transaction fee"
+    },
+    "total_spent": {
+      "type": "number",
+      "default": 0,
+      "description": "Lifetime spend on this service"
+    },
+    "monthly_spent": {
+      "type": "number",
+      "default": 0,
+      "description": "Current month spend"
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": true
+    },
+    "cancelled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cancellation_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "psp_id",
+    "service_id"
+  ]
+}

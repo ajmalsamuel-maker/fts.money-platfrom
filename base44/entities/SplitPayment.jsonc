@@ -1,0 +1,99 @@
+{
+  "name": "SplitPayment",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to original Transaction"
+    },
+    "platform_merchant_id": {
+      "type": "string"
+    },
+    "split_rule_id": {
+      "type": "string",
+      "description": "Reference to configured split rule"
+    },
+    "total_amount": {
+      "type": "number",
+      "description": "Total transaction amount"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "splits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "recipient_type": {
+            "type": "string",
+            "enum": [
+              "platform",
+              "sub_merchant",
+              "third_party"
+            ]
+          },
+          "recipient_id": {
+            "type": "string"
+          },
+          "recipient_name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "percentage": {
+            "type": "number"
+          },
+          "fee_bearer": {
+            "type": "string",
+            "enum": [
+              "platform",
+              "sub_merchant",
+              "split"
+            ],
+            "description": "Who pays the processing fee"
+          },
+          "payout_status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed"
+            ],
+            "default": "pending"
+          },
+          "payout_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "platform_fee": {
+      "type": "number",
+      "description": "Platform commission"
+    },
+    "processing_fee": {
+      "type": "number",
+      "description": "Payment processing fee"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "transaction_id",
+    "platform_merchant_id",
+    "total_amount",
+    "splits"
+  ]
+}

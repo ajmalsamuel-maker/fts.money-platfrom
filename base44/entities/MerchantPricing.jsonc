@@ -1,0 +1,143 @@
+{
+  "name": "MerchantPricing",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "merchant_name": {
+      "type": "string"
+    },
+    "mid_id": {
+      "type": "string",
+      "description": "Reference to MID (optional, for MID-specific pricing)"
+    },
+    "mid": {
+      "type": "string",
+      "description": "MID number"
+    },
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to PaymentProvider"
+    },
+    "provider_name": {
+      "type": "string"
+    },
+    "buy_rate_id": {
+      "type": "string",
+      "description": "Reference to BuyRate used"
+    },
+    "pricing_model_name": {
+      "type": "string",
+      "description": "Name of this pricing model"
+    },
+    "transaction_type": {
+      "type": "string",
+      "enum": [
+        "card_present",
+        "card_not_present",
+        "ecommerce",
+        "virtual_terminal",
+        "soft_pos",
+        "recurring",
+        "moto",
+        "crypto",
+        "crypto_on_ramp",
+        "crypto_off_ramp"
+      ],
+      "description": "Transaction type this pricing applies to"
+    },
+    "card_type": {
+      "type": "string",
+      "enum": [
+        "all",
+        "debit",
+        "credit",
+        "prepaid",
+        "corporate",
+        "n/a"
+      ],
+      "default": "all"
+    },
+    "card_brand": {
+      "type": "string",
+      "enum": [
+        "all",
+        "visa",
+        "mastercard",
+        "amex",
+        "discover",
+        "unionpay",
+        "jcb",
+        "n/a"
+      ],
+      "default": "all"
+    },
+    "region": {
+      "type": "string",
+      "enum": [
+        "domestic",
+        "intra_regional",
+        "international",
+        "all"
+      ],
+      "default": "all"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "buy_percentage_rate": {
+      "type": "number",
+      "description": "Buy rate percentage from provider"
+    },
+    "buy_fixed_fee": {
+      "type": "number",
+      "description": "Buy rate fixed fee from provider"
+    },
+    "markup_percentage": {
+      "type": "number",
+      "description": "PSP markup percentage"
+    },
+    "markup_fixed_fee": {
+      "type": "number",
+      "description": "PSP markup fixed fee"
+    },
+    "sell_percentage_rate": {
+      "type": "number",
+      "description": "Sell rate (MDR) percentage to merchant"
+    },
+    "sell_fixed_fee": {
+      "type": "number",
+      "description": "Sell rate (MDR) fixed fee to merchant"
+    },
+    "monthly_fee": {
+      "type": "number",
+      "default": 0
+    },
+    "minimum_fee": {
+      "type": "number",
+      "default": 0
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "pricing_model_name"
+  ]
+}

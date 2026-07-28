@@ -1,0 +1,71 @@
+{
+  "name": "PCIRequirement",
+  "type": "object",
+  "properties": {
+    "requirement_number": {
+      "type": "string",
+      "description": "PCI DSS requirement number (e.g., 1, 1.1, 1.1.1)"
+    },
+    "requirement_title": {
+      "type": "string",
+      "description": "Title of the requirement"
+    },
+    "requirement_text": {
+      "type": "string",
+      "description": "Full text of the requirement"
+    },
+    "parent_requirement": {
+      "type": "string",
+      "description": "Parent requirement number (null for main requirements)"
+    },
+    "compliance_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "completed",
+        "not_applicable"
+      ],
+      "default": "not_started"
+    },
+    "testing_frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly",
+        "annually",
+        "continuous"
+      ],
+      "description": "How often this control must be tested"
+    },
+    "responsible_party": {
+      "type": "string",
+      "description": "Person/team responsible for this requirement"
+    },
+    "last_tested_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_test_due": {
+      "type": "string",
+      "format": "date"
+    },
+    "completion_percentage": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    },
+    "evidence_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "requirement_number",
+    "requirement_title"
+  ]
+}

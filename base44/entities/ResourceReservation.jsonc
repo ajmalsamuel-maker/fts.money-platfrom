@@ -1,0 +1,75 @@
+{
+  "name": "ResourceReservation",
+  "type": "object",
+  "properties": {
+    "reservation_id": {
+      "type": "string",
+      "description": "Unique reservation identifier"
+    },
+    "psp_name": {
+      "type": "string",
+      "description": "PSP name (for upcoming launches)"
+    },
+    "pool_id": {
+      "type": "string",
+      "description": "Reference to ResourcePool"
+    },
+    "region": {
+      "type": "string",
+      "description": "Target region"
+    },
+    "reserved_resources": {
+      "type": "object",
+      "properties": {
+        "cpu_cores": {
+          "type": "number"
+        },
+        "memory_gb": {
+          "type": "number"
+        },
+        "storage_gb": {
+          "type": "number"
+        },
+        "database_connections": {
+          "type": "number"
+        }
+      },
+      "description": "Reserved resource amounts"
+    },
+    "reservation_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reservation_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expected_launch_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "allocated",
+        "cancelled",
+        "expired"
+      ],
+      "default": "pending"
+    },
+    "requested_by": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "psp_name",
+    "pool_id",
+    "reserved_resources",
+    "expected_launch_date"
+  ]
+}

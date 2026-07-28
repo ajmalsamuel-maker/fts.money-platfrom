@@ -1,0 +1,87 @@
+{
+  "name": "CompanyLeaderboard",
+  "type": "object",
+  "properties": {
+    "program_id": {
+      "type": "string"
+    },
+    "leaderboard_name": {
+      "type": "string",
+      "description": "Name of company leaderboard"
+    },
+    "leaderboard_type": {
+      "type": "string",
+      "enum": [
+        "weekly",
+        "monthly",
+        "all_time"
+      ],
+      "default": "monthly"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "rankings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number"
+          },
+          "company_id": {
+            "type": "string"
+          },
+          "company_name": {
+            "type": "string"
+          },
+          "total_points": {
+            "type": "number"
+          },
+          "participant_count": {
+            "type": "number"
+          },
+          "average_points_per_participant": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "prizes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number"
+          },
+          "reward": {
+            "type": "string"
+          },
+          "bonus_points": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "upcoming",
+        "active",
+        "completed"
+      ],
+      "default": "upcoming"
+    }
+  },
+  "required": [
+    "program_id",
+    "leaderboard_name",
+    "leaderboard_type"
+  ]
+}

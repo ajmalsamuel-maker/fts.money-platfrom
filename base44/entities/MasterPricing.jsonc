@@ -1,0 +1,285 @@
+{
+  "name": "MasterPricing",
+  "type": "object",
+  "properties": {
+    "item_id": {
+      "type": "string",
+      "description": "Unique pricing item identifier"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "psp_payment_processing",
+        "crypto_vasp",
+        "iso_gateway",
+        "orchestration",
+        "rwa_tokenization",
+        "tax_management",
+        "einvoicing",
+        "nano_marketplace",
+        "pci_compliance",
+        "lei_compliance",
+        "digital_identity",
+        "other"
+      ],
+      "description": "Type of service this pricing applies to"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "payment_rail",
+        "payout_route",
+        "api_endpoint",
+        "service",
+        "merchant_onboarding",
+        "transaction_processing",
+        "settlement",
+        "compliance_service",
+        "fraud_detection",
+        "network_tokenization",
+        "account_updater",
+        "instant_payment",
+        "crypto_processing",
+        "data_storage",
+        "reporting",
+        "webhook",
+        "terminal_rental",
+        "subscription_management",
+        "dispute_handling",
+        "chargeback_fee",
+        "refund_processing",
+        "platform_fee",
+        "setup_fee",
+        "monthly_fee",
+        "wallet_creation",
+        "card_issuance",
+        "kyc_verification",
+        "iso_message_translation",
+        "routing_fee",
+        "token_deployment",
+        "custody_fee",
+        "tax_calculation",
+        "einvoice_submission",
+        "carbon_offset"
+      ],
+      "description": "Revenue category"
+    },
+    "item_name": {
+      "type": "string",
+      "description": "Name of the item"
+    },
+    "item_description": {
+      "type": "string",
+      "description": "Detailed description"
+    },
+    "provider_name": {
+      "type": "string",
+      "description": "Third-party provider (if applicable)"
+    },
+    "buy_rate_type": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "fixed",
+        "tiered",
+        "hybrid",
+        "per_unit"
+      ],
+      "description": "How we pay the provider"
+    },
+    "buy_rate_percentage": {
+      "type": "number",
+      "description": "Buy rate percentage"
+    },
+    "buy_rate_fixed": {
+      "type": "number",
+      "description": "Fixed buy rate amount"
+    },
+    "buy_rate_tiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tier_label": {
+            "type": "string"
+          },
+          "volume_min": {
+            "type": "number"
+          },
+          "volume_max": {
+            "type": "number"
+          },
+          "payment_method": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "fixed_fee": {
+            "type": "number"
+          },
+          "rate_percentage": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Tiered buy rates"
+    },
+    "sell_rate_type": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "fixed",
+        "tiered",
+        "hybrid",
+        "per_unit"
+      ],
+      "description": "How we charge customers"
+    },
+    "sell_rate_percentage": {
+      "type": "number",
+      "description": "Sell rate percentage"
+    },
+    "sell_rate_fixed": {
+      "type": "number",
+      "description": "Fixed sell rate amount"
+    },
+    "sell_rate_tiers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Tiered sell rates"
+    },
+    "hybrid_model": {
+      "type": "object",
+      "description": "Hybrid pricing model parameters"
+    },
+    "monthly_volume_commitment": {
+      "type": "number"
+    },
+    "minimum_monthly_commitment": {
+      "type": "number"
+    },
+    "margin_percentage": {
+      "type": "number"
+    },
+    "margin_amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "cost_per_transaction": {
+      "type": "number"
+    },
+    "revenue_per_transaction": {
+      "type": "number"
+    },
+    "minimum_charge": {
+      "type": "number"
+    },
+    "maximum_charge": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "pending_approval",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "approval_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "xero_account_code": {
+      "type": "string"
+    },
+    "xero_tax_type": {
+      "type": "string"
+    },
+    "reconciliation_frequency": {
+      "type": "string",
+      "enum": [
+        "real_time",
+        "daily",
+        "weekly",
+        "monthly"
+      ],
+      "default": "daily"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "last_reconciled": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0
+    },
+    "total_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "total_cost": {
+      "type": "number",
+      "default": 0
+    },
+    "version": {
+      "type": "string"
+    },
+    "version_history": {
+      "type": "array"
+    },
+    "ab_test_group": {
+      "type": "string"
+    },
+    "ab_test_id": {
+      "type": "string"
+    },
+    "campaign_id": {
+      "type": "string"
+    },
+    "campaign_discount": {
+      "type": "number"
+    },
+    "campaign_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "optimization_score": {
+      "type": "number"
+    },
+    "optimization_suggestions": {
+      "type": "array"
+    },
+    "market_benchmark": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "service_type",
+    "category",
+    "item_name",
+    "buy_rate_type",
+    "sell_rate_type"
+  ]
+}

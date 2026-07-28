@@ -1,0 +1,68 @@
+{
+  "name": "UsageEvent",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Unique event identifier"
+    },
+    "psp_id": {
+      "type": "string",
+      "description": "Reference to ProvisionedPSP"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for isolation"
+    },
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to Merchant"
+    },
+    "meter_id": {
+      "type": "string",
+      "description": "Reference to MerchantUsageMeter"
+    },
+    "metric_type": {
+      "type": "string",
+      "description": "Type of usage metric"
+    },
+    "event_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When event occurred"
+    },
+    "count_increment": {
+      "type": "number",
+      "default": 1,
+      "description": "How much to increment the counter"
+    },
+    "volume_increment": {
+      "type": "number",
+      "default": 0,
+      "description": "Volume amount (for monetary metrics)"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional event metadata"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to related transaction (if applicable)"
+    },
+    "api_endpoint": {
+      "type": "string",
+      "description": "API endpoint called (if API metric)"
+    },
+    "processed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether event has been aggregated"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_code",
+    "merchant_id",
+    "metric_type"
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "name": "ReceiptTemplate",
+  "type": "object",
+  "properties": {
+    "merchant_id": {
+      "type": "string",
+      "description": "Reference to merchant"
+    },
+    "template_name": {
+      "type": "string",
+      "description": "Name of receipt template"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Merchant logo for receipt"
+    },
+    "header_text": {
+      "type": "string",
+      "description": "Header text on receipt"
+    },
+    "show_merchant_details": {
+      "type": "boolean",
+      "default": true
+    },
+    "merchant_address": {
+      "type": "string"
+    },
+    "merchant_phone": {
+      "type": "string"
+    },
+    "merchant_email": {
+      "type": "string"
+    },
+    "show_transaction_details": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_itemized_list": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_tax_breakdown": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_payment_method": {
+      "type": "boolean",
+      "default": true
+    },
+    "footer_text": {
+      "type": "string",
+      "description": "Footer text (e.g., thank you message)"
+    },
+    "terms_and_conditions": {
+      "type": "string"
+    },
+    "primary_color": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "font_family": {
+      "type": "string",
+      "enum": [
+        "Arial",
+        "Helvetica",
+        "Times",
+        "Courier"
+      ],
+      "default": "Arial"
+    },
+    "font_size": {
+      "type": "number",
+      "default": 12
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "merchant_id",
+    "template_name"
+  ]
+}

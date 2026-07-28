@@ -1,0 +1,87 @@
+{
+  "name": "InstantPaymentMethod",
+  "type": "object",
+  "properties": {
+    "method_code": {
+      "type": "string",
+      "description": "Unique payment method code"
+    },
+    "method_name": {
+      "type": "string",
+      "description": "Display name"
+    },
+    "method_type": {
+      "type": "string",
+      "enum": [
+        "fednow",
+        "pix",
+        "upi",
+        "faster_payments",
+        "sepa_instant",
+        "pay_now",
+        "fast_pay"
+      ],
+      "description": "Real-time payment scheme"
+    },
+    "country": {
+      "type": "string",
+      "description": "ISO 3166-1 country code"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Supported currency"
+    },
+    "settlement_time": {
+      "type": "string",
+      "enum": [
+        "instant",
+        "under_10_seconds",
+        "under_30_seconds"
+      ],
+      "default": "instant"
+    },
+    "max_transaction_amount": {
+      "type": "number"
+    },
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to PaymentProvider"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "requires_customer_account": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether customer needs bank account"
+    },
+    "supports_refunds": {
+      "type": "boolean",
+      "default": true
+    },
+    "fee_percentage": {
+      "type": "number",
+      "description": "Processing fee percentage"
+    },
+    "fee_fixed": {
+      "type": "number",
+      "description": "Fixed fee per transaction"
+    },
+    "total_volume": {
+      "type": "number",
+      "default": 0
+    },
+    "total_transactions": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "method_code",
+    "method_name",
+    "method_type",
+    "country",
+    "currency"
+  ]
+}

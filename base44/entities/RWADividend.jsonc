@@ -1,0 +1,117 @@
+{
+  "name": "RWADividend",
+  "type": "object",
+  "properties": {
+    "dividend_id": {
+      "type": "string",
+      "description": "Unique dividend/payment identifier"
+    },
+    "asset_id": {
+      "type": "string",
+      "description": "Reference to RWAAsset"
+    },
+    "payment_type": {
+      "type": "string",
+      "enum": [
+        "dividend",
+        "coupon",
+        "interest",
+        "rent",
+        "principal_repayment",
+        "redemption"
+      ],
+      "description": "Type of payment"
+    },
+    "announcement_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When dividend was announced"
+    },
+    "record_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Holders as of this date receive payment"
+    },
+    "payment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When payment will be made"
+    },
+    "total_amount": {
+      "type": "number",
+      "description": "Total payment pool"
+    },
+    "per_token_amount": {
+      "type": "number",
+      "description": "Payment per token"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD",
+      "description": "Payment currency"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "announced",
+        "pending",
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "default": "announced",
+      "description": "Payment status"
+    },
+    "snapshot_taken": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether holder snapshot was taken"
+    },
+    "total_recipients": {
+      "type": "number",
+      "description": "Number of recipients"
+    },
+    "paid_recipients": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of recipients paid"
+    },
+    "distribution_method": {
+      "type": "string",
+      "enum": [
+        "on_chain",
+        "bank_transfer",
+        "stablecoin"
+      ],
+      "description": "How payments are distributed"
+    },
+    "blockchain_tx_hashes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Transaction hashes for distributions"
+    },
+    "withholding_applied": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether tax withholding applied"
+    },
+    "total_withholding": {
+      "type": "number",
+      "default": 0,
+      "description": "Total tax withheld"
+    },
+    "corporate_action_id": {
+      "type": "number",
+      "description": "On-chain corporate action ID"
+    }
+  },
+  "required": [
+    "asset_id",
+    "payment_type",
+    "record_date",
+    "payment_date",
+    "total_amount"
+  ]
+}

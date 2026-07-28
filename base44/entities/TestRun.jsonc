@@ -1,0 +1,70 @@
+{
+  "name": "TestRun",
+  "type": "object",
+  "properties": {
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for tenant isolation"
+    },
+    "run_name": {
+      "type": "string",
+      "description": "Name/identifier for this test run"
+    },
+    "test_type": {
+      "type": "string",
+      "enum": [
+        "load_test",
+        "stress_test",
+        "soak_test",
+        "spike_test"
+      ],
+      "default": "load_test"
+    },
+    "config": {
+      "type": "object",
+      "description": "Test configuration used"
+    },
+    "results": {
+      "type": "object",
+      "description": "Test results and metrics"
+    },
+    "target_tps": {
+      "type": "number"
+    },
+    "actual_tps": {
+      "type": "number"
+    },
+    "success_rate": {
+      "type": "string"
+    },
+    "avg_latency": {
+      "type": "number"
+    },
+    "p95_latency": {
+      "type": "number"
+    },
+    "p99_latency": {
+      "type": "number"
+    },
+    "total_transactions": {
+      "type": "number"
+    },
+    "ci_cd_trigger": {
+      "type": "string",
+      "description": "CI/CD pipeline that triggered this run"
+    },
+    "git_commit": {
+      "type": "string",
+      "description": "Git commit hash if triggered by CI/CD"
+    },
+    "baseline_run": {
+      "type": "boolean",
+      "default": false,
+      "description": "Mark as baseline for regression comparison"
+    }
+  },
+  "required": [
+    "psp_code",
+    "run_name"
+  ]
+}

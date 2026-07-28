@@ -1,0 +1,90 @@
+{
+  "name": "PCIReportTemplate",
+  "type": "object",
+  "properties": {
+    "template_name": {
+      "type": "string",
+      "description": "Name of report template"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "executive_summary",
+        "detailed_audit",
+        "regulatory_filing",
+        "gap_analysis",
+        "risk_assessment",
+        "remediation_status",
+        "qsa_assessment",
+        "board_report",
+        "custom"
+      ],
+      "description": "Type of report"
+    },
+    "stakeholder_type": {
+      "type": "string",
+      "enum": [
+        "executive",
+        "board",
+        "qsa",
+        "regulatory",
+        "technical",
+        "management"
+      ],
+      "description": "Target audience"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Report sections configuration"
+    },
+    "data_sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Data sources to include"
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Metrics to display"
+    },
+    "format_options": {
+      "type": "object",
+      "description": "Formatting preferences"
+    },
+    "schedule": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "daily",
+        "weekly",
+        "monthly",
+        "quarterly",
+        "annually"
+      ],
+      "default": "manual"
+    },
+    "recipients": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Auto-send recipients"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "template_name",
+    "report_type",
+    "stakeholder_type"
+  ]
+}

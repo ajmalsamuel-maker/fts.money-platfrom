@@ -1,0 +1,54 @@
+{
+  "name": "PSPBalance",
+  "type": "object",
+  "properties": {
+    "psp_id": {
+      "type": "string"
+    },
+    "psp_name": {
+      "type": "string"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "total_available": {
+      "type": "number",
+      "default": 0
+    },
+    "total_pending": {
+      "type": "number",
+      "default": 0
+    },
+    "total_reserved": {
+      "type": "number",
+      "default": 0
+    },
+    "total_fees_collected": {
+      "type": "number",
+      "default": 0
+    },
+    "merchant_balances": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "last_reconciled": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "psp_id",
+    "psp_name"
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "name": "OpenBankingProviderConfiguration",
+  "type": "object",
+  "properties": {
+    "provider_name": {
+      "type": "string",
+      "enum": [
+        "TrueLayer",
+        "Tink",
+        "Brankas",
+        "Belvo",
+        "Pluggy",
+        "Yodlee",
+        "GoCardless",
+        "Yapily",
+        "Salt Edge"
+      ],
+      "description": "Name of the open banking provider"
+    },
+    "provider_display_name": {
+      "type": "string",
+      "description": "Display name for UI"
+    },
+    "provider_type": {
+      "type": "string",
+      "enum": [
+        "AIS",
+        "PIS",
+        "Both"
+      ],
+      "description": "Account Information Service, Payment Initiation Service, or Both"
+    },
+    "regions_supported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported regions/countries (e.g., UK, EU, SEA, LatAm)"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "OAuth client ID"
+    },
+    "client_secret": {
+      "type": "string",
+      "description": "OAuth client secret (encrypted)"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "API key (encrypted)"
+    },
+    "api_base_url": {
+      "type": "string",
+      "description": "Base URL for API calls"
+    },
+    "redirect_uri": {
+      "type": "string",
+      "description": "OAuth redirect URI"
+    },
+    "webhook_url": {
+      "type": "string",
+      "description": "Webhook endpoint for provider callbacks"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "OAuth scopes required"
+    },
+    "capabilities": {
+      "type": "object",
+      "properties": {
+        "account_balance": {
+          "type": "boolean",
+          "default": false
+        },
+        "transaction_history": {
+          "type": "boolean",
+          "default": false
+        },
+        "payment_initiation": {
+          "type": "boolean",
+          "default": false
+        },
+        "standing_orders": {
+          "type": "boolean",
+          "default": false
+        },
+        "beneficiary_management": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "description": "Specific capabilities offered by this provider"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "testing",
+        "deprecated"
+      ],
+      "default": "testing",
+      "description": "Configuration status"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "sandbox",
+        "production"
+      ],
+      "default": "sandbox",
+      "description": "Environment mode"
+    },
+    "transaction_fee_percentage": {
+      "type": "number",
+      "description": "Fee percentage charged by provider"
+    },
+    "fixed_fee": {
+      "type": "number",
+      "description": "Fixed fee per transaction"
+    },
+    "rate_limits": {
+      "type": "object",
+      "properties": {
+        "requests_per_minute": {
+          "type": "number"
+        },
+        "requests_per_day": {
+          "type": "number"
+        }
+      },
+      "description": "API rate limits"
+    },
+    "configuration_notes": {
+      "type": "string",
+      "description": "Internal notes about this configuration"
+    },
+    "last_health_check": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last successful health check"
+    },
+    "is_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this provider is enabled for use"
+    }
+  },
+  "required": [
+    "provider_name",
+    "provider_type",
+    "regions_supported"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "name": "PCIBlockchainLog",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "evidence_uploaded",
+        "finding_created",
+        "control_tested",
+        "policy_updated",
+        "audit_started",
+        "compliance_certified"
+      ],
+      "description": "Type of event"
+    },
+    "event_description": {
+      "type": "string",
+      "description": "Human-readable event description"
+    },
+    "actor_email": {
+      "type": "string",
+      "description": "Who performed the action"
+    },
+    "actor_role": {
+      "type": "string",
+      "description": "Role of actor (admin, qsa, auditor)"
+    },
+    "resource_type": {
+      "type": "string",
+      "description": "What was affected (evidence, finding, etc.)"
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "ID of affected resource"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "hash": {
+      "type": "string",
+      "description": "SHA-256 hash of event data"
+    },
+    "previous_hash": {
+      "type": "string",
+      "description": "Hash of previous block"
+    },
+    "blockchain_verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional event metadata"
+    }
+  },
+  "required": [
+    "event_type",
+    "event_description",
+    "actor_email",
+    "hash"
+  ]
+}

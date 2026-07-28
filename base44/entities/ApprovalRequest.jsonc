@@ -1,0 +1,80 @@
+{
+  "name": "ApprovalRequest",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "psp_creation",
+        "psp_deletion",
+        "psp_status_change",
+        "merchant_onboarding",
+        "merchant_update",
+        "terminal_creation",
+        "user_creation",
+        "processor_connection",
+        "routing_rule"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "entity_data": {
+      "type": "object"
+    },
+    "action_data": {
+      "type": "object",
+      "description": "Additional action-specific data (e.g., new_status for status changes)"
+    },
+    "submitted_by": {
+      "type": "string"
+    },
+    "submitted_by_name": {
+      "type": "string"
+    },
+    "reviewed_by": {
+      "type": "string"
+    },
+    "reviewed_by_name": {
+      "type": "string"
+    },
+    "review_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "review_comments": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium"
+    }
+  },
+  "required": [
+    "request_type",
+    "entity_type",
+    "submitted_by"
+  ]
+}

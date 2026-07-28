@@ -1,0 +1,140 @@
+{
+  "name": "TaxCalculationLog",
+  "type": "object",
+  "properties": {
+    "transaction_id": {
+      "type": "string",
+      "description": "Reference to transaction"
+    },
+    "invoice_id": {
+      "type": "string",
+      "description": "Reference to invoice"
+    },
+    "psp_code": {
+      "type": "string",
+      "description": "PSP code for multi-tenancy"
+    },
+    "merchant_id": {
+      "type": "string"
+    },
+    "customer_id": {
+      "type": "string"
+    },
+    "calculation_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "net_amount": {
+      "type": "number",
+      "description": "Amount before VAT"
+    },
+    "tax_amount": {
+      "type": "number",
+      "description": "Calculated VAT amount"
+    },
+    "gross_amount": {
+      "type": "number",
+      "description": "Total including VAT"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "seller_jurisdiction": {
+      "type": "string",
+      "description": "Seller's tax jurisdiction"
+    },
+    "buyer_jurisdiction": {
+      "type": "string",
+      "description": "Buyer's tax jurisdiction (from IP/address)"
+    },
+    "detected_ip": {
+      "type": "string",
+      "description": "Customer IP address used for geo-detection"
+    },
+    "detected_country": {
+      "type": "string",
+      "description": "Country detected from IP"
+    },
+    "billing_country": {
+      "type": "string",
+      "description": "Billing address country"
+    },
+    "final_jurisdiction": {
+      "type": "string",
+      "description": "Jurisdiction used for calculation"
+    },
+    "tax_category": {
+      "type": "string",
+      "description": "Product/service category used"
+    },
+    "tax_rate_applied": {
+      "type": "number",
+      "description": "Percentage rate applied"
+    },
+    "rate_type": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "reduced",
+        "super_reduced",
+        "zero",
+        "exempt"
+      ]
+    },
+    "calculation_method": {
+      "type": "string",
+      "enum": [
+        "automatic",
+        "manual",
+        "override"
+      ],
+      "default": "automatic"
+    },
+    "is_b2b": {
+      "type": "boolean",
+      "default": false,
+      "description": "Business-to-business transaction"
+    },
+    "reverse_charge_applied": {
+      "type": "boolean",
+      "default": false
+    },
+    "buyer_tax_id": {
+      "type": "string",
+      "description": "Buyer's VAT/Tax ID"
+    },
+    "buyer_tax_id_validated": {
+      "type": "boolean",
+      "default": false
+    },
+    "seller_tax_id": {
+      "type": "string"
+    },
+    "exemption_reason": {
+      "type": "string",
+      "description": "Reason if exempt"
+    },
+    "calculation_rules": {
+      "type": "object",
+      "description": "Rules and logic used for calculation"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error if calculation failed"
+    },
+    "override_by": {
+      "type": "string",
+      "description": "User who manually overrode calculation"
+    },
+    "override_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "net_amount",
+    "tax_amount",
+    "gross_amount",
+    "final_jurisdiction"
+  ]
+}
